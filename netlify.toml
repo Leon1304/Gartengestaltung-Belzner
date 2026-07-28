@@ -1,0 +1,6 @@
+# Bilder sind versioniert und aendern sich nur mit einem neuen Commit,
+# darum darf der Browser sie lange behalten.
+[[headers]]
+  for = "/Bilder/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000"

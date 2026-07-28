@@ -8,9 +8,7 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preconnect" href="https://static.wixstatic.com">
-<link rel="preload" as="image" fetchpriority="high"
-      href="https://static.wixstatic.com/media/272120_0699ced1dc9849d1ad04667e409174f4~mv2.jpg/v1/fill/w_1800,h_1350,al_c,q_82,enc_auto/x.jpg">
+<link rel="preload" as="image" fetchpriority="high" href="Bilder/IMG_0070-2.jpg">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT,WONK@9..144,400..900,0..100,0..1&family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 
 <style>
@@ -155,11 +153,18 @@ p{text-wrap:pretty}
 .progress{position:absolute;left:0;bottom:-1px;height:2px;width:100%;transform:scaleX(0);
   transform-origin:left;background:var(--accent-500)}
 
-.brand{font-family:'IBM Plex Mono',monospace;font-size:var(--step--1);font-weight:500;
-  letter-spacing:0.16em;text-transform:uppercase;text-decoration:none;color:inherit;
-  margin-right:auto;white-space:nowrap}
-.brand span{color:var(--accent-400)}
-.nav[data-scrolled="true"] .brand span{color:var(--color-accent-text)}
+.brand{display:flex;align-items:center;gap:var(--space-2xs);
+  text-decoration:none;color:inherit;margin-right:auto}
+/* Heller Kreis wie auf dem Flyer: haelt das schwarze Federkiel-Element
+   auch ueber dem dunklen Hero-Foto lesbar. */
+.brand-mark{width:38px;height:38px;flex:none;object-fit:contain;
+  background:var(--paper-000);border-radius:var(--radius-full);padding:3px;
+  box-shadow:0 0 0 1px rgba(11,12,11,.12)}
+.brand-text{display:flex;flex-direction:column;line-height:1.18;white-space:nowrap;
+  font-family:'IBM Plex Mono',monospace;text-transform:uppercase}
+.brand-top{font-size:var(--step--2);font-weight:400;letter-spacing:0.14em;opacity:.74}
+.brand-name{font-size:var(--step--1);font-weight:500;letter-spacing:0.22em}
+@media (max-width:560px){.brand-top{display:none}}
 
 .nav-links{display:flex;gap:var(--space-m);list-style:none;padding:0}
 @media (max-width:960px){.nav-links{display:none}}
@@ -217,14 +222,16 @@ p{text-wrap:pretty}
   stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke;
   filter:drop-shadow(0 1px 3px rgba(0,0,0,.55))}
 
-/* Scrim: 78 % unten -> Weisstext auch ueber hellen Bildstellen >= 4,5:1 */
+/* Scrim auf das dunkle Hero-Foto abgestimmt: gemessen bleibt der schwaechste
+   Textbereich (Eyebrow) bei 5,2:1, der Rest deutlich darueber. Staerker
+   abdunkeln wuerde nur noch das Foto schlucken, nicht die Lesbarkeit heben. */
 .hero-scrim{position:absolute;inset:0;pointer-events:none;
   background:linear-gradient(to top,
-    rgba(11,12,11,.88) 0%,
-    rgba(11,12,11,.78) 26%,
-    rgba(11,12,11,.44) 52%,
-    rgba(11,12,11,.18) 74%,
-    rgba(11,12,11,.34) 100%)}
+    rgba(11,12,11,.80) 0%,
+    rgba(11,12,11,.68) 26%,
+    rgba(11,12,11,.34) 52%,
+    rgba(11,12,11,.12) 74%,
+    rgba(11,12,11,.26) 100%)}
 
 .hero-inner{position:relative;z-index:3;width:var(--wrap);margin-inline:auto;
   padding-block:var(--space-2xl) var(--space-xl);color:var(--paper-000)}
@@ -319,7 +326,7 @@ p{text-wrap:pretty}
 .statement h2{font-size:var(--step-8);line-height:.95;letter-spacing:-.03em}
 @supports (background-clip:text) or (-webkit-background-clip:text){
   .statement .fill{
-    background-image:url("https://static.wixstatic.com/media/272120_1024211c6c97457d9e0a48eae7a21891~mv2.jpg/v1/fill/w_1600,h_900,al_c,q_82,enc_auto/x.jpg");
+    background-image:url("Bilder/3.jpg");
     background-size:cover;background-position:center;background-attachment:scroll;
     -webkit-background-clip:text;background-clip:text;color:transparent;
     -webkit-text-fill-color:transparent;
@@ -502,6 +509,18 @@ html.js .reveal{opacity:0;transform:translateY(28px)}
 @media (prefers-reduced-motion:reduce){
   html.js .reveal{opacity:1 !important;transform:none !important}
 }
+
+/* Startzustand des Hero-Einstiegs gehoert ins CSS, nicht in gsap.from():
+   GSAP kommt vom CDN, bis dahin stuende der Titel sonst fertig da und
+   wuerde beim Ausfuehren zurueckgerissen. */
+html.js .hero-title .line > span{transform:translateY(110%)}
+html.js .hero-eyebrow,html.js .hero-foot,html.js .hero-meta{opacity:0}
+html.js .hero-plan{opacity:0}
+@media (prefers-reduced-motion:reduce){
+  html.js .hero-title .line > span{transform:none}
+  html.js .hero-eyebrow,html.js .hero-foot,html.js .hero-meta{opacity:1}
+  html.js .hero-plan{opacity:1}
+}
 </style>
 </head>
 <body>
@@ -509,7 +528,14 @@ html.js .reveal{opacity:0;transform:translateY(28px)}
 <a href="#main" class="sr-only">Zum Inhalt springen</a>
 
 <nav class="nav" id="nav">
-  <a href="#top" class="brand">Belzner<span>.</span></a>
+  <a href="#top" class="brand" aria-label="Gartengestaltung Baumschule Belzner — zum Seitenanfang">
+    <img class="brand-mark" id="brandMark" src="assets/logo-belzner.png" alt=""
+         width="128" height="128" decoding="async">
+    <span class="brand-text" aria-hidden="true">
+      <span class="brand-top">Gartengestaltung · Baumschule</span>
+      <span class="brand-name">Belzner</span>
+    </span>
+  </a>
   <ul class="nav-links">
     <li><a href="#leistungen">Leistungen</a></li>
     <li><a href="#projekte">Projekte</a></li>
@@ -533,22 +559,19 @@ html.js .reveal{opacity:0;transform:translateY(28px)}
 
    <div class="hero-media">
      <img class="hero-layer is-raw"
-          src="https://static.wixstatic.com/media/272120_0699ced1dc9849d1ad04667e409174f4~mv2.jpg/v1/fill/w_1800,h_1350,al_c,q_82,enc_auto/x.jpg"
-          width="1800" height="1350" fetchpriority="high" decoding="async" alt="">
+          src="Bilder/IMG_0070-2.jpg"
+          width="2400" height="1600" fetchpriority="high" decoding="async" alt="">
      <img class="hero-layer hero-after" id="heroAfter"
-          src="https://static.wixstatic.com/media/272120_0699ced1dc9849d1ad04667e409174f4~mv2.jpg/v1/fill/w_1800,h_1350,al_c,q_82,enc_auto/x.jpg"
-          width="1800" height="1350" fetchpriority="high" decoding="async"
-          alt="Fertiggestellter Garten in Bensheim: gestreift gemähter Rasen mit Pool, Natursteinkante und Solitärbaum">
+          src="Bilder/IMG_0070-2.jpg"
+          width="2400" height="1600" fetchpriority="high" decoding="async"
+          alt="Weg durch die Baumschule Belzner in Bensheim, links und rechts dicht bepflanzt mit Ahorn, Hortensien und Formgehölzen">
 
      <!-- Planlinie, am Foto abgegriffen -->
      <svg class="hero-plan" id="heroPlan" viewBox="0 0 1400 1050" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-       <path class="plan" d="M558 540 L742 494 L1043 497 L875 587 Z"/>
-       <path class="plan" d="M166 613 L558 540"/>
-       <path class="plan" d="M875 587 L1105 530 L1400 515"/>
-       <path class="plan" d="M497 486 L663 450"/>
-       <path class="plan" d="M742 466 L1043 469"/>
-       <circle class="plan" cx="967" cy="193" r="122"/>
-       <path class="plan" d="M967 315 L967 440"/>
+       <path class="plan" data-prelude d="M589 1050 L660 505 L705 505 L869 1050"/>
+       <path class="plan" d="M470 512 L900 504"/>
+       <path class="plan" d="M180 1050 L610 528"/>
+       <path class="plan" d="M1240 1050 L760 522"/>
      </svg>
 
      <input type="range" class="hero-slider" id="heroSlider" min="0" max="100" value="50"
@@ -606,9 +629,9 @@ html.js .reveal{opacity:0;transform:translateY(28px)}
       </div>
       <div class="svc-media">
         <img data-parallax
-             src="https://static.wixstatic.com/media/272120_050876443b9c478f9498298d7dca08fc~mv2.jpg/v1/fill/w_900,h_1125,al_c,q_82,enc_auto/x.jpg"
-             width="900" height="1125" loading="lazy" decoding="async"
-             alt="Frisch verlegter Rasen mit angrenzendem Pflanzbeet und jungen Spalierbäumen">
+             src="Bilder/12.jpg"
+             width="1125" height="1500" loading="lazy" decoding="async"
+             alt="Frisch verlegter Fertigrasen zwischen Natursteinpflaster und Mulchbeet mit Gräsern">
       </div>
     </article>
 
@@ -621,9 +644,9 @@ html.js .reveal{opacity:0;transform:translateY(28px)}
       </div>
       <div class="svc-media">
         <img data-parallax
-             src="https://static.wixstatic.com/media/272120_765ae5ce6bd94e7db2857060b6c0288b~mv2.jpg/v1/fill/w_900,h_1125,al_c,q_82,enc_auto/x.jpg"
-             width="900" height="1125" loading="lazy" decoding="async"
-             alt="Trockenmauer aus Naturstein mit angrenzender Treppenanlage und neu bepflanztem Beet">
+             src="Bilder/2.jpg"
+             width="1800" height="1350" loading="lazy" decoding="async"
+             alt="Terrassierter Hanggarten mit geschwungenen Trockenmauern aus Naturstein, Blockstufentreppe und Sitzplatz">
       </div>
     </article>
 
@@ -636,9 +659,9 @@ html.js .reveal{opacity:0;transform:translateY(28px)}
       </div>
       <div class="svc-media">
         <img data-parallax
-             src="https://static.wixstatic.com/media/272120_1024211c6c97457d9e0a48eae7a21891~mv2.jpg/v1/fill/w_900,h_1125,al_c,q_82,enc_auto/x.jpg"
-             width="900" height="1125" loading="lazy" decoding="async"
-             alt="Dicht gewachsene Bepflanzung aus Farnen und Stauden von oben">
+             src="Bilder/3.jpg"
+             width="1125" height="1500" loading="lazy" decoding="async"
+             alt="Quartier der eigenen Baumschule mit Fächerahorn, Hortensien und Koniferen, im Hintergrund ein Mammutbaum">
       </div>
     </article>
 
@@ -649,12 +672,11 @@ html.js .reveal{opacity:0;transform:translateY(28px)}
         <p>Wasser entscheidet, ob ein Garten trägt oder Arbeit macht. Wir bauen automatische Bewässerung mit Versenkregnern und Tropfschläuchen, binden Zisterne und Regenwasser ein und legen Drainagen so an, dass nach dem Gewitter nichts stehen bleibt. Gesteuert wird über Zeitplan oder Bodenfeuchte — im Alltag merken Sie davon nur, dass es grün bleibt.</p>
         <ul class="svc-tags"><li>Versenkregner</li><li>Tropfbewässerung</li><li>Zisterne</li><li>Drainage</li><li>Steuerung</li></ul>
       </div>
-      <div class="svc-media is-pending">
-        <!-- BILD NACHREICHEN: is-pending entfernen und den Inhalt ersetzen durch
-             <img data-parallax src="…" width="900" height="1125" loading="lazy" decoding="async" alt="…"> -->
-        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9.5" r="1.5"/><path d="m3.5 17.5 4.8-4.8a2 2 0 0 1 2.7 0l3.5 3.5 2-2a2 2 0 0 1 2.7 0l2.3 2.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        <p class="mono">Foto folgt</p>
-        <p class="hint">Aufnahme einer fertigen Bewässerungsanlage wird nachgereicht.</p>
+      <div class="svc-media">
+        <img data-parallax
+             src="Bilder/10.jpg"
+             width="1500" height="1125" loading="lazy" decoding="async"
+             alt="Angelegter Gartenteich mit Kiesufer und Findlingen, eingefasst von Rasenfläche und Kirschlorbeerhecke">
       </div>
     </article>
 
@@ -665,12 +687,11 @@ html.js .reveal{opacity:0;transform:translateY(28px)}
         <p>Mähen ist Routine — das kann eine Maschine übernehmen. Wir messen die Fläche ein, verlegen das Begrenzungskabel oder richten ein kabelloses GPS-Modell ein, setzen Ladestation und Garage und stellen die Mähzeiten auf Ihren Rasen ein. Im Herbst holen wir das Gerät zur Wartung, im Frühjahr steht es startklar wieder da.</p>
         <ul class="svc-tags"><li>Flächenaufmaß</li><li>Kabelverlegung</li><li>GPS-Modelle</li><li>Ladestation</li><li>Winterwartung</li></ul>
       </div>
-      <div class="svc-media is-pending">
-        <!-- BILD NACHREICHEN: is-pending entfernen und den Inhalt ersetzen durch
-             <img data-parallax src="…" width="900" height="1125" loading="lazy" decoding="async" alt="…"> -->
-        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9.5" r="1.5"/><path d="m3.5 17.5 4.8-4.8a2 2 0 0 1 2.7 0l3.5 3.5 2-2a2 2 0 0 1 2.7 0l2.3 2.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        <p class="mono">Foto folgt</p>
-        <p class="hint">Aufnahme eines installierten Mähroboters wird nachgereicht.</p>
+      <div class="svc-media">
+        <img data-parallax
+             src="Bilder/7.jpg"
+             width="1125" height="1500" loading="lazy" decoding="async"
+             alt="Mähroboter auf frisch gemähtem Rasen, daneben ein von Randsteinen eingefasstes Mulchbeet">
       </div>
     </article>
   </div>
@@ -690,26 +711,38 @@ html.js .reveal{opacity:0;transform:translateY(28px)}
     <header class="section-head reveal">
       <p class="mono">02 — Referenzen</p>
       <h2 class="display">Ausgeführte Projekte</h2>
-      <p>Ein Querschnitt aus der Region Bergstraße. Ort und Jahr ergänzen wir, sobald die Zuordnung feststeht.</p>
+      <p>Ein Querschnitt aus der Region Bergstraße.</p>
     </header>
   </div>
 
   <div class="projects-track" id="projectsTrack">
     <article class="project">
-      <div class="project-img"><img src="https://static.wixstatic.com/media/272120_553144510bff416ca47fa4544323248f~mv2.jpg/v1/fill/w_920,h_690,al_c,q_82,enc_auto/x.jpg" width="920" height="690" loading="lazy" decoding="async" alt="Holzterrasse mit umlaufenden Staudenbeeten, Kiesflächen und Heckenrahmung"></div>
-      <div class="project-body"><p class="mono">Referenzprojekt</p><h3 class="display">Holzterrasse mit Staudenbeeten</h3><p>Freistehendes Deck, eingefasst von Pflanzflächen und Kieswegen.</p></div>
+      <div class="project-img"><img src="Bilder/11.jpg" width="1500" height="1125" loading="lazy" decoding="async" alt="L-förmige Trockenmauer aus Naturstein mit dahinterliegendem Mulchbeet und junger Lavendelpflanzung"></div>
+      <div class="project-body"><p class="mono">Referenzprojekt</p><h3 class="display">Trockenmauer als Hochbeet</h3><p>Geschichtete Natursteinmauer fängt den Hang ab. Dahinter Mulchbeet mit Lavendel und neuer Heckenpflanzung.</p></div>
     </article>
     <article class="project">
-      <div class="project-img"><img src="https://static.wixstatic.com/media/272120_0fdb8457f3a342de9ee4e0d97cf1a54b~mv2.jpg/v1/fill/w_920,h_690,al_c,q_82,enc_auto/x.jpg" width="920" height="690" loading="lazy" decoding="async" alt="Terrasse aus großformatigen Natursteinplatten mit direkt angrenzender Rasenkante"></div>
-      <div class="project-body"><p class="mono">Referenzprojekt</p><h3 class="display">Natursteinterrasse</h3><p>Großformatige Platten mit sauber gearbeiteter Rasenkante.</p></div>
+      <div class="project-img"><img src="Bilder/5.jpg" width="1500" height="1125" loading="lazy" decoding="async" alt="Rasenfläche mit eingelassener Plattenterrasse, Kiesband und Baumbank vor einer Thujahecke"></div>
+      <div class="project-body"><p class="mono">Referenzprojekt</p><h3 class="display">Terrasseninsel im Rasen</h3><p>Plattenfläche als ruhige Mitte, sauber eingefasst vom Rasen. Kiesband und Baumbank schließen die Anlage nach hinten ab.</p></div>
     </article>
     <article class="project">
-      <div class="project-img"><img src="https://static.wixstatic.com/media/272120_69232a4e947a4057910ebbdc16d1134a~mv2.jpg/v1/fill/w_920,h_690,al_c,q_82,enc_auto/x.jpg" width="920" height="690" loading="lazy" decoding="async" alt="Gepflasterter Weg entlang einer Hauswand mit angrenzendem Rasenstreifen und Beet"></div>
-      <div class="project-body"><p class="mono">Referenzprojekt</p><h3 class="display">Wegebau &amp; Vorgarten</h3><p>Pflasterweg, Rasenstreifen und Beetanlage entlang der Fassade.</p></div>
+      <div class="project-img"><img src="Bilder/6.jpg" style="object-position:50% 72%" width="1125" height="1500" loading="lazy" decoding="async" alt="Gepflasterte Einfahrt unter einem Carport, daneben eine Blockstufentreppe zur Haustür"></div>
+      <div class="project-body"><p class="mono">Referenzprojekt</p><h3 class="display">Einfahrt &amp; Hauszugang</h3><p>Pflasterfläche unter dem Carport, Blockstufen zum Eingang und eine Rinne an der Straße für den Wasserablauf.</p></div>
     </article>
     <article class="project">
-      <div class="project-img"><img src="https://static.wixstatic.com/media/272120_5656ce81f6cf4037a9c428f643345a3a~mv2.jpg/v1/fill/w_920,h_690,al_c,q_82,enc_auto/x.jpg" width="920" height="690" loading="lazy" decoding="async" alt="Pflasterfläche mit Kiesstreifen zur Entwässerung und angrenzendem Rasen"></div>
-      <div class="project-body"><p class="mono">Referenzprojekt</p><h3 class="display">Pflasterfläche mit Entwässerung</h3><p>Kiesstreifen und Rinne für kontrollierten Wasserablauf.</p></div>
+      <div class="project-img"><img src="Bilder/8.jpg" style="object-position:50% 26%" width="1125" height="1500" loading="lazy" decoding="async" alt="Innenhofgarten mit Rasenfläche, Mulchbeeten, Kirschlorbeerhecke und angelegtem Teich"></div>
+      <div class="project-body"><p class="mono">Referenzprojekt</p><h3 class="display">Hausgarten mit Teich</h3><p>Aus einem Hinterhof zwischen Brandwänden wird ein Garten: Rasen, Mulchbeete, Hecke als Rahmen und ein Teich als Mitte.</p></div>
+    </article>
+    <article class="project">
+      <div class="project-img"><img src="Bilder/1.jpg" width="1500" height="1125" loading="lazy" decoding="async" alt="Sichtschutzzaun in Holzoptik mit eingesetztem Glaselement, davor ein frisch gepflanzter Fächerahorn"></div>
+      <div class="project-body"><p class="mono">Referenzprojekt</p><h3 class="display">Sichtschutz &amp; Zaunanlage</h3><p>Waagerechte Lamellen mit Glaselement als Lichtfuge. Davor junge Gehölze, die den Zaun in ein paar Jahren auflösen.</p></div>
+    </article>
+    <article class="project">
+      <div class="project-img"><img src="Bilder/9.jpg" width="1500" height="1125" loading="lazy" decoding="async" alt="Runde Baumbank auf einer Kiesfläche mit Gräserpflanzung vor einer hohen Thujahecke"></div>
+      <div class="project-body"><p class="mono">Referenzprojekt</p><h3 class="display">Kiesfläche mit Baumbank</h3><p>Der Bestandsbaum bleibt stehen und bekommt eine Rundbank. Kiesbett mit Gräsern statt Rasen unter der Krone.</p></div>
+    </article>
+    <article class="project">
+      <div class="project-img"><img src="Bilder/IMG_0070-3.jpg" width="1800" height="1200" loading="lazy" decoding="async" alt="Weg durch die Quartiere der Baumschule Belzner, gesäumt von Ahorn, Hortensien und Formgehölzen"></div>
+      <div class="project-body"><p class="mono">Eigener Betrieb</p><h3 class="display">Schaugarten der Baumschule</h3><p>Unsere Quartiere an der Dammstraße. Hier suchen Sie Ihre Pflanzen im gewachsenen Zustand aus, nicht im Katalog.</p></div>
     </article>
   </div>
 
@@ -724,8 +757,8 @@ html.js .reveal{opacity:0;transform:translateY(28px)}
 <!-- ========== ZAHLEN ========== -->
 <section class="figures on-dark">
   <img class="figures-bg" data-parallax-bg
-       src="https://static.wixstatic.com/media/272120_1024211c6c97457d9e0a48eae7a21891~mv2.jpg/v1/fill/w_1800,h_1013,al_c,q_80,enc_auto/x.jpg"
-       width="1800" height="1013" loading="lazy" decoding="async" alt="">
+       src="Bilder/2.jpg"
+       width="1800" height="1350" loading="lazy" decoding="async" alt="">
   <div class="wrap reveal">
     <p class="mono">03 — In Zahlen</p>
     <h2 class="display">Was sich schlecht bebildern lässt</h2>
@@ -748,9 +781,9 @@ html.js .reveal{opacity:0;transform:translateY(28px)}
       <p>Mit eigenem Fuhrpark und eigener Baumschule decken wir von der ersten Skizze bis zur Pflege alles ab. Das dauert manchmal länger als bei anderen. Dafür steht es hinterher auch noch in zehn Jahren.</p>
     </div>
     <div class="about-media reveal">
-      <img src="https://static.wixstatic.com/media/272120_69232a4e947a4057910ebbdc16d1134a~mv2.jpg/v1/fill/w_900,h_900,al_c,q_82,enc_auto/x.jpg"
-           width="900" height="900" loading="lazy" decoding="async"
-           alt="Fertiggestellter Vorgarten mit Pflasterweg, Rasenstreifen und Beeteinfassung">
+      <img src="Bilder/4.jpg"
+           width="1024" height="576" loading="lazy" decoding="async"
+           alt="Luftbild des Betriebsgeländes der Baumschule Belzner an der Dammstraße in Bensheim im Herbst">
     </div>
   </div>
 </section>
@@ -990,6 +1023,14 @@ document.getElementById('themeToggle').addEventListener('click', () => {
   if (hasGSAP) ScrollTrigger.refresh();
 });
 
+/* Fehlt die Logo-Datei, faellt die Marke auf reine Typo zurueck
+   statt ein kaputtes Bild-Icon zu zeigen. */
+const brandMark = document.getElementById('brandMark');
+const dropMark = () => brandMark.remove();
+brandMark.addEventListener('error', dropMark);
+// Das error-Event kann schon vor diesem Script gefeuert haben.
+if (brandMark.complete && brandMark.naturalWidth === 0) dropMark();
+
 /* ---------- Nav + Fortschrittsbalken ---------- */
 const nav = document.getElementById('nav');
 const bar = document.getElementById('progress');
@@ -1052,6 +1093,7 @@ const heroSlider = document.getElementById('heroSlider');
 
 if (reduced || !hasGSAP) {
   planPaths.forEach(p => { p.style.strokeDasharray = 'none'; });
+  document.getElementById('heroPlan').style.opacity = 1;
   areaCounter.textContent = '420';
   const apply = () => { heroAfter.style.clipPath = 'inset(0 ' + (100 - heroSlider.value) + '% 0 0)'; };
   apply();
@@ -1064,10 +1106,22 @@ if (reduced || !hasGSAP) {
     p.style.strokeDashoffset = len;
   });
 
+  /* Prelude: Beetkante und Solitaerbaum zeichnen sich beim Laden von selbst.
+     Damit liest sich "aus Plan wird Garten" auch ohne eine einzige
+     Scroll-Geste. Diese Pfade bleiben aus der Scroll-Timeline heraus —
+     ein scrub-Tick bei progress 0 wuerde sie sonst sofort zuruecksetzen. */
+  const preludePaths = [...planPaths].filter(p => p.hasAttribute('data-prelude'));
+  const scrollPaths  = [...planPaths].filter(p => !p.hasAttribute('data-prelude'));
+
+  gsap.set('#heroPlan', { opacity: 1 });
+  gsap.to(preludePaths, {
+    strokeDashoffset: 0, duration: 1.4, ease: 'power2.inOut', stagger: 0.16, delay: 0.55
+  });
+
   const tl = gsap.timeline({
     scrollTrigger: { trigger: '#heroScroll', start: 'top top', end: 'bottom bottom', scrub: 0.6 }
   });
-  tl.to(planPaths, { strokeDashoffset: 0, duration: 52, ease: 'none', stagger: 3.5 });
+  tl.to(scrollPaths, { strokeDashoffset: 0, duration: 52, ease: 'none', stagger: 3.5 });
   tl.to(heroAfter, {
     clipPath: 'inset(0 0% 0 0)', duration: 38, ease: 'power1.inOut',
     onStart: () => runCounter(areaCounter, 1400)
@@ -1085,9 +1139,22 @@ if (reduced || !hasGSAP) {
 }
 
 /* ---------- Hero-Einstieg ---------- */
+const heroIntro = ['.hero-title .line > span', '.hero-eyebrow', '.hero-foot', '.hero-meta', '.hero-plan'];
 if (!reduced && hasGSAP) {
-  gsap.from('.hero-title .line > span', { yPercent: 112, duration: 1.15, ease: 'expo.out', stagger: 0.1, delay: 0.15 });
-  gsap.from(['.hero-eyebrow', '.hero-foot', '.hero-meta'], { y: 24, opacity: 0, duration: 0.9, ease: 'power2.out', stagger: 0.1, delay: 0.5 });
+  // y:0 ist Pflicht — GSAP liest den CSS-Startwert translateY(110%) als
+  // px-Basis ein und wuerde yPercent sonst nur obendrauf rechnen.
+  gsap.fromTo('.hero-title .line > span',
+    { yPercent: 110, y: 0 },
+    { yPercent: 0, y: 0, duration: 1.15, ease: 'expo.out', stagger: 0.1, delay: 0.15 });
+  gsap.fromTo(['.hero-eyebrow', '.hero-foot', '.hero-meta'],
+    { y: 24, opacity: 0 },
+    { y: 0, opacity: 1, duration: 0.9, ease: 'power2.out', stagger: 0.1, delay: 0.5 });
+} else {
+  // Kein GSAP oder reduzierte Bewegung: CSS-Startzustaende wieder aufheben.
+  heroIntro.forEach(sel => document.querySelectorAll(sel).forEach(el => {
+    el.style.transform = 'none';
+    el.style.opacity = 1;
+  }));
 }
 
 /* ---------- Reveals ---------- */
