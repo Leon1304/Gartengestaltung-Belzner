@@ -4,3 +4,16 @@
   for = "/Bilder/*"
   [headers.values]
     Cache-Control = "public, max-age=31536000"
+
+# Die Groessenstaffel aus scripts/bilder.mjs — gleiche Regel, eigener Eintrag,
+# damit sie nicht von der Tiefe des Pfadmusters abhaengt.
+[[headers]]
+  for = "/Bilder/opt/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000"
+
+# Schriftdateien tragen Gewicht und Subset im Namen und werden nie ueberschrieben.
+[[headers]]
+  for = "/fonts/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"

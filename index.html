@@ -5,11 +5,50 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Gartengestaltung / Baumschule Belzner — Bensheim</title>
 <meta name="description" content="Garten- und Landschaftsbau aus Bensheim. Fertigrasen, Steinarbeiten, Pflanzenarbeiten, Wassersysteme, Mähroboter und Baumschule für die Region Bergstraße.">
+<link rel="canonical" href="https://gartengestaltung-belzner.de/">
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preload" as="image" fetchpriority="high" href="Bilder/IMG_0070-2.jpg">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT,WONK@9..144,400..900,0..100,0..1&family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<!-- Farbschema setzen, bevor das erste Pixel steht. Lief das weiter unten
+     im Hauptskript, saehen Dunkelmodus-Nutzer erst die helle Seite und
+     dann den Umschlag — darum diese Zeilen inline und ganz nach oben. -->
+<script>
+(function(){
+  try{
+    var w = localStorage.getItem('theme');
+    document.documentElement.dataset.theme =
+      (w === 'dark' || w === 'light') ? w
+      : (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  }catch(e){}
+})();
+</script>
+
+<link rel="icon" href="assets/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="assets/favicon-180.png">
+<meta name="theme-color" content="#FAFAF8" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0B0C0B" media="(prefers-color-scheme: dark)">
+
+<!-- Teilen-Vorschau: in dieser Branche laeuft die Empfehlung ueber WhatsApp -->
+<meta property="og:type" content="website">
+<meta property="og:locale" content="de_DE">
+<meta property="og:url" content="https://gartengestaltung-belzner.de/">
+<meta property="og:site_name" content="Gartengestaltung &amp; Baumschule Belzner">
+<meta property="og:title" content="Gartengestaltung &amp; Baumschule Belzner — Bensheim">
+<meta property="og:description" content="Garten- und Landschaftsbau aus Bensheim. Vom Fertigrasen bis zur Trockenmauer — geplant und gebaut vom eigenen Betrieb.">
+<meta property="og:image" content="https://gartengestaltung-belzner.de/assets/og-bild.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Weg durch die Quartiere der Baumschule Belzner in Bensheim">
+<meta name="twitter:card" content="summary_large_image">
+
+<!-- Schriften liegen lokal: kein Verbindungsaufbau zu Google beim Seitenaufruf
+     und ein Round-Trip weniger. Erzeugt von scripts/fonts.mjs. -->
+<link rel="preload" as="font" type="font/woff2" crossorigin href="fonts/fraunces-400-900-latin.woff2">
+<link rel="preload" as="font" type="font/woff2" crossorigin href="fonts/instrument-sans-400-latin.woff2">
+<link rel="stylesheet" href="fonts.css">
+
+<link rel="preload" as="image" fetchpriority="high" type="image/avif"
+      href="Bilder/opt/IMG_0070-2-1600.avif"
+      imagesrcset="Bilder/opt/IMG_0070-2-640.avif 640w, Bilder/opt/IMG_0070-2-1024.avif 1024w, Bilder/opt/IMG_0070-2-1600.avif 1600w, Bilder/opt/IMG_0070-2-2400.avif 2400w"
+      imagesizes="100vw">
 
 <style>
 /* ============================================================
@@ -35,6 +74,12 @@
   --color-on-accent:var(--paper-000);     /* 4,85:1 */
   --color-plan:#FAFAF8;
   --color-danger:#B3301F;                 /* 5,98:1 */
+  /* Eingabefelder: eigene Flaeche statt leerem Kasten. Bewusst nicht an
+     --color-bg-alt gehaengt, sonst verschwinden die Felder in der
+     Kontaktsektion, die selbst schon auf --color-bg-alt steht. */
+  --color-field:#F1F1ED;
+  --color-field-line:rgba(11,12,11,.10);
+  --color-field-line-hover:rgba(11,12,11,.24);
   --shadow-card:0 1px 2px rgba(11,12,11,.04),0 8px 24px -12px rgba(11,12,11,.12);
   --shadow-lift:0 24px 60px -28px rgba(11,12,11,.42);
 
@@ -84,6 +129,9 @@
   --color-accent-surface:var(--accent-500);
   --color-on-accent:var(--ink-900);       /* 5,63:1 */
   --color-danger:#FF8F7E;                 /* 8,85:1 */
+  --color-field:rgba(250,250,248,.055);
+  --color-field-line:rgba(250,250,248,.11);
+  --color-field-line-hover:rgba(250,250,248,.30);
   --shadow-card:0 1px 2px rgba(0,0,0,.4),0 8px 24px -12px rgba(0,0,0,.6);
   --shadow-lift:0 24px 60px -28px rgba(0,0,0,.8);
 }
@@ -118,6 +166,10 @@ body{
   transition:background-color var(--dur-slow) var(--ease-out),color var(--dur-slow) var(--ease-out);
 }
 img,svg,video{display:block;max-width:100%;height:auto}
+/* <picture> steht nur als Formatweiche zwischen Rahmen und Bild. Ohne
+   display:contents waere es das Layoutkind und die Hoehen- und
+   object-fit-Regeln der Rahmen liefen ins Leere. */
+picture{display:contents}
 button,input,textarea,select{font:inherit;color:inherit}
 h1,h2,h3,h4{line-height:1.02;text-wrap:balance;font-weight:400}
 p{text-wrap:pretty}
@@ -131,6 +183,17 @@ p{text-wrap:pretty}
 .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 :where(a,button,input,textarea,select,[tabindex]):focus-visible{
   outline:3px solid var(--color-accent-text);outline-offset:3px;border-radius:var(--radius-sm)}
+
+/* Sprungmarke: versteckt, bis sie den Fokus bekommt. Ohne diese Regel
+   bliebe sie auch beim Tabben unsichtbar und damit nutzlos. */
+.skip{position:absolute;top:0;left:var(--space-s);z-index:200;
+  transform:translateY(-140%);
+  display:inline-flex;align-items:center;min-height:48px;
+  padding-inline:var(--space-m);border-radius:0 0 var(--radius-md) var(--radius-md);
+  background:var(--color-accent-surface);color:var(--color-on-accent);
+  text-decoration:none;font-size:var(--step--1);font-weight:500;
+  transition:transform var(--dur-fast) var(--ease-out)}
+.skip:focus{transform:translateY(0)}
 
 /* ============================================================
    3. NAV + SCROLL-PROGRESS
@@ -155,11 +218,17 @@ p{text-wrap:pretty}
 
 .brand{display:flex;align-items:center;gap:var(--space-2xs);
   text-decoration:none;color:inherit;margin-right:auto}
-/* Heller Kreis wie auf dem Flyer: haelt das schwarze Federkiel-Element
-   auch ueber dem dunklen Hero-Foto lesbar. */
-.brand-mark{width:38px;height:38px;flex:none;object-fit:contain;
-  background:var(--paper-000);border-radius:var(--radius-full);padding:3px;
-  box-shadow:0 0 0 1px rgba(11,12,11,.12)}
+/* Logo freigestellt, ohne Hintergrundflaeche. Der schwarze Federkiel wuerde
+   ueber dem dunklen Hero und im Dark Mode verschwinden — dort blendet die
+   helle Variante ein, sonst die dunkle. */
+.brand-mark{position:relative;display:block;width:46px;height:41px;flex:none}
+.brand-mark img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;
+  transition:opacity var(--dur-base) var(--ease-out)}
+.brand-mark .is-ink{opacity:0}
+.nav[data-scrolled="true"] .brand-mark .is-ink{opacity:1}
+.nav[data-scrolled="true"] .brand-mark .is-paper{opacity:0}
+[data-theme="dark"] .nav[data-scrolled="true"] .brand-mark .is-ink{opacity:0}
+[data-theme="dark"] .nav[data-scrolled="true"] .brand-mark .is-paper{opacity:1}
 .brand-text{display:flex;flex-direction:column;line-height:1.18;white-space:nowrap;
   font-family:'IBM Plex Mono',monospace;text-transform:uppercase}
 .brand-top{font-size:var(--step--2);font-weight:400;letter-spacing:0.14em;opacity:.74}
@@ -167,12 +236,24 @@ p{text-wrap:pretty}
 @media (max-width:560px){.brand-top{display:none}}
 
 .nav-links{display:flex;gap:var(--space-m);list-style:none;padding:0}
-@media (max-width:960px){.nav-links{display:none}}
+/* 1150 statt 960: mit Impressum und Datenschutz traegt die Leiste acht Ziele.
+   Darunter stossen sie an das Logo, also uebernimmt schon dort das Panel. */
+@media (max-width:1150px){.nav-links{display:none}}
+/* Rechtliches steht am Ende als eigene, kleinere Gruppe hinter einem Strich —
+   es gehoert ins Menue, soll aber die sechs Hauptziele nicht verwaessern. */
+.nav-legal{display:flex;align-items:center;gap:var(--space-s)}
+.nav-legal::before{content:'';flex:none;width:1px;height:15px;background:currentColor;opacity:.32}
+.nav-legal a{font-size:var(--step--2);opacity:.82}
+.nav-legal a:hover{opacity:1}
 .nav-links a{position:relative;text-decoration:none;color:inherit;font-size:var(--step--1);padding-block:var(--space-3xs)}
 .nav-links a::after{content:'';position:absolute;left:0;right:0;bottom:0;height:1.5px;
   background:currentColor;transform:scaleX(0);transform-origin:right;
   transition:transform var(--dur-fast) var(--ease-out)}
 .nav-links a:hover::after,.nav-links a:focus-visible::after{transform:scaleX(1);transform-origin:left}
+/* Aktiver Abschnitt: der Strich bleibt stehen. Auf einer Seite mit sechs
+   Abschnitten ist das die einzige Ortsangabe ausser dem Fortschrittsbalken. */
+.nav-links a[aria-current="true"]::after{transform:scaleX(1);transform-origin:left;
+  background:var(--accent-500);height:2px}
 
 .theme-toggle{display:grid;place-items:center;width:44px;height:44px;background:none;
   border:1px solid currentColor;border-radius:var(--radius-full);cursor:pointer;opacity:.75;
@@ -181,6 +262,60 @@ p{text-wrap:pretty}
 .theme-toggle svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.6}
 [data-theme="light"] .icon-moon{display:none}
 [data-theme="dark"] .icon-sun{display:none}
+
+/* --- Burger + Mobilmenue --- */
+/* Ab 1151 px traegt die Leiste die Links selbst. Darunter — und damit auch
+   auf dem Tablet, wo es vorher gar keine Navigation gab — uebernimmt das
+   Panel. */
+.nav-toggle{display:none;place-items:center;width:44px;height:44px;flex:none;
+  background:none;border:1px solid currentColor;border-radius:var(--radius-full);
+  cursor:pointer;opacity:.75;transition:opacity var(--dur-fast) var(--ease-out)}
+.nav-toggle:hover{opacity:1}
+@media (max-width:1150px){.nav-toggle{display:grid}}
+.nav-toggle .box{position:relative;width:18px;height:12px}
+.nav-toggle .box span{position:absolute;left:0;width:100%;height:1.6px;border-radius:2px;
+  background:currentColor;
+  transition:transform var(--dur-base) var(--ease-expo),opacity var(--dur-fast) var(--ease-out)}
+.nav-toggle .box span:first-child{top:0}
+.nav-toggle .box span:last-child{bottom:0}
+.nav-toggle[aria-expanded="true"] .box span:first-child{transform:translateY(5.2px) rotate(45deg)}
+.nav-toggle[aria-expanded="true"] .box span:last-child{transform:translateY(-5.2px) rotate(-45deg)}
+
+.nav-panel{position:fixed;inset:0;z-index:95;display:flex;flex-direction:column;
+  justify-content:center;gap:var(--space-xl);
+  padding:calc(var(--space-3xl) + var(--space-m)) var(--space-l) var(--space-2xl);
+  background:var(--color-bg);color:var(--color-fg);overflow-y:auto;overscroll-behavior:contain;
+  opacity:0;visibility:hidden;transition:opacity var(--dur-base) var(--ease-out),visibility var(--dur-base)}
+.nav-panel[data-open="true"]{opacity:1;visibility:visible}
+@media (min-width:1151px){.nav-panel{display:none}}
+.nav-panel ul{list-style:none;padding:0;display:grid;gap:var(--space-2xs)}
+.nav-panel a.item{display:flex;align-items:baseline;gap:var(--space-s);
+  text-decoration:none;color:inherit;font-family:'Fraunces',Georgia,serif;
+  font-variation-settings:'SOFT' 40,'WONK' 1,'opsz' 100;font-weight:500;
+  font-size:var(--step-4);letter-spacing:-.025em;line-height:1.1;
+  padding-block:var(--space-2xs);border-bottom:1px solid var(--color-line)}
+.nav-panel a.item .n{font-family:'IBM Plex Mono',monospace;font-size:var(--step--2);
+  letter-spacing:.14em;color:var(--color-fg-muted);flex:none}
+.nav-panel a.item[aria-current="true"]{color:var(--color-accent-text)}
+.nav-panel a.item[aria-current="true"] .n{color:var(--color-accent-text)}
+/* Impressum und Datenschutz sind Nachschlageziele, keine Hauptwege: kleiner
+   gesetzt, damit acht Zeilen auf dem Telefon nicht in den Bildlauf laufen. */
+.nav-panel a.item.is-legal{font-size:var(--step-2)}
+/* Die Eintraege fahren beim Oeffnen gestaffelt ein; --i kommt aus dem Markup. */
+@media (prefers-reduced-motion:no-preference){
+  .nav-panel a.item{opacity:0;transform:translateY(14px);
+    transition:opacity var(--dur-base) var(--ease-out),transform var(--dur-base) var(--ease-expo)}
+  .nav-panel[data-open="true"] a.item{opacity:1;transform:none;
+    transition-delay:calc(60ms + var(--i) * 45ms)}
+}
+.nav-panel-foot{display:grid;gap:var(--space-s)}
+.nav-panel-foot .btn{justify-content:center}
+.nav-panel-foot .mail{color:var(--color-fg-muted);text-decoration:none;font-size:var(--step--1);
+  text-align:center;min-height:44px;display:grid;place-items:center}
+.nav-panel-foot .mail:hover{color:var(--color-accent-text)}
+/* Solange Panel oder Lightbox offen sind, darf die Seite darunter nicht
+   mitscrollen. */
+html[data-nav-open],html[data-lb-open]{overflow:hidden}
 
 /* ============================================================
    4. BUTTONS
@@ -203,7 +338,10 @@ p{text-wrap:pretty}
    5. HERO — VOLLBILD-SIGNATURE
    ============================================================ */
 .hero{position:relative}
-.hero-scroll{height:420vh}
+/* Vier Bildschirmhoehen bis zum ersten Inhalt waren zu viel fuer eine Seite,
+   auf der die meisten Leistungen und Telefonnummer suchen. Die Plan-Timeline
+   laeuft in 240vh genauso vollstaendig durch, nur zuegiger. */
+.hero-scroll{height:240vh}
 @media (prefers-reduced-motion:reduce){.hero-scroll{height:auto}}
 
 .hero-sticky{position:sticky;top:0;height:100svh;overflow:hidden;
@@ -221,6 +359,16 @@ p{text-wrap:pretty}
 .hero-plan path,.hero-plan circle{fill:none;stroke:var(--color-plan);stroke-width:2;
   stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke;
   filter:drop-shadow(0 1px 3px rgba(0,0,0,.55))}
+
+/* Leerlauf-Animation: ueber jede fertig gezeichnete Planlinie wandert ein
+   Lichtpunkt. pathLength="100" normiert das Strichmuster, damit kurze und
+   lange Linien im gleichen Takt laufen. Der Hero lebt so auch ohne Scroll. */
+.hero-plan .plan-spark{stroke:var(--accent-400);stroke-width:3;opacity:0;
+  stroke-dasharray:9 91;stroke-dashoffset:100;
+  filter:drop-shadow(0 0 7px rgba(91,174,87,.6))}
+.hero-plan .plan-spark.is-live{opacity:.95;animation:plan-spark 5.2s linear infinite}
+@keyframes plan-spark{from{stroke-dashoffset:100}to{stroke-dashoffset:0}}
+@media (prefers-reduced-motion:reduce){.hero-plan .plan-spark{display:none}}
 
 /* Scrim auf das dunkle Hero-Foto abgestimmt: gemessen bleibt der schwaechste
    Textbereich (Eyebrow) bei 5,2:1, der Rest deutlich darueber. Staerker
@@ -256,16 +404,6 @@ p{text-wrap:pretty}
   font-family:'IBM Plex Mono',monospace;font-size:var(--step--1);letter-spacing:.06em;
   border:1px solid rgba(250,250,248,.34);border-radius:var(--radius-full)}
 .hero-tel:hover{background:rgba(250,250,248,.12)}
-
-.hero-meta{position:absolute;right:max(var(--space-l),calc((100vw - 1320px)/2));
-  top:calc(var(--space-3xl) + var(--space-l));z-index:3;
-  display:flex;gap:var(--space-s);align-items:baseline;
-  padding:var(--space-2xs) var(--space-m);
-  background:rgba(11,12,11,.62);backdrop-filter:blur(10px);
-  border:1px solid rgba(250,250,248,.24);border-radius:var(--radius-full);color:var(--paper-000)}
-.hero-meta .mono{color:rgba(250,250,248,.82)}
-.hero-meta .num{font-family:'IBM Plex Mono',monospace;font-size:var(--step-1);font-weight:500}
-@media (max-width:640px){.hero-meta{display:none}}
 
 .hero-cue{position:absolute;left:50%;bottom:var(--space-s);transform:translateX(-50%);z-index:3;
   color:rgba(250,250,248,.8);display:grid;justify-items:center;gap:var(--space-3xs)}
@@ -325,12 +463,23 @@ p{text-wrap:pretty}
 .statement{padding-block:var(--space-3xl);text-align:center;overflow:hidden}
 .statement h2{font-size:var(--step-8);line-height:.95;letter-spacing:-.03em}
 @supports (background-clip:text) or (-webkit-background-clip:text){
+  /* Der Farbauftrag vor dem Foto haelt den Kontrast unabhaengig davon,
+     welche Bildstelle gerade in den Buchstaben steht: im Hellmodus
+     abdunkeln, im Dunkelmodus aufhellen. Ohne ihn faellt die Schrift
+     ueber hellen Partien des Fotos unter die Lesbarkeitsgrenze. */
   .statement .fill{
-    background-image:url("Bilder/3.jpg");
+    --veil:rgba(11,12,11,.52);
+    /* Erst die JPEG-Zeile als Rueckfallebene, dann image-set fuer alles,
+       was AVIF kann — das spart hier rund 300 KB. */
+    background-image:linear-gradient(var(--veil),var(--veil)),url("Bilder/opt/3-1024.jpg");
+    background-image:linear-gradient(var(--veil),var(--veil)),
+      image-set(url("Bilder/opt/3-1024.avif") type("image/avif"),
+                url("Bilder/opt/3-1024.jpg")  type("image/jpeg"));
     background-size:cover;background-position:center;background-attachment:scroll;
     -webkit-background-clip:text;background-clip:text;color:transparent;
     -webkit-text-fill-color:transparent;
   }
+  [data-theme="dark"] .statement .fill{--veil:rgba(250,250,248,.46)}
 }
 .statement p{color:var(--color-fg-muted);max-width:46ch;margin:var(--space-l) auto 0;font-size:var(--step-1)}
 
@@ -357,12 +506,99 @@ p{text-wrap:pretty}
 .project-body h3{font-size:var(--step-2);margin-block:var(--space-2xs) var(--space-2xs)}
 .project-body p{color:var(--color-fg-muted);font-size:var(--step--1)}
 
-.drag-cursor{position:fixed;top:0;left:0;z-index:200;width:88px;height:88px;border-radius:50%;
-  background:var(--accent-500);color:var(--ink-900);display:grid;place-items:center;
-  font-family:'IBM Plex Mono',monospace;font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;
-  pointer-events:none;opacity:0;transform:translate(-50%,-50%) scale(.5);
-  transition:opacity 220ms var(--ease-out),transform 220ms var(--ease-out)}
-.drag-cursor.on{opacity:1;transform:translate(-50%,-50%) scale(1)}
+/* Die Karten hoben und zoomten schon beim Hover, ohne irgendwohin zu fuehren.
+   Jetzt oeffnen sie das Bild gross — der Knopf im Titel spannt seine
+   Klickflaeche ueber die ganze Karte. */
+.project{position:relative}
+.project-open{background:none;border:0;padding:0;margin:0;text-align:left;
+  color:inherit;font:inherit;cursor:pointer}
+.project-open::after{content:'';position:absolute;inset:0;border-radius:var(--radius-xl)}
+.project-open:focus-visible{outline:none}
+.project:has(.project-open:focus-visible){outline:3px solid var(--color-accent-text);outline-offset:3px}
+.project-zoom{position:absolute;top:var(--space-s);right:var(--space-s);z-index:1;
+  display:grid;place-items:center;width:40px;height:40px;border-radius:var(--radius-full);
+  background:color-mix(in srgb,var(--ink-900) 55%,transparent);color:var(--paper-000);
+  backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+  opacity:0;transform:scale(.9);pointer-events:none;
+  transition:opacity var(--dur-base) var(--ease-out),transform var(--dur-base) var(--ease-expo)}
+.project:hover .project-zoom,.project:has(.project-open:focus-visible) .project-zoom{opacity:1;transform:none}
+.project-zoom svg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:1.9}
+@media (hover:none){.project-zoom{opacity:1;transform:none}}
+
+/* Laufweite der Kartenbahn — auf dem Desktop laeuft sie gepinnt am Scrollrad,
+   auf dem Telefon am Finger. Ohne Anzeige weiss man in beiden Faellen nicht,
+   wie viel noch kommt. */
+.track-progress{position:relative;height:2px;margin-top:var(--space-xl);
+  background:var(--color-line);border-radius:2px;overflow:hidden}
+.track-progress span{position:absolute;inset:0 auto 0 0;height:100%;
+  background:var(--color-accent-surface);border-radius:2px;
+  transform-origin:left;will-change:transform}
+
+/* --- Lightbox --- */
+.lightbox{position:fixed;inset:0;z-index:120;display:grid;
+  /* minmax(0,1fr) statt 1fr: die Mindesthoehe einer Rasterzeile ist sonst
+     die Eigenhoehe des Bildes, und die Bildunterschrift landet darunter
+     ausserhalb des Bildschirms — beziehungsweise ueber dem Bild. */
+  grid-template-rows:minmax(0,1fr) auto;gap:var(--space-m);
+  padding:clamp(3.5rem,8vh,5.5rem) var(--space-l) var(--space-l);
+  background:color-mix(in srgb,var(--ink-900) 98%,transparent);
+  -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
+  opacity:0;visibility:hidden;
+  transition:opacity var(--dur-base) var(--ease-out),visibility var(--dur-base)}
+.lightbox[data-open="true"]{opacity:1;visibility:visible}
+.lightbox img{max-width:100%;max-height:100%;width:auto;height:auto;margin-inline:auto;
+  border-radius:var(--radius-lg);box-shadow:var(--shadow-lift)}
+/* Flex statt Grid: durch picture{display:contents} liegen <source> und <img>
+   direkt in dieser Buehne. Als Rasterzellen bekaemen sie eine eigene Zeile in
+   Bildhoehe, gegen die sich max-height:100% nicht mehr aufloesen laesst. */
+.lb-stage{display:flex;align-items:center;justify-content:center;min-height:0}
+.lb-cap{width:min(100%,60ch);margin-inline:auto;text-align:center;color:var(--paper-000)}
+.lb-cap .mono{color:var(--stone-400)}
+.lb-cap h3{font-size:var(--step-2);margin-block:var(--space-3xs) var(--space-2xs)}
+.lb-cap p{color:var(--stone-400);font-size:var(--step--1)}
+.lb-btn{position:absolute;display:grid;place-items:center;width:48px;height:48px;
+  background:color-mix(in srgb,var(--paper-000) 12%,transparent);color:var(--paper-000);
+  border:1px solid rgba(250,250,248,.28);border-radius:var(--radius-full);cursor:pointer;
+  transition:background-color var(--dur-fast) var(--ease-out)}
+.lb-btn:hover{background:color-mix(in srgb,var(--paper-000) 26%,transparent)}
+.lb-btn svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.8}
+.lb-close{top:var(--space-s);right:var(--space-l)}
+.lb-prev{left:var(--space-s);top:50%;transform:translateY(-50%)}
+.lb-next{right:var(--space-s);top:50%;transform:translateY(-50%)}
+@media (max-width:640px){
+  .lb-prev{left:var(--space-2xs)}.lb-next{right:var(--space-2xs)}
+  .lb-btn{width:44px;height:44px}
+}
+.lb-count{position:absolute;top:var(--space-s);left:var(--space-l);
+  color:var(--stone-400);font-family:'IBM Plex Mono',monospace;font-size:var(--step--2);
+  letter-spacing:.1em;line-height:48px}
+
+/* ============================================================
+   6b. ABLAUF
+   ============================================================ */
+/* Eigener Namensraum: .step und .steps gehoeren schon dem mehrstufigen
+   Bewerbungsformular weiter unten. Ohne Praefix erbt jede Ablaufstation
+   dessen ::before-Balken und faellt aus dem Raster. */
+.ablauf-flow{display:grid;gap:var(--space-l)}
+@media (min-width:901px){.ablauf-flow{grid-template-columns:repeat(5,minmax(0,1fr));gap:var(--space-m)}}
+.ablauf-step{position:relative;display:grid;grid-template-columns:auto minmax(0,1fr);
+  gap:var(--space-s);align-items:start}
+@media (min-width:901px){.ablauf-step{grid-template-columns:minmax(0,1fr);gap:var(--space-s)}}
+/* Verbindungslinie: senkrecht in der Liste, waagerecht in der Reihe.
+   Sie laeuft hinter den Kreisen durch, darum liegt der Kreis hoeher. */
+.ablauf-step:not(:last-child)::before{content:'';position:absolute;background:var(--color-line);
+  left:27px;top:56px;width:1px;height:calc(100% - 56px + var(--space-l))}
+@media (min-width:901px){
+  .ablauf-step:not(:last-child)::before{left:56px;top:27px;height:1px;
+    width:calc(100% - 56px + var(--space-m))}
+}
+.ablauf-ico{position:relative;z-index:1;display:grid;place-items:center;
+  width:56px;height:56px;border-radius:var(--radius-full);
+  background:var(--color-bg);border:1px solid var(--color-line-strong)}
+.ablauf-ico svg{width:25px;height:25px;stroke:var(--color-accent-text);fill:none;
+  stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.ablauf-step h3{font-size:var(--step-2);margin-block:var(--space-3xs) var(--space-2xs)}
+.ablauf-step p{color:var(--color-fg-muted);font-size:var(--step--1);max-width:34ch}
 
 /* --- Zahlen: dunkle Vollbildsektion mit Parallax --- */
 .figures{position:relative;overflow:hidden;padding-block:var(--space-3xl);isolation:isolate}
@@ -398,36 +634,123 @@ p{text-wrap:pretty}
 /* ============================================================
    7. FORMULARE
    ============================================================ */
+/* Formularkarte: hebt das Formular als eigene Flaeche vom Sektionsgrund ab
+   und begrenzt vor allem die Zeilenlaenge — ohne max-width lief das
+   Bewerbungsformular ueber die vollen 1320px des .wrap. */
+.form-card{background:var(--color-bg);border:1px solid var(--color-line);
+  border-radius:var(--radius-xl);padding:var(--space-l);
+  box-shadow:var(--shadow-card);max-width:640px}
+@media (max-width:560px){.form-card{padding:var(--space-m) var(--space-s);
+  border-radius:var(--radius-lg)}}
+
 .form{display:grid;gap:var(--space-s)}
+
+/* Feldgruppen geben dem Formular Rhythmus: ohne sie stehen acht gleich
+   gewichtete Bloecke untereinander und es liest sich wie ein Behoerdenbogen. */
+.form-group{display:grid;gap:var(--space-s)}
+.form-group + .form-group{margin-top:var(--space-xs);padding-top:var(--space-m);
+  border-top:1px solid var(--color-line)}
+.form-legend{font-family:'IBM Plex Mono',ui-monospace,monospace;
+  font-size:var(--step--2);letter-spacing:.14em;text-transform:uppercase;
+  color:var(--color-fg-muted)}
+
 .field{display:grid;gap:var(--space-3xs)}
 .field label{font-size:var(--step--1);color:var(--color-fg-muted)}
 .field input,.field select,.field textarea{
-  width:100%;min-height:52px;padding:var(--space-xs) var(--space-s);
-  background:var(--color-bg);color:var(--color-fg);
-  border:1px solid var(--color-line-strong);border-radius:var(--radius-md);
-  transition:border-color var(--dur-fast) var(--ease-out),box-shadow var(--dur-fast) var(--ease-out)}
-.field textarea{min-height:140px;resize:vertical;padding-top:var(--space-s)}
-.field input:hover,.field select:hover,.field textarea:hover{border-color:var(--color-fg-muted)}
-.field input:focus,.field select:focus,.field textarea:focus{
-  border-color:var(--color-accent-text);outline:none;
-  box-shadow:0 0 0 3px color-mix(in srgb,var(--color-accent-text) 22%,transparent)}
+  width:100%;min-height:50px;padding:var(--space-xs) var(--space-s);
+  background:var(--color-field);color:var(--color-fg);
+  border:1px solid var(--color-field-line);border-radius:var(--radius-md);
+  transition:border-color var(--dur-fast) var(--ease-out),
+             background-color var(--dur-fast) var(--ease-out),
+             box-shadow var(--dur-fast) var(--ease-out)}
+.field :is(input,textarea)::placeholder{color:var(--color-fg-muted);opacity:.7}
+.field textarea{min-height:120px;resize:vertical;padding-top:var(--space-xs)}
+/* Eigener Chevron: mit gesetzter Feldfarbe sieht der native Pfeil in Dark
+   Mode je nach Browser aufgesetzt aus. Stone-500 traegt in beiden Modi. */
+.field select{appearance:none;-webkit-appearance:none;
+  padding-right:calc(var(--space-s) + 20px);
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238C9088' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;
+  background-position:right var(--space-s) center;background-size:18px}
+.field :is(input,select,textarea):hover{border-color:var(--color-field-line-hover)}
+.field :is(input,select,textarea):focus{
+  background:var(--color-bg);border-color:var(--color-accent-text);outline:none;
+  box-shadow:0 0 0 3px color-mix(in srgb,var(--color-accent-text) 20%,transparent)}
 .field-row{display:grid;grid-template-columns:1fr 1fr;gap:var(--space-s)}
 @media (max-width:520px){.field-row{grid-template-columns:1fr}}
-.error{font-size:var(--step--1);color:var(--color-danger);min-height:1.2em}
+
+/* Kein Dauer-Leerraum mehr unter jedem Feld: die Zeile erscheint erst,
+   wenn wirklich ein Fehler da ist. Live-Regionen bleiben im
+   Accessibility-Baum, display:none wuerde ihre Ansage verschlucken. */
+.error{font-size:var(--step--1);color:var(--color-danger);line-height:1.4}
+.error:empty{display:none}
+.error[role="status"]:empty{display:block}
 .field :is(input,select,textarea)[aria-invalid="true"]{border-color:var(--color-danger);
   box-shadow:0 0 0 3px color-mix(in srgb,var(--color-danger) 18%,transparent)}
 
+/* --- Sicherheitsabfrage: Rechenaufgabe statt Drittanbieter-Captcha --- */
+/* stretch: Aufgabenfeld waechst auf dieselbe Hoehe wie das Eingabefeld mit */
+/* Ein zusammenhaengender Streifen statt drei einzelner Bloecke — die
+   Rechenaufgabe soll eine Nebensache sein, kein eigenes Kapitel. */
+.captcha{display:flex;flex-wrap:wrap;align-items:stretch;gap:var(--space-2xs)}
+.captcha-task{display:inline-flex;align-items:center;min-height:50px;
+  padding-inline:var(--space-s);border:1px solid var(--color-field-line);
+  border-radius:var(--radius-md);background:var(--color-field);
+  font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:var(--step-0);
+  letter-spacing:.06em;white-space:nowrap;
+  user-select:none;-webkit-user-select:none}
+.captcha input{width:6ch;flex:0 0 auto;text-align:center;
+  font-family:'IBM Plex Mono',ui-monospace,monospace}
+.captcha-new{display:grid;place-items:center;flex:0 0 auto;align-self:center;
+  width:44px;height:44px;padding:0;
+  background:none;color:var(--color-fg-muted);border:1px solid var(--color-field-line);
+  border-radius:var(--radius-full);cursor:pointer;
+  transition:color var(--dur-fast) var(--ease-out),border-color var(--dur-fast) var(--ease-out)}
+.captcha-new:hover{color:var(--color-accent-text);border-color:var(--color-accent-text)}
+.captcha-new svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.6;
+  transition:transform var(--dur-base) var(--ease-out)}
+.captcha-new:hover svg{transform:rotate(-90deg)}
+@media (prefers-reduced-motion:reduce){.captcha-new:hover svg{transform:none}}
+
+/* Honigtopf: fuer Menschen unsichtbar, Bots fuellen ihn aus */
+.hp{position:absolute;width:1px;height:1px;padding:0;margin:-1px;
+  overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+
+/* --- Einwilligung: Kaestchen links, Fliesstext daneben --- */
+/* Nicht in .field gepackt, sonst greifen dort die 52px Mindesthoehe
+   und width:100% aus der Feld-Regel auf das Kaestchen durch. */
+.consent{display:grid;grid-template-columns:auto 1fr;gap:var(--space-3xs) var(--space-xs);
+  align-items:start}
+.consent input[type="checkbox"]{width:20px;height:20px;margin-top:.25em;flex:none;
+  accent-color:var(--color-accent-text);cursor:pointer}
+.consent label{font-size:var(--step--1);color:var(--color-fg-muted);line-height:1.5;cursor:pointer}
+.consent a{color:var(--color-accent-text);text-decoration:underline;text-underline-offset:2px}
+.consent .error{grid-column:2}
+.consent input[aria-invalid="true"]{outline:2px solid var(--color-danger);outline-offset:3px;
+  border-radius:var(--radius-sm)}
+
+/* Hinweiszeile im Formularfluss (ausserhalb der Dropzone) */
+.form-note{font-size:var(--step--1);color:var(--color-fg-muted);margin-top:var(--space-2xs)}
+
+/* Ersatzlink in der Statuszeile, falls sich kein Mailprogramm oeffnet */
+.status-link{color:var(--color-accent-text);text-decoration:underline;text-underline-offset:2px}
+
 /* --- Dropzone für PDF-Anhänge --- */
-.dropzone{position:relative;display:grid;place-items:center;gap:var(--space-2xs);
-  padding:var(--space-xl) var(--space-m);text-align:center;
-  border:2px dashed var(--color-line-strong);border-radius:var(--radius-xl);
-  background:var(--color-bg);cursor:pointer;
+/* Flacher und einzeilig: der Kasten war mit --space-xl Innenabstand der
+   groesste Block im ganzen Formular, obwohl er nur eine Sache tut. */
+.dropzone{position:relative;display:flex;flex-wrap:wrap;align-items:center;
+  justify-content:center;gap:var(--space-2xs) var(--space-xs);
+  padding:var(--space-m) var(--space-s);text-align:center;
+  border:1.5px dashed var(--color-field-line-hover);border-radius:var(--radius-md);
+  background:var(--color-field);cursor:pointer;
   transition:border-color var(--dur-fast) var(--ease-out),background-color var(--dur-fast) var(--ease-out)}
-.dropzone:hover,.dropzone:focus-within{border-color:var(--color-accent-text)}
+.dropzone:hover,.dropzone:focus-within{border-color:var(--color-accent-text);
+  background:color-mix(in srgb,var(--color-accent-text) 6%,var(--color-field))}
 .dropzone[data-drag="true"]{border-color:var(--color-accent-text);
-  background:color-mix(in srgb,var(--color-accent-text) 10%,var(--color-bg))}
+  background:color-mix(in srgb,var(--color-accent-text) 12%,var(--color-bg))}
 .dropzone[aria-invalid="true"]{border-color:var(--color-danger)}
-.dropzone svg{width:30px;height:30px;stroke:var(--color-accent-text);fill:none;stroke-width:1.6}
+.dropzone p{margin:0}
+.dropzone svg{width:22px;height:22px;flex:none;stroke:var(--color-accent-text);fill:none;stroke-width:1.6}
 .dropzone input[type="file"]{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer}
 .dropzone strong{font-weight:500}
 .dropzone .hint{font-size:var(--step--1);color:var(--color-fg-muted)}
@@ -444,6 +767,57 @@ p{text-wrap:pretty}
   background:none;border:1px solid var(--color-line-strong);border-radius:var(--radius-full);cursor:pointer}
 .file-remove:hover{border-color:var(--color-danger);color:var(--color-danger)}
 .file-remove svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2}
+
+/* --- Bewerbung: Schritt fuer Schritt --- */
+/* Das Formular stand vorher ueber die volle .wrap-Breite frei im Fluss.
+   Jetzt: Argumente links, Formular rechts — wie schon beim Kontakt. */
+.apply-grid{display:grid;grid-template-columns:minmax(0,.75fr) minmax(0,1fr);
+  gap:var(--space-2xl);align-items:start}
+@media (max-width:900px){.apply-grid{grid-template-columns:1fr;gap:var(--space-xl)}}
+.apply-aside{display:grid;gap:var(--space-m);align-content:start}
+.apply-aside p{color:var(--color-fg-muted);max-width:44ch}
+.apply-aside a{color:var(--color-accent-text);text-decoration:underline;text-underline-offset:2px}
+.apply-points{display:grid;gap:var(--space-xs);list-style:none;padding:0}
+.apply-points li{display:grid;grid-template-columns:auto minmax(0,1fr);
+  gap:var(--space-xs);align-items:start;
+  font-size:var(--step--1);color:var(--color-fg-muted)}
+.apply-points svg{width:18px;height:18px;margin-top:.15em;flex:none;
+  stroke:var(--color-accent-text);fill:none;stroke-width:2}
+
+/* Fortschritt: schmale Balken statt Kreise — ruhiger und ohne feste Breite */
+.steps{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;
+  gap:var(--space-2xs);list-style:none;padding:0;margin-bottom:var(--space-2xs)}
+.step{display:grid;gap:var(--space-3xs);font-size:var(--step--2);
+  color:var(--color-fg-muted)}
+.step::before{content:'';height:3px;border-radius:var(--radius-full);
+  background:var(--color-field-line-hover);
+  transition:background-color var(--dur-base) var(--ease-out)}
+.step[data-state="done"]::before{background:color-mix(in srgb,var(--color-accent-text) 55%,transparent)}
+.step[data-state="current"]::before{background:var(--color-accent-text)}
+.step[data-state="current"]{color:var(--color-fg)}
+.step-count{font-family:'IBM Plex Mono',ui-monospace,monospace;
+  font-size:var(--step--2);letter-spacing:.1em;color:var(--color-fg-muted);
+  margin-bottom:var(--space-s)}
+
+.step-panel{display:grid;gap:var(--space-s);border:0;padding:0;margin:0;min-inline-size:0}
+.step-panel[hidden]{display:none}
+@media (prefers-reduced-motion:no-preference){
+  .step-panel:not([hidden]){animation:stepIn var(--dur-base) var(--ease-out) both}
+}
+@keyframes stepIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.step-title{font-size:var(--step-1);margin-bottom:calc(var(--space-2xs) * -1)}
+
+.form-actions{display:flex;flex-wrap:wrap;gap:var(--space-xs);
+  align-items:center;justify-content:flex-end;
+  margin-top:var(--space-xs);padding-top:var(--space-m);
+  border-top:1px solid var(--color-line)}
+.form-actions .btn{min-height:50px}
+.form-actions [data-prev]{margin-right:auto}
+@media (max-width:480px){
+  .form-actions{flex-direction:column-reverse;align-items:stretch}
+  .form-actions .btn{justify-content:center}
+  .form-actions [data-prev]{margin-right:0}
+}
 
 /* --- Kontakt --- */
 .contact{background:var(--color-bg-alt);transition:background-color var(--dur-slow) var(--ease-out)}
@@ -514,41 +888,132 @@ html.js .reveal{opacity:0;transform:translateY(28px)}
    GSAP kommt vom CDN, bis dahin stuende der Titel sonst fertig da und
    wuerde beim Ausfuehren zurueckgerissen. */
 html.js .hero-title .line > span{transform:translateY(110%)}
-html.js .hero-eyebrow,html.js .hero-foot,html.js .hero-meta{opacity:0}
+html.js .hero-eyebrow,html.js .hero-foot{opacity:0}
 html.js .hero-plan{opacity:0}
 @media (prefers-reduced-motion:reduce){
   html.js .hero-title .line > span{transform:none}
-  html.js .hero-eyebrow,html.js .hero-foot,html.js .hero-meta{opacity:1}
+  html.js .hero-eyebrow,html.js .hero-foot{opacity:1}
   html.js .hero-plan{opacity:1}
 }
+
+/* ============================================================
+   10. ZEILEN-REVEAL (Ueberschriften steigen aus einer Maske)
+   ============================================================ */
+/* Der Splitter setzt .lines erst, wenn die Schriften geladen sind —
+   vorher stimmen die gemessenen Zeilenumbrueche nicht. */
+html.js .lines .line{display:block;overflow:hidden;
+  /* Unterlaengen wuerden sonst an der Maskenkante abgeschnitten */
+  padding-bottom:.14em;margin-bottom:-.14em}
+html.js .lines .line > span{display:block;will-change:transform}
+@media (prefers-reduced-motion:reduce){
+  html.js .lines .line{overflow:visible}
+  html.js .lines .line > span{transform:none}
+}
+
+/* ============================================================
+   11. STATEMENT: Foto fuellt die Worte beim Scrollen
+   ============================================================ */
+/* --f 1 = deckende Textfarbe, 0 = durchsichtig, dann greift der
+   Foto-Ausschnitt der Elternregel .fill. Ueber color-mix bleibt der
+   Startwert an das Farbschema gekoppelt, auch nach Theme-Wechsel. */
+@property --f{syntax:'<number>';inherits:false;initial-value:1}
+@supports (color:color-mix(in srgb,red,blue)){
+  html.js .statement .w{
+    -webkit-text-fill-color:color-mix(in srgb,var(--color-fg-muted) calc(var(--f) * 100%),transparent);
+  }
+}
+@media (prefers-reduced-motion:reduce){
+  html.js .statement .w{--f:0}
+}
+
+/* ============================================================
+   12. PROJEKTE: Ziehen + Gegen-Parallax
+   ============================================================ */
+/* Seitlicher Spielraum, damit das Bild im Rahmen wandern kann,
+   ohne eine Kante freizugeben. */
+html.js .project-img img{width:112%;max-width:none;margin-left:-6%}
+/* Sobald GSAP Hover, Skew und Parallax auf denselben Elementen faehrt,
+   duerfen die CSS-Transitions nicht dagegenlaufen. */
+.projects-track.is-driven .project,
+.projects-track.is-driven .project-img img{transition:none}
+/* Hover uebernimmt dann GSAP — ohne diese Zeilen springt die Karte beim
+   ersten Hover hart, solange noch kein Inline-Transform gesetzt ist. */
+.projects-track.is-driven .project:hover{transform:none}
+.projects-track.is-driven .project:hover .project-img img{transform:none}
+.projects-track.is-grab{cursor:grab;touch-action:pan-y}
+.projects-track.is-grab img{-webkit-user-drag:none;user-select:none;-webkit-user-select:none}
+.projects-track.is-dragging{cursor:grabbing;user-select:none;-webkit-user-select:none}
+
+/* ============================================================
+   13. THEME-WECHSEL ALS KREISWISCH (View Transitions)
+   ============================================================ */
+::view-transition-old(root),::view-transition-new(root){animation:none;mix-blend-mode:normal}
+::view-transition-old(root){z-index:0}
+::view-transition-new(root){z-index:1}
+/* Waehrend des Wischs blenden sonst zusaetzlich die Farbuebergaenge
+   aus Abschnitt 2 um — das liest sich als doppelter Wechsel. */
+html.is-vt *{transition:none !important}
 </style>
 </head>
 <body>
 
-<a href="#main" class="sr-only">Zum Inhalt springen</a>
+<a href="#main" class="skip">Zum Inhalt springen</a>
 
 <nav class="nav" id="nav">
   <a href="#top" class="brand" aria-label="Gartengestaltung Baumschule Belzner — zum Seitenanfang">
-    <img class="brand-mark" id="brandMark" src="assets/logo-belzner.png" alt=""
-         width="128" height="128" decoding="async">
+    <span class="brand-mark" id="brandMark" aria-hidden="true">
+      <img class="is-ink" src="assets/logo-belzner.png" alt=""
+           width="320" height="285" decoding="async">
+      <img class="is-paper" src="assets/logo-belzner-light.png" alt=""
+           width="320" height="285" decoding="async">
+    </span>
     <span class="brand-text" aria-hidden="true">
       <span class="brand-top">Gartengestaltung · Baumschule</span>
       <span class="brand-name">Belzner</span>
     </span>
   </a>
-  <ul class="nav-links">
+  <ul class="nav-links" id="navLinks">
     <li><a href="#leistungen">Leistungen</a></li>
+    <li><a href="#ablauf">Ablauf</a></li>
     <li><a href="#projekte">Projekte</a></li>
     <li><a href="#ueber-uns">Betrieb</a></li>
     <li><a href="#karriere">Karriere</a></li>
     <li><a href="#kontakt">Kontakt</a></li>
+    <li class="nav-legal">
+      <a href="impressum.html">Impressum</a>
+      <a href="datenschutz.html">Datenschutz</a>
+    </li>
   </ul>
   <button class="theme-toggle" id="themeToggle" aria-label="Farbschema wechseln">
     <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
     <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
   </button>
+  <button class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="navPanel"
+          aria-label="Menü öffnen">
+    <span class="box" aria-hidden="true"><span></span><span></span></span>
+  </button>
   <div class="progress" id="progress"></div>
 </nav>
+
+<div class="nav-panel" id="navPanel" data-open="false" aria-label="Navigation" role="dialog" aria-modal="true">
+  <ul id="navPanelLinks">
+    <li><a class="item" style="--i:0" href="#leistungen"><span class="n">01</span>Leistungen</a></li>
+    <li><a class="item" style="--i:1" href="#ablauf"><span class="n">02</span>Ablauf</a></li>
+    <li><a class="item" style="--i:2" href="#projekte"><span class="n">03</span>Projekte</a></li>
+    <li><a class="item" style="--i:3" href="#ueber-uns"><span class="n">04</span>Betrieb</a></li>
+    <li><a class="item" style="--i:4" href="#karriere"><span class="n">05</span>Karriere</a></li>
+    <li><a class="item" style="--i:5" href="#kontakt"><span class="n">06</span>Kontakt</a></li>
+    <li><a class="item is-legal" style="--i:6" href="impressum.html"><span class="n">07</span>Impressum</a></li>
+    <li><a class="item is-legal" style="--i:7" href="datenschutz.html"><span class="n">08</span>Datenschutz</a></li>
+  </ul>
+  <div class="nav-panel-foot">
+    <a href="tel:+4962513091" class="btn">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.2a2 2 0 0 1 2.1-.5c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/></svg>
+      06251 3091
+    </a>
+    <a class="mail" href="mailto:info@gartengestaltung-belzner.de">info@gartengestaltung-belzner.de</a>
+  </div>
+</div>
 
 <main id="main">
 
@@ -558,31 +1023,35 @@ html.js .hero-plan{opacity:0}
   <div class="hero-sticky">
 
    <div class="hero-media">
-     <img class="hero-layer is-raw"
-          src="Bilder/IMG_0070-2.jpg"
-          width="2400" height="1600" fetchpriority="high" decoding="async" alt="">
-     <img class="hero-layer hero-after" id="heroAfter"
-          src="Bilder/IMG_0070-2.jpg"
-          width="2400" height="1600" fetchpriority="high" decoding="async"
-          alt="Weg durch die Baumschule Belzner in Bensheim, links und rechts dicht bepflanzt mit Ahorn, Hortensien und Formgehölzen">
+     <picture>
+       <source type="image/avif" sizes="100vw" srcset="Bilder/opt/IMG_0070-2-640.avif 640w, Bilder/opt/IMG_0070-2-1024.avif 1024w, Bilder/opt/IMG_0070-2-1600.avif 1600w, Bilder/opt/IMG_0070-2-2400.avif 2400w">
+       <img class="hero-layer is-raw" sizes="100vw"
+            srcset="Bilder/opt/IMG_0070-2-640.jpg 640w, Bilder/opt/IMG_0070-2-1024.jpg 1024w, Bilder/opt/IMG_0070-2-1600.jpg 1600w, Bilder/opt/IMG_0070-2-2400.jpg 2400w"
+            src="Bilder/opt/IMG_0070-2-1600.jpg"
+            width="2400" height="1600" fetchpriority="high" decoding="async" alt="">
+     </picture>
+     <picture>
+       <source type="image/avif" sizes="100vw" srcset="Bilder/opt/IMG_0070-2-640.avif 640w, Bilder/opt/IMG_0070-2-1024.avif 1024w, Bilder/opt/IMG_0070-2-1600.avif 1600w, Bilder/opt/IMG_0070-2-2400.avif 2400w">
+       <img class="hero-layer hero-after" id="heroAfter" sizes="100vw"
+            srcset="Bilder/opt/IMG_0070-2-640.jpg 640w, Bilder/opt/IMG_0070-2-1024.jpg 1024w, Bilder/opt/IMG_0070-2-1600.jpg 1600w, Bilder/opt/IMG_0070-2-2400.jpg 2400w"
+            src="Bilder/opt/IMG_0070-2-1600.jpg"
+            width="2400" height="1600" fetchpriority="high" decoding="async"
+            alt="Weg durch die Baumschule Belzner in Bensheim, links und rechts dicht bepflanzt mit Ahorn, Hortensien und Formgehölzen">
+     </picture>
 
      <!-- Planlinie, am Foto abgegriffen -->
      <svg class="hero-plan" id="heroPlan" viewBox="0 0 1400 1050" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-       <path class="plan" data-prelude d="M589 1050 L660 505 L705 505 L869 1050"/>
-       <path class="plan" d="M470 512 L900 504"/>
-       <path class="plan" d="M180 1050 L610 528"/>
-       <path class="plan" d="M1240 1050 L760 522"/>
+       <g id="planGroup">
+         <path class="plan" data-prelude d="M589 1050 L660 505 L705 505 L869 1050"/>
+         <path class="plan" d="M470 512 L900 504"/>
+         <path class="plan" d="M180 1050 L610 528"/>
+         <path class="plan" d="M1240 1050 L760 522"/>
+       </g>
      </svg>
 
      <input type="range" class="hero-slider" id="heroSlider" min="0" max="100" value="50"
             aria-label="Vergleich zwischen Planungszustand und fertigem Garten schieben">
      <div class="hero-scrim"></div>
-   </div>
-
-   <div class="hero-meta">
-     <span class="mono">Fläche</span>
-     <span class="num" id="areaCounter" data-target="420">0</span>
-     <span class="mono">m²</span>
    </div>
 
    <div class="hero-inner">
@@ -594,7 +1063,7 @@ html.js .hero-plan{opacity:0}
      <div class="hero-foot">
        <p class="hero-lede">Wir planen, bauen und pflegen Außenanlagen in der Region Bergstraße — vom Fertigrasen bis zur Trockenmauer.</p>
        <div class="hero-actions">
-         <a href="#kontakt" class="btn btn-light" data-magnetic>
+         <a href="#kontakt" class="btn btn-light">
            Beratung anfragen
            <svg class="arrow" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h9M8.5 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
          </a>
@@ -620,7 +1089,7 @@ html.js .hero-plan{opacity:0}
       <p>Fünf Bereiche, die ineinandergreifen. Meist beginnt ein Projekt mit einer Ortsbegehung — daraus entsteht der Plan, dann die Umsetzung.</p>
     </header>
 
-    <article class="svc-item">
+    <article class="svc-item" id="leistung-fertigrasen">
       <div class="svc-body reveal">
         <span class="svc-num">Pos. 01</span>
         <h3 class="display">Fertigrasen</h3>
@@ -628,14 +1097,18 @@ html.js .hero-plan{opacity:0}
         <ul class="svc-tags"><li>Lieferung</li><li>Verlegung</li><li>Wühlmausschutz</li></ul>
       </div>
       <div class="svc-media">
-        <img data-parallax
-             src="Bilder/12.jpg"
-             width="1125" height="1500" loading="lazy" decoding="async"
-             alt="Frisch verlegter Fertigrasen zwischen Natursteinpflaster und Mulchbeet mit Gräsern">
+        <picture>
+          <source type="image/avif" sizes="(min-width:901px) min(50vw,640px), 100vw" srcset="Bilder/opt/12-640.avif 640w, Bilder/opt/12-1024.avif 1024w">
+          <img data-parallax sizes="(min-width:901px) min(50vw,640px), 100vw"
+               srcset="Bilder/opt/12-640.jpg 640w, Bilder/opt/12-1024.jpg 1024w"
+               src="Bilder/opt/12-1024.jpg"
+               width="1125" height="1500" loading="lazy" decoding="async"
+               alt="Frisch verlegter Fertigrasen zwischen Natursteinpflaster und Mulchbeet mit Gräsern">
+        </picture>
       </div>
     </article>
 
-    <article class="svc-item">
+    <article class="svc-item" id="leistung-steinarbeiten">
       <div class="svc-body reveal">
         <span class="svc-num">Pos. 02</span>
         <h3 class="display">Steinarbeiten &amp; Zäune</h3>
@@ -643,14 +1116,18 @@ html.js .hero-plan{opacity:0}
         <ul class="svc-tags"><li>Trockenmauer</li><li>Gabionen</li><li>Terrassen</li><li>Treppen</li><li>Teichanlagen</li></ul>
       </div>
       <div class="svc-media">
-        <img data-parallax
-             src="Bilder/2.jpg"
-             width="1800" height="1350" loading="lazy" decoding="async"
-             alt="Terrassierter Hanggarten mit geschwungenen Trockenmauern aus Naturstein, Blockstufentreppe und Sitzplatz">
+        <picture>
+          <source type="image/avif" sizes="(min-width:901px) min(50vw,640px), 100vw" srcset="Bilder/opt/2-640.avif 640w, Bilder/opt/2-1024.avif 1024w, Bilder/opt/2-1600.avif 1600w">
+          <img data-parallax sizes="(min-width:901px) min(50vw,640px), 100vw"
+               srcset="Bilder/opt/2-640.jpg 640w, Bilder/opt/2-1024.jpg 1024w, Bilder/opt/2-1600.jpg 1600w"
+               src="Bilder/opt/2-1024.jpg"
+               width="1800" height="1350" loading="lazy" decoding="async"
+               alt="Terrassierter Hanggarten mit geschwungenen Trockenmauern aus Naturstein, Blockstufentreppe und Sitzplatz">
+        </picture>
       </div>
     </article>
 
-    <article class="svc-item">
+    <article class="svc-item" id="leistung-pflanzen">
       <div class="svc-body reveal">
         <span class="svc-num">Pos. 03</span>
         <h3 class="display">Pflanzenarbeiten &amp; Baumschule</h3>
@@ -658,14 +1135,18 @@ html.js .hero-plan{opacity:0}
         <ul class="svc-tags"><li>Großbäume</li><li>Beetanlagen</li><li>Bewässerung</li><li>Beratung</li></ul>
       </div>
       <div class="svc-media">
-        <img data-parallax
-             src="Bilder/3.jpg"
-             width="1125" height="1500" loading="lazy" decoding="async"
-             alt="Quartier der eigenen Baumschule mit Fächerahorn, Hortensien und Koniferen, im Hintergrund ein Mammutbaum">
+        <picture>
+          <source type="image/avif" sizes="(min-width:901px) min(50vw,640px), 100vw" srcset="Bilder/opt/3-640.avif 640w, Bilder/opt/3-1024.avif 1024w">
+          <img data-parallax sizes="(min-width:901px) min(50vw,640px), 100vw"
+               srcset="Bilder/opt/3-640.jpg 640w, Bilder/opt/3-1024.jpg 1024w"
+               src="Bilder/opt/3-1024.jpg"
+               width="1125" height="1500" loading="lazy" decoding="async"
+               alt="Quartier der eigenen Baumschule mit Fächerahorn, Hortensien und Koniferen, im Hintergrund ein Mammutbaum">
+        </picture>
       </div>
     </article>
 
-    <article class="svc-item">
+    <article class="svc-item" id="leistung-wasser">
       <div class="svc-body reveal">
         <span class="svc-num">Pos. 04</span>
         <h3 class="display">Wassersysteme</h3>
@@ -673,27 +1154,103 @@ html.js .hero-plan{opacity:0}
         <ul class="svc-tags"><li>Versenkregner</li><li>Tropfbewässerung</li><li>Zisterne</li><li>Drainage</li><li>Steuerung</li></ul>
       </div>
       <div class="svc-media">
-        <img data-parallax
-             src="Bilder/10.jpg"
-             width="1500" height="1125" loading="lazy" decoding="async"
-             alt="Angelegter Gartenteich mit Kiesufer und Findlingen, eingefasst von Rasenfläche und Kirschlorbeerhecke">
+        <picture>
+          <source type="image/avif" sizes="(min-width:901px) min(50vw,640px), 100vw" srcset="Bilder/opt/10-640.avif 640w, Bilder/opt/10-1024.avif 1024w">
+          <img data-parallax sizes="(min-width:901px) min(50vw,640px), 100vw"
+               srcset="Bilder/opt/10-640.jpg 640w, Bilder/opt/10-1024.jpg 1024w"
+               src="Bilder/opt/10-1024.jpg"
+               width="1500" height="1125" loading="lazy" decoding="async"
+               alt="Angelegter Gartenteich mit Kiesufer und Findlingen, eingefasst von Rasenfläche und Kirschlorbeerhecke">
+        </picture>
       </div>
     </article>
 
-    <article class="svc-item">
+    <article class="svc-item" id="leistung-maehroboter">
       <div class="svc-body reveal">
         <span class="svc-num">Pos. 05</span>
         <h3 class="display">Mähroboter</h3>
-        <p>Mähen ist Routine — das kann eine Maschine übernehmen. Wir messen die Fläche ein, verlegen das Begrenzungskabel oder richten ein kabelloses GPS-Modell ein, setzen Ladestation und Garage und stellen die Mähzeiten auf Ihren Rasen ein. Im Herbst holen wir das Gerät zur Wartung, im Frühjahr steht es startklar wieder da.</p>
+        <p>Mähen ist Routine — das kann eine Maschine übernehmen. Wir messen die Fläche ein, verlegen das Begrenzungskabel oder richten ein kabelloses GPS-Modell ein, setzen Ladestation und Garage und stellen die Mähzeiten auf Ihren Rasen ein.</p>
         <ul class="svc-tags"><li>Flächenaufmaß</li><li>Kabelverlegung</li><li>GPS-Modelle</li><li>Ladestation</li><li>Winterwartung</li></ul>
       </div>
       <div class="svc-media">
-        <img data-parallax
-             src="Bilder/7.jpg"
-             width="1125" height="1500" loading="lazy" decoding="async"
-             alt="Mähroboter auf frisch gemähtem Rasen, daneben ein von Randsteinen eingefasstes Mulchbeet">
+        <picture>
+          <source type="image/avif" sizes="(min-width:901px) min(50vw,640px), 100vw" srcset="Bilder/opt/7-640.avif 640w, Bilder/opt/7-1024.avif 1024w">
+          <img data-parallax sizes="(min-width:901px) min(50vw,640px), 100vw"
+               srcset="Bilder/opt/7-640.jpg 640w, Bilder/opt/7-1024.jpg 1024w"
+               src="Bilder/opt/7-1024.jpg"
+               width="1125" height="1500" loading="lazy" decoding="async"
+               alt="Mähroboter auf frisch gemähtem Rasen, daneben ein von Randsteinen eingefasstes Mulchbeet">
+        </picture>
       </div>
     </article>
+  </div>
+</section>
+
+<!-- ========== ABLAUF ========== -->
+<section class="section" id="ablauf">
+  <div class="wrap">
+    <header class="section-head reveal">
+      <p class="mono">02 — Ablauf</p>
+      <h2 class="display">Wie ein Garten bei uns entsteht</h2>
+      <p>Fünf Schritte vom ersten Anruf bis zur Pflege. Bis zum Angebot entstehen Ihnen keine Kosten.</p>
+    </header>
+
+    <div class="ablauf-flow">
+      <article class="ablauf-step reveal">
+        <span class="ablauf-ico" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        </span>
+        <div>
+          <p class="mono">Schritt 01</p>
+          <h3 class="display">Ortstermin</h3>
+          <p>Wir kommen vorbei, schauen uns Boden, Licht und Zuschnitt an und hören, was Sie vorhaben.</p>
+        </div>
+      </article>
+
+      <article class="ablauf-step reveal">
+        <span class="ablauf-ico" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>
+        </span>
+        <div>
+          <p class="mono">Schritt 02</p>
+          <h3 class="display">Entwurf</h3>
+          <p>Aus der Begehung wird ein Plan: Flächen, Wege, Pflanzen und Material — maßstäblich gezeichnet.</p>
+        </div>
+      </article>
+
+      <article class="ablauf-step reveal">
+        <span class="ablauf-ico" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="m9 15 2 2 4-4"/></svg>
+        </span>
+        <div>
+          <p class="mono">Schritt 03</p>
+          <h3 class="display">Angebot</h3>
+          <p>Jede Position einzeln aufgeführt, ohne Sammelposten. Sie sehen, wofür Sie zahlen.</p>
+        </div>
+      </article>
+
+      <article class="ablauf-step reveal">
+        <span class="ablauf-ico" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M3 21h18"/><path d="M5 21V9l5-4 5 4v12"/><path d="M15 13h4a2 2 0 0 1 2 2v6"/><path d="M9 21v-5h2v5"/></svg>
+        </span>
+        <div>
+          <p class="mono">Schritt 04</p>
+          <h3 class="display">Bau</h3>
+          <p>Umsetzung durch die eigene Mannschaft mit eigenem Fuhrpark. Ein Ansprechpartner bleibt derselbe.</p>
+        </div>
+      </article>
+
+      <article class="ablauf-step reveal">
+        <span class="ablauf-ico" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10z"/><path d="M2 21c0-3 1.85-5.36 5.08-6"/></svg>
+        </span>
+        <div>
+          <p class="mono">Schritt 05</p>
+          <h3 class="display">Pflege</h3>
+          <p>Auf Wunsch bleiben wir dran — Schnitt, Bewässerung und Nachpflanzung in den Jahren danach.</p>
+        </div>
+      </article>
+    </div>
   </div>
 </section>
 
@@ -709,41 +1266,66 @@ html.js .hero-plan{opacity:0}
 <section class="projects" id="projekte">
   <div class="wrap">
     <header class="section-head reveal">
-      <p class="mono">02 — Referenzen</p>
+      <p class="mono">03 — Referenzen</p>
       <h2 class="display">Ausgeführte Projekte</h2>
-      <p>Ein Querschnitt aus der Region Bergstraße.</p>
+      <p>Ein Querschnitt aus der Region Bergstraße. Zum Vergrößern auf eine Karte tippen.</p>
     </header>
   </div>
 
   <div class="projects-track" id="projectsTrack">
     <article class="project">
-      <div class="project-img"><img src="Bilder/11.jpg" width="1500" height="1125" loading="lazy" decoding="async" alt="L-förmige Trockenmauer aus Naturstein mit dahinterliegendem Mulchbeet und junger Lavendelpflanzung"></div>
-      <div class="project-body"><p class="mono">Referenzprojekt</p><h3 class="display">Trockenmauer als Hochbeet</h3><p>Geschichtete Natursteinmauer fängt den Hang ab. Dahinter Mulchbeet mit Lavendel und neuer Heckenpflanzung.</p></div>
+      <span class="project-zoom" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.6-3.6M11 8v6M8 11h6" stroke-linecap="round"/></svg></span>
+      <div class="project-img"><picture>
+        <source type="image/avif" sizes="(min-width:901px) 520px, 90vw" srcset="Bilder/opt/11-640.avif 640w, Bilder/opt/11-1024.avif 1024w">
+        <img sizes="(min-width:901px) 520px, 90vw" srcset="Bilder/opt/11-640.jpg 640w, Bilder/opt/11-1024.jpg 1024w" src="Bilder/opt/11-1024.jpg" width="1500" height="1125" loading="lazy" decoding="async" alt="L-förmige Trockenmauer aus Naturstein mit dahinterliegendem Mulchbeet und junger Lavendelpflanzung"></picture></div>
+      <div class="project-body"><p class="mono">Steinarbeiten</p><h3 class="display"><button type="button" class="project-open" data-lb="0">Trockenmauer als Hochbeet</button></h3><p>Geschichtete Natursteinmauer fängt den Hang ab. Dahinter Mulchbeet mit Lavendel und neuer Heckenpflanzung.</p></div>
     </article>
     <article class="project">
-      <div class="project-img"><img src="Bilder/5.jpg" width="1500" height="1125" loading="lazy" decoding="async" alt="Rasenfläche mit eingelassener Plattenterrasse, Kiesband und Baumbank vor einer Thujahecke"></div>
-      <div class="project-body"><p class="mono">Referenzprojekt</p><h3 class="display">Terrasseninsel im Rasen</h3><p>Plattenfläche als ruhige Mitte, sauber eingefasst vom Rasen. Kiesband und Baumbank schließen die Anlage nach hinten ab.</p></div>
+      <span class="project-zoom" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.6-3.6M11 8v6M8 11h6" stroke-linecap="round"/></svg></span>
+      <div class="project-img"><picture>
+        <source type="image/avif" sizes="(min-width:901px) 520px, 90vw" srcset="Bilder/opt/5-640.avif 640w, Bilder/opt/5-1024.avif 1024w">
+        <img sizes="(min-width:901px) 520px, 90vw" srcset="Bilder/opt/5-640.jpg 640w, Bilder/opt/5-1024.jpg 1024w" src="Bilder/opt/5-1024.jpg" width="1500" height="1125" loading="lazy" decoding="async" alt="Rasenfläche mit eingelassener Plattenterrasse, Kiesband und Baumbank vor einer Thujahecke"></picture></div>
+      <div class="project-body"><p class="mono">Terrassenbau</p><h3 class="display"><button type="button" class="project-open" data-lb="1">Terrasseninsel im Rasen</button></h3><p>Plattenfläche als ruhige Mitte, sauber eingefasst vom Rasen. Kiesband und Baumbank schließen die Anlage nach hinten ab.</p></div>
     </article>
     <article class="project">
-      <div class="project-img"><img src="Bilder/6.jpg" style="object-position:50% 72%" width="1125" height="1500" loading="lazy" decoding="async" alt="Gepflasterte Einfahrt unter einem Carport, daneben eine Blockstufentreppe zur Haustür"></div>
-      <div class="project-body"><p class="mono">Referenzprojekt</p><h3 class="display">Einfahrt &amp; Hauszugang</h3><p>Pflasterfläche unter dem Carport, Blockstufen zum Eingang und eine Rinne an der Straße für den Wasserablauf.</p></div>
+      <span class="project-zoom" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.6-3.6M11 8v6M8 11h6" stroke-linecap="round"/></svg></span>
+      <div class="project-img"><picture>
+        <source type="image/avif" sizes="(min-width:901px) 520px, 90vw" srcset="Bilder/opt/6-640.avif 640w, Bilder/opt/6-1024.avif 1024w">
+        <img style="object-position:50% 72%" sizes="(min-width:901px) 520px, 90vw" srcset="Bilder/opt/6-640.jpg 640w, Bilder/opt/6-1024.jpg 1024w" src="Bilder/opt/6-1024.jpg" width="1125" height="1500" loading="lazy" decoding="async" alt="Gepflasterte Einfahrt unter einem Carport, daneben eine Blockstufentreppe zur Haustür"></picture></div>
+      <div class="project-body"><p class="mono">Pflasterarbeiten</p><h3 class="display"><button type="button" class="project-open" data-lb="2">Einfahrt &amp; Hauszugang</button></h3><p>Pflasterfläche unter dem Carport, Blockstufen zum Eingang und eine Rinne an der Straße für den Wasserablauf.</p></div>
     </article>
     <article class="project">
-      <div class="project-img"><img src="Bilder/8.jpg" style="object-position:50% 26%" width="1125" height="1500" loading="lazy" decoding="async" alt="Innenhofgarten mit Rasenfläche, Mulchbeeten, Kirschlorbeerhecke und angelegtem Teich"></div>
-      <div class="project-body"><p class="mono">Referenzprojekt</p><h3 class="display">Hausgarten mit Teich</h3><p>Aus einem Hinterhof zwischen Brandwänden wird ein Garten: Rasen, Mulchbeete, Hecke als Rahmen und ein Teich als Mitte.</p></div>
+      <span class="project-zoom" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.6-3.6M11 8v6M8 11h6" stroke-linecap="round"/></svg></span>
+      <div class="project-img"><picture>
+        <source type="image/avif" sizes="(min-width:901px) 520px, 90vw" srcset="Bilder/opt/8-640.avif 640w, Bilder/opt/8-1024.avif 1024w">
+        <img style="object-position:50% 26%" sizes="(min-width:901px) 520px, 90vw" srcset="Bilder/opt/8-640.jpg 640w, Bilder/opt/8-1024.jpg 1024w" src="Bilder/opt/8-1024.jpg" width="1125" height="1500" loading="lazy" decoding="async" alt="Innenhofgarten mit Rasenfläche, Mulchbeeten, Kirschlorbeerhecke und angelegtem Teich"></picture></div>
+      <div class="project-body"><p class="mono">Gartenanlage</p><h3 class="display"><button type="button" class="project-open" data-lb="3">Hausgarten mit Teich</button></h3><p>Aus einem Hinterhof zwischen Brandwänden wird ein Garten: Rasen, Mulchbeete, Hecke als Rahmen und ein Teich als Mitte.</p></div>
     </article>
     <article class="project">
-      <div class="project-img"><img src="Bilder/1.jpg" width="1500" height="1125" loading="lazy" decoding="async" alt="Sichtschutzzaun in Holzoptik mit eingesetztem Glaselement, davor ein frisch gepflanzter Fächerahorn"></div>
-      <div class="project-body"><p class="mono">Referenzprojekt</p><h3 class="display">Sichtschutz &amp; Zaunanlage</h3><p>Waagerechte Lamellen mit Glaselement als Lichtfuge. Davor junge Gehölze, die den Zaun in ein paar Jahren auflösen.</p></div>
+      <span class="project-zoom" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.6-3.6M11 8v6M8 11h6" stroke-linecap="round"/></svg></span>
+      <div class="project-img"><picture>
+        <source type="image/avif" sizes="(min-width:901px) 520px, 90vw" srcset="Bilder/opt/1-640.avif 640w, Bilder/opt/1-1024.avif 1024w">
+        <img sizes="(min-width:901px) 520px, 90vw" srcset="Bilder/opt/1-640.jpg 640w, Bilder/opt/1-1024.jpg 1024w" src="Bilder/opt/1-1024.jpg" width="1500" height="1125" loading="lazy" decoding="async" alt="Sichtschutzzaun in Holzoptik mit eingesetztem Glaselement, davor ein frisch gepflanzter Fächerahorn"></picture></div>
+      <div class="project-body"><p class="mono">Zaunbau</p><h3 class="display"><button type="button" class="project-open" data-lb="4">Sichtschutz &amp; Zaunanlage</button></h3><p>Waagerechte Lamellen mit Glaselement als Lichtfuge. Davor junge Gehölze, die den Zaun in ein paar Jahren auflösen.</p></div>
     </article>
     <article class="project">
-      <div class="project-img"><img src="Bilder/9.jpg" width="1500" height="1125" loading="lazy" decoding="async" alt="Runde Baumbank auf einer Kiesfläche mit Gräserpflanzung vor einer hohen Thujahecke"></div>
-      <div class="project-body"><p class="mono">Referenzprojekt</p><h3 class="display">Kiesfläche mit Baumbank</h3><p>Der Bestandsbaum bleibt stehen und bekommt eine Rundbank. Kiesbett mit Gräsern statt Rasen unter der Krone.</p></div>
+      <span class="project-zoom" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.6-3.6M11 8v6M8 11h6" stroke-linecap="round"/></svg></span>
+      <div class="project-img"><picture>
+        <source type="image/avif" sizes="(min-width:901px) 520px, 90vw" srcset="Bilder/opt/9-640.avif 640w, Bilder/opt/9-1024.avif 1024w">
+        <img sizes="(min-width:901px) 520px, 90vw" srcset="Bilder/opt/9-640.jpg 640w, Bilder/opt/9-1024.jpg 1024w" src="Bilder/opt/9-1024.jpg" width="1500" height="1125" loading="lazy" decoding="async" alt="Runde Baumbank auf einer Kiesfläche mit Gräserpflanzung vor einer hohen Thujahecke"></picture></div>
+      <div class="project-body"><p class="mono">Pflanzenarbeiten</p><h3 class="display"><button type="button" class="project-open" data-lb="5">Kiesfläche mit Baumbank</button></h3><p>Der Bestandsbaum bleibt stehen und bekommt eine Rundbank. Kiesbett mit Gräsern statt Rasen unter der Krone.</p></div>
     </article>
     <article class="project">
-      <div class="project-img"><img src="Bilder/IMG_0070-3.jpg" width="1800" height="1200" loading="lazy" decoding="async" alt="Weg durch die Quartiere der Baumschule Belzner, gesäumt von Ahorn, Hortensien und Formgehölzen"></div>
-      <div class="project-body"><p class="mono">Eigener Betrieb</p><h3 class="display">Schaugarten der Baumschule</h3><p>Unsere Quartiere an der Dammstraße. Hier suchen Sie Ihre Pflanzen im gewachsenen Zustand aus, nicht im Katalog.</p></div>
+      <span class="project-zoom" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.6-3.6M11 8v6M8 11h6" stroke-linecap="round"/></svg></span>
+      <div class="project-img"><picture>
+        <source type="image/avif" sizes="(min-width:901px) 520px, 90vw" srcset="Bilder/opt/IMG_0070-3-640.avif 640w, Bilder/opt/IMG_0070-3-1024.avif 1024w">
+        <img sizes="(min-width:901px) 520px, 90vw" srcset="Bilder/opt/IMG_0070-3-640.jpg 640w, Bilder/opt/IMG_0070-3-1024.jpg 1024w" src="Bilder/opt/IMG_0070-3-1024.jpg" width="1800" height="1200" loading="lazy" decoding="async" alt="Weg durch die Quartiere der Baumschule Belzner, gesäumt von Ahorn, Hortensien und Formgehölzen"></picture></div>
+      <div class="project-body"><p class="mono">Eigener Betrieb</p><h3 class="display"><button type="button" class="project-open" data-lb="6">Schaugarten der Baumschule</button></h3><p>Unsere Quartiere an der Dammstraße. Hier suchen Sie Ihre Pflanzen im gewachsenen Zustand aus, nicht im Katalog.</p></div>
     </article>
+  </div>
+
+  <div class="wrap">
+    <div class="track-progress" id="trackProgress" aria-hidden="true"><span></span></div>
   </div>
 
   <div class="wrap" style="margin-top:var(--space-xl)">
@@ -756,11 +1338,15 @@ html.js .hero-plan{opacity:0}
 
 <!-- ========== ZAHLEN ========== -->
 <section class="figures on-dark">
-  <img class="figures-bg" data-parallax-bg
-       src="Bilder/2.jpg"
-       width="1800" height="1350" loading="lazy" decoding="async" alt="">
+  <picture>
+    <source type="image/avif" sizes="100vw" srcset="Bilder/opt/2-640.avif 640w, Bilder/opt/2-1024.avif 1024w, Bilder/opt/2-1600.avif 1600w">
+    <img class="figures-bg" data-parallax-bg sizes="100vw"
+         srcset="Bilder/opt/2-640.jpg 640w, Bilder/opt/2-1024.jpg 1024w, Bilder/opt/2-1600.jpg 1600w"
+         src="Bilder/opt/2-1024.jpg"
+         width="1800" height="1350" loading="lazy" decoding="async" alt="">
+  </picture>
   <div class="wrap reveal">
-    <p class="mono">03 — In Zahlen</p>
+    <p class="mono">04 — In Zahlen</p>
     <h2 class="display">Was sich schlecht bebildern lässt</h2>
     <div class="fig-grid">
       <div class="fig"><span class="num counter" data-target="30" data-suffix="+">0</span><span class="mono">Jahre Erfahrung</span></div>
@@ -775,15 +1361,20 @@ html.js .hero-plan{opacity:0}
 <section class="section" id="ueber-uns">
   <div class="wrap about">
     <div class="reveal">
-      <p class="mono">04 — Der Betrieb</p>
+      <p class="mono">05 — Der Betrieb</p>
       <h2 class="display">Handwerk aus Bensheim</h2>
       <p>Wir sind Gartengestaltung und Baumschule Belzner — ein Familienbetrieb an der Dammstraße in Bensheim. Was wir planen, bauen wir auch selbst. Kein Subunternehmer, der Ihren Garten zum ersten Mal sieht, wenn der Bagger schon läuft.</p>
       <p>Mit eigenem Fuhrpark und eigener Baumschule decken wir von der ersten Skizze bis zur Pflege alles ab. Das dauert manchmal länger als bei anderen. Dafür steht es hinterher auch noch in zehn Jahren.</p>
     </div>
     <div class="about-media reveal">
-      <img src="Bilder/4.jpg"
-           width="1024" height="576" loading="lazy" decoding="async"
-           alt="Luftbild des Betriebsgeländes der Baumschule Belzner an der Dammstraße in Bensheim im Herbst">
+      <picture>
+        <source type="image/avif" sizes="(min-width:901px) min(50vw,640px), 100vw" srcset="Bilder/opt/4-640.avif 640w, Bilder/opt/4-1024.avif 1024w">
+        <img sizes="(min-width:901px) min(50vw,640px), 100vw"
+             srcset="Bilder/opt/4-640.jpg 640w, Bilder/opt/4-1024.jpg 1024w"
+             src="Bilder/opt/4-1024.jpg"
+             width="1024" height="576" loading="lazy" decoding="async"
+             alt="Luftbild des Betriebsgeländes der Baumschule Belzner an der Dammstraße in Bensheim im Herbst">
+      </picture>
     </div>
   </div>
 </section>
@@ -792,7 +1383,7 @@ html.js .hero-plan{opacity:0}
 <section class="section" id="karriere">
   <div class="wrap">
     <header class="section-head reveal">
-      <p class="mono">05 — Karriere</p>
+      <p class="mono">06 — Karriere</p>
       <h2 class="display">Offene Stellen</h2>
       <p>Wir bilden selbst aus und übernehmen gern. Wenn Sie lieber draußen als im Büro arbeiten, passt das.</p>
     </header>
@@ -817,69 +1408,141 @@ html.js .hero-plan{opacity:0}
     </div>
 
     <!-- ===== Bewerbungsformular mit PDF-Anhang ===== -->
-    <div id="bewerbung" class="reveal">
-      <header class="section-head" style="margin-bottom:var(--space-l)">
+    <div id="bewerbung" class="apply-grid reveal">
+      <div class="apply-aside">
         <h2 class="display" style="font-size:var(--step-3)">Online bewerben</h2>
-        <p style="font-size:var(--step-0)">Lebenslauf und Zeugnisse als PDF anhängen. Ein Anschreiben ist nett, aber kein Muss.</p>
-      </header>
+        <p style="font-size:var(--step-0)">Drei kurze Schritte. Lebenslauf und Zeugnisse als PDF
+          anhängen — ein Anschreiben ist nett, aber kein Muss.</p>
+        <ul class="apply-points">
+          <li>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m20 6-11 11-5-5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span>Kein Konto, keine Anmeldung — Sie füllen nur aus, was wirklich nötig ist.</span>
+          </li>
+          <li>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m20 6-11 11-5-5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span>Wir melden uns in der Regel innerhalb von zwei Wochen zurück.</span>
+          </li>
+          <li>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m20 6-11 11-5-5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span>Lieber direkt sprechen? <a href="tel:+4962513091">06251 3091</a> — fragen Sie nach Herrn Belzner.</span>
+          </li>
+        </ul>
+      </div>
 
-      <form class="form" id="jobForm" novalidate enctype="multipart/form-data">
-        <div class="field-row">
-          <div class="field">
-            <label for="b-vorname">Vorname *</label>
-            <input type="text" id="b-vorname" name="vorname" required autocomplete="given-name" aria-describedby="err-b-vorname">
-            <span class="error" id="err-b-vorname" data-for="vorname"></span>
-          </div>
-          <div class="field">
-            <label for="b-nachname">Nachname *</label>
-            <input type="text" id="b-nachname" name="nachname" required autocomplete="family-name" aria-describedby="err-b-nachname">
-            <span class="error" id="err-b-nachname" data-for="nachname"></span>
-          </div>
-        </div>
-        <div class="field-row">
-          <div class="field">
-            <label for="b-email">E-Mail-Adresse *</label>
-            <input type="email" id="b-email" name="email" required autocomplete="email" aria-describedby="err-b-email">
-            <span class="error" id="err-b-email" data-for="email"></span>
-          </div>
-          <div class="field">
-            <label for="b-tel">Telefon</label>
-            <input type="tel" id="b-tel" name="telefon" autocomplete="tel">
-            <span class="error" data-for="telefon"></span>
-          </div>
-        </div>
-        <div class="field">
-          <label for="b-stelle">Stelle *</label>
-          <select id="b-stelle" name="stelle" required aria-describedby="err-b-stelle">
-            <option value="">Bitte wählen</option>
-            <option>Ausbildung zum Gärtner (m/w/d)</option>
-            <option>Garten- und Landschaftsbaugärtner (m/w/d)</option>
-            <option>Initiativbewerbung</option>
-          </select>
-          <span class="error" id="err-b-stelle" data-for="stelle"></span>
-        </div>
-        <div class="field">
-          <label for="b-nachricht">Ihre Nachricht</label>
-          <textarea id="b-nachricht" name="nachricht" placeholder="Kurz zu Ihnen: was Sie bisher gemacht haben und ab wann Sie können."></textarea>
+      <form class="form form-card" id="jobForm" novalidate enctype="multipart/form-data">
+        <div>
+          <ol class="steps" id="jobSteps">
+            <li class="step" data-state="current" aria-current="step">Zur Person</li>
+            <li class="step">Stelle</li>
+            <li class="step">Unterlagen</li>
+          </ol>
+          <p class="step-count" id="jobStepCount">Schritt 1 von 3</p>
         </div>
 
-        <div class="field">
-          <label for="b-files" id="lbl-files">Unterlagen als PDF *</label>
-          <div class="dropzone" id="dropzone" data-drag="false">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4M7 9l5-5 5 5" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 15v3a3 3 0 0 0 3 3h12a3 3 0 0 0 3-3v-3" stroke-linecap="round"/></svg>
-            <p><strong>PDF hierher ziehen</strong> oder klicken zum Auswählen</p>
-            <p class="hint">Nur PDF · max. 10 MB pro Datei · bis zu 5 Dateien</p>
-            <input type="file" id="b-files" name="unterlagen" accept="application/pdf,.pdf" multiple
-                   aria-labelledby="lbl-files" aria-describedby="err-b-files">
+        <div class="step-panel" data-step="1" role="group" aria-labelledby="js-t1" tabindex="-1">
+          <h3 class="step-title display" id="js-t1">Zur Person</h3>
+          <div class="field-row">
+            <div class="field">
+              <label for="b-vorname">Vorname *</label>
+              <input type="text" id="b-vorname" name="vorname" required autocomplete="given-name" aria-describedby="err-b-vorname">
+              <span class="error" id="err-b-vorname" data-for="vorname"></span>
+            </div>
+            <div class="field">
+              <label for="b-nachname">Nachname *</label>
+              <input type="text" id="b-nachname" name="nachname" required autocomplete="family-name" aria-describedby="err-b-nachname">
+              <span class="error" id="err-b-nachname" data-for="nachname"></span>
+            </div>
           </div>
-          <span class="error" id="err-b-files" data-for="unterlagen" role="status" aria-live="polite"></span>
-          <ul class="filelist" id="fileList"></ul>
+          <div class="field-row">
+            <div class="field">
+              <label for="b-email">E-Mail-Adresse *</label>
+              <input type="email" id="b-email" name="email" required autocomplete="email" aria-describedby="err-b-email">
+              <span class="error" id="err-b-email" data-for="email"></span>
+            </div>
+            <div class="field">
+              <label for="b-tel">Telefon</label>
+              <input type="tel" id="b-tel" name="telefon" autocomplete="tel">
+              <span class="error" data-for="telefon"></span>
+            </div>
+          </div>
         </div>
 
-        <button type="submit" class="btn" data-magnetic>
-          Bewerbung absenden
-          <svg class="arrow" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h9M8.5 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </button>
+        <div class="step-panel" data-step="2" role="group" aria-labelledby="js-t2" tabindex="-1" hidden>
+          <h3 class="step-title display" id="js-t2">Worauf bewerben Sie sich?</h3>
+          <div class="field">
+            <label for="b-stelle">Stelle *</label>
+            <select id="b-stelle" name="stelle" required aria-describedby="err-b-stelle">
+              <option value="">Bitte wählen</option>
+              <option>Ausbildung zum Gärtner (m/w/d)</option>
+              <option>Garten- und Landschaftsbaugärtner (m/w/d)</option>
+              <option>Initiativbewerbung</option>
+            </select>
+            <span class="error" id="err-b-stelle" data-for="stelle"></span>
+          </div>
+          <div class="field">
+            <label for="b-nachricht">Ihre Nachricht</label>
+            <textarea id="b-nachricht" name="nachricht" placeholder="Kurz zu Ihnen: was Sie bisher gemacht haben und ab wann Sie können."></textarea>
+          </div>
+        </div>
+
+        <div class="step-panel" data-step="3" role="group" aria-labelledby="js-t3" tabindex="-1" hidden>
+          <h3 class="step-title display" id="js-t3">Unterlagen &amp; Absenden</h3>
+          <div class="field">
+            <label for="b-files" id="lbl-files">Unterlagen als PDF *</label>
+            <div class="dropzone" id="dropzone" data-drag="false">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4M7 9l5-5 5 5" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 15v3a3 3 0 0 0 3 3h12a3 3 0 0 0 3-3v-3" stroke-linecap="round"/></svg>
+              <p><strong>PDF hierher ziehen</strong> oder klicken</p>
+              <p class="hint">max. 10 MB je Datei · bis zu 5</p>
+              <input type="file" id="b-files" name="unterlagen" accept="application/pdf,.pdf" multiple
+                     aria-labelledby="lbl-files" aria-describedby="err-b-files">
+            </div>
+            <span class="error" id="err-b-files" data-for="unterlagen" role="status" aria-live="polite"></span>
+            <ul class="filelist" id="fileList"></ul>
+            <p class="form-note">Die Dateien werden hier nur erfasst, nicht hochgeladen — anhängen
+              müssen Sie sie gleich selbst im Mailprogramm. Der Entwurf listet sie namentlich auf.</p>
+          </div>
+
+          <!-- Honigtopf gegen Bots: unsichtbar, darf nie ausgefüllt sein -->
+          <div class="hp" aria-hidden="true">
+            <label for="b-website">Website (bitte frei lassen)</label>
+            <input type="text" id="b-website" name="website" tabindex="-1" autocomplete="off" data-hp>
+          </div>
+
+          <div class="field">
+            <label for="b-captcha">Kurze Rechenaufgabe *</label>
+            <div class="captcha">
+              <p class="captcha-task" id="b-captcha-task" data-captcha-task></p>
+              <input type="text" id="b-captcha" name="captcha" required
+                     inputmode="numeric" autocomplete="off" maxlength="8" spellcheck="false"
+                     aria-describedby="b-captcha-task err-b-captcha" data-captcha>
+              <button type="button" class="captcha-new" data-captcha-new aria-label="Neue Aufgabe stellen">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8 8 0 1 0-.7 4.3" stroke-linecap="round"/><path d="M20 5v6h-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+            </div>
+            <span class="error" id="err-b-captcha" data-for="captcha"></span>
+          </div>
+
+          <div class="consent">
+            <input type="checkbox" id="b-datenschutz" name="datenschutz" required
+                   aria-describedby="err-b-datenschutz">
+            <label for="b-datenschutz">Ich habe die <a href="datenschutz.html">Datenschutzerklärung</a> gelesen und
+              willige ein, dass meine Angaben und Unterlagen zur Bearbeitung meiner Bewerbung
+              gespeichert und verarbeitet werden. *</label>
+            <span class="error" id="err-b-datenschutz" data-for="datenschutz"></span>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn btn-ghost" data-prev hidden>Zurück</button>
+          <button type="button" class="btn" data-next>
+            Weiter
+            <svg class="arrow" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h9M8.5 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <button type="submit" class="btn" data-send hidden>
+            Bewerbung absenden
+            <svg class="arrow" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h9M8.5 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
         <p class="mono" id="jobStatus" role="status" aria-live="polite"></p>
       </form>
     </div>
@@ -890,7 +1553,7 @@ html.js .hero-plan{opacity:0}
 <section class="section contact" id="kontakt">
   <div class="wrap">
     <header class="section-head reveal">
-      <p class="mono">06 — Kontakt</p>
+      <p class="mono">07 — Kontakt</p>
       <h2 class="display">Beratungsgespräch anfragen</h2>
       <p>Kostenlos und unverbindlich. Wir melden uns in der Regel innerhalb von zwei Werktagen.</p>
     </header>
@@ -900,10 +1563,13 @@ html.js .hero-plan{opacity:0}
         <div class="detail"><p class="mono">Telefon</p><a href="tel:+4962513091">06251 3091</a></div>
         <div class="detail"><p class="mono">E-Mail</p><a href="mailto:info@gartengestaltung-belzner.de">info@gartengestaltung-belzner.de</a></div>
         <div class="detail"><p class="mono">Adresse</p><p>Dammstraße 100–108<br>64625 Bensheim</p></div>
+        <div class="detail"><p class="mono">Öffnungszeiten</p><p>Termin nach Absprache</p></div>
         <div class="detail"><p class="mono">Einzugsgebiet</p><p>Bensheim, Heppenheim, Zwingenberg, Lorsch und Umgebung</p></div>
       </div>
 
-      <form class="form reveal" id="contactForm" novalidate>
+      <form class="form form-card reveal" id="contactForm" novalidate>
+       <div class="form-group">
+        <p class="form-legend">Ihre Kontaktdaten</p>
         <div class="field-row">
           <div class="field"><label for="vorname">Vorname</label>
             <input type="text" id="vorname" name="vorname" autocomplete="given-name">
@@ -912,9 +1578,18 @@ html.js .hero-plan{opacity:0}
             <input type="text" id="nachname" name="nachname" autocomplete="family-name">
             <span class="error" data-for="nachname"></span></div>
         </div>
-        <div class="field"><label for="email">E-Mail-Adresse *</label>
-          <input type="email" id="email" name="email" required autocomplete="email" aria-describedby="err-email">
-          <span class="error" id="err-email" data-for="email"></span></div>
+        <div class="field-row">
+          <div class="field"><label for="email">E-Mail-Adresse *</label>
+            <input type="email" id="email" name="email" required autocomplete="email" aria-describedby="err-email">
+            <span class="error" id="err-email" data-for="email"></span></div>
+          <div class="field"><label for="telefon">Telefon <span style="opacity:.7">— für den Rückruf</span></label>
+            <input type="tel" id="telefon" name="telefon" autocomplete="tel">
+            <span class="error" data-for="telefon"></span></div>
+        </div>
+       </div>
+
+       <div class="form-group">
+        <p class="form-legend">Ihr Anliegen</p>
         <div class="field"><label for="anliegen">Anliegen *</label>
           <select id="anliegen" name="anliegen" required aria-describedby="err-anliegen">
             <option value="">Bitte wählen</option>
@@ -928,10 +1603,43 @@ html.js .hero-plan{opacity:0}
         <div class="field"><label for="nachricht">Nachricht *</label>
           <textarea id="nachricht" name="nachricht" required aria-describedby="err-nachricht"></textarea>
           <span class="error" id="err-nachricht" data-for="nachricht"></span></div>
-        <button type="submit" class="btn" data-magnetic>
-          Anfrage senden
-          <svg class="arrow" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h9M8.5 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </button>
+       </div>
+
+       <div class="form-group">
+        <!-- Honigtopf gegen Bots: unsichtbar, darf nie ausgefüllt sein -->
+        <div class="hp" aria-hidden="true">
+          <label for="k-website">Website (bitte frei lassen)</label>
+          <input type="text" id="k-website" name="website" tabindex="-1" autocomplete="off" data-hp>
+        </div>
+
+        <div class="field"><label for="k-captcha">Kurze Rechenaufgabe *</label>
+          <div class="captcha">
+            <p class="captcha-task" id="k-captcha-task" data-captcha-task></p>
+            <input type="text" id="k-captcha" name="captcha" required
+                   inputmode="numeric" autocomplete="off" maxlength="8" spellcheck="false"
+                   aria-describedby="k-captcha-task err-k-captcha" data-captcha>
+            <button type="button" class="captcha-new" data-captcha-new aria-label="Neue Aufgabe stellen">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8 8 0 1 0-.7 4.3" stroke-linecap="round"/><path d="M20 5v6h-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+          </div>
+          <span class="error" id="err-k-captcha" data-for="captcha"></span></div>
+
+        <div class="consent">
+          <input type="checkbox" id="k-datenschutz" name="datenschutz" required
+                 aria-describedby="err-k-datenschutz">
+          <label for="k-datenschutz">Ich habe die <a href="datenschutz.html">Datenschutzerklärung</a> gelesen und
+            willige ein, dass meine Angaben zur Bearbeitung meiner Anfrage gespeichert und
+            verarbeitet werden. *</label>
+          <span class="error" id="err-k-datenschutz" data-for="datenschutz"></span>
+        </div>
+       </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn">
+            Anfrage senden
+            <svg class="arrow" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h9M8.5 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
         <p class="mono" id="formStatus" role="status" aria-live="polite"></p>
       </form>
     </div>
@@ -951,7 +1659,7 @@ html.js .hero-plan{opacity:0}
         <div class="map-consent" id="mapConsent">
           <svg class="pin" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z" stroke-linejoin="round"/><circle cx="12" cy="10" r="3"/></svg>
           <address>Dammstr. 100<br>64625 Bensheim</address>
-          <button type="button" class="btn" id="mapLoad" data-magnetic>
+          <button type="button" class="btn" id="mapLoad">
             Karte laden
             <svg class="arrow" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h9M8.5 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </button>
@@ -971,13 +1679,17 @@ html.js .hero-plan{opacity:0}
       <div><h4>Belzner</h4>
         <p style="color:var(--color-fg-muted);font-size:var(--step--1)">Gartengestaltung &amp; Baumschule<br>Sascha Belzner<br>Dammstraße 100–108<br>64625 Bensheim</p></div>
       <div><h4>Leistungen</h4><ul>
-        <li><a href="#leistungen">Fertigrasen</a></li><li><a href="#leistungen">Steinarbeiten &amp; Zäune</a></li>
-        <li><a href="#leistungen">Pflanzenarbeiten</a></li><li><a href="#leistungen">Baumschule</a></li>
-        <li><a href="#leistungen">Wassersysteme</a></li><li><a href="#leistungen">Mähroboter</a></li></ul></div>
+        <li><a href="#leistung-fertigrasen">Fertigrasen</a></li>
+        <li><a href="#leistung-steinarbeiten">Steinarbeiten &amp; Zäune</a></li>
+        <li><a href="#leistung-pflanzen">Pflanzenarbeiten &amp; Baumschule</a></li>
+        <li><a href="#leistung-wasser">Wassersysteme</a></li>
+        <li><a href="#leistung-maehroboter">Mähroboter</a></li>
+        <li><a href="#ablauf">Ablauf</a></li></ul></div>
       <div><h4>Kontakt</h4><ul>
         <li><a href="tel:+4962513091">06251 3091</a></li>
-        <li><a href="mailto:info@gartengestaltung-belzner.de">info@gartengestaltung-belzner.de</a></li></ul></div>
-      <div><h4>Rechtliches</h4><ul><li><a href="#">Impressum</a></li><li><a href="#">Datenschutz</a></li></ul></div>
+        <li><a href="mailto:info@gartengestaltung-belzner.de">info@gartengestaltung-belzner.de</a></li>
+        <li style="color:var(--color-fg-muted);font-size:var(--step--1)">Termin nach Absprache</li></ul></div>
+      <div><h4>Rechtliches</h4><ul><li><a href="impressum.html">Impressum</a></li><li><a href="datenschutz.html">Datenschutz</a></li></ul></div>
       <div><h4>Social</h4><ul>
         <li><a href="https://www.instagram.com/gartengestaltung_belzner/" target="_blank" rel="noopener noreferrer">Instagram</a></li></ul></div>
     </div>
@@ -999,11 +1711,70 @@ html.js .hero-plan{opacity:0}
   </a>
 </div>
 
-<div class="drag-cursor" id="dragCursor" aria-hidden="true">Ziehen</div>
+<!-- Projektbild gross. Inhalt kommt beim Oeffnen aus der angeklickten Karte. -->
+<div class="lightbox" id="lightbox" data-open="false" role="dialog" aria-modal="true"
+     aria-labelledby="lbTitle">
+  <p class="lb-count" id="lbCount"></p>
+  <button type="button" class="lb-btn lb-close" id="lbClose" aria-label="Schließen">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12" stroke-linecap="round"/></svg>
+  </button>
+  <button type="button" class="lb-btn lb-prev" id="lbPrev" aria-label="Vorheriges Projekt">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+  <button type="button" class="lb-btn lb-next" id="lbNext" aria-label="Nächstes Projekt">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+  <div class="lb-stage" id="lbStage"></div>
+  <div class="lb-cap">
+    <p class="mono" id="lbKind"></p>
+    <h3 class="display" id="lbTitle"></h3>
+    <p id="lbText"></p>
+  </div>
+</div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "LandscapingBusiness",
+  "name": "Gartengestaltung & Baumschule Belzner",
+  "founder": "Sascha Belzner",
+  "url": "https://gartengestaltung-belzner.de/",
+  "image": "https://gartengestaltung-belzner.de/assets/og-bild.jpg",
+  "logo": "https://gartengestaltung-belzner.de/assets/favicon-512.png",
+  "telephone": "+49 6251 3091",
+  "email": "info@gartengestaltung-belzner.de",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "Dammstraße 100–108",
+    "postalCode": "64625",
+    "addressLocality": "Bensheim",
+    "addressRegion": "Hessen",
+    "addressCountry": "DE"
+  },
+  "description": "Garten- und Landschaftsbau mit eigener Baumschule in Bensheim. Besuch und Beratung nach Terminabsprache.",
+  "areaServed": [
+    { "@type": "City", "name": "Bensheim" },
+    { "@type": "City", "name": "Heppenheim" },
+    { "@type": "City", "name": "Zwingenberg" },
+    { "@type": "City", "name": "Lorsch" }
+  ],
+  "sameAs": ["https://www.instagram.com/gartengestaltung_belzner/"],
+  "makesOffer": [
+    { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Fertigrasen" } },
+    { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Steinarbeiten & Zäune" } },
+    { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Pflanzenarbeiten & Baumschule" } },
+    { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Wassersysteme & Bewässerung" } },
+    { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Mähroboter" } }
+  ]
+}
+</script>
+
+<!-- Bibliotheken liegen lokal wie die Schriften: kein Aufruf bei Cloudflare
+     oder jsDelivr, also keine IP-Adresse des Besuchers an ein fremdes Netz —
+     und damit bleibt die Datenschutzerklaerung so kurz, wie sie ist. -->
+<script src="js/gsap.min.js"></script>
+<script src="js/ScrollTrigger.min.js"></script>
+<script src="js/lenis.min.js"></script>
 <script>
 document.documentElement.classList.add('js');
 
@@ -1013,33 +1784,139 @@ document.documentElement.classList.add('js');
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const hasGSAP = typeof window.gsap !== 'undefined' && typeof window.ScrollTrigger !== 'undefined';
 if (hasGSAP) gsap.registerPlugin(ScrollTrigger);
-const fine = matchMedia('(hover: hover) and (pointer: fine)').matches;
 
 /* ---------- Theme ---------- */
+/* Den Startwert setzt das kurze Skript im <head> — hier geht es nur noch
+   ums Umschalten und ums Merken der Wahl ueber den Besuch hinaus. */
 const root = document.documentElement;
-if (matchMedia('(prefers-color-scheme: dark)').matches) root.dataset.theme = 'dark';
-document.getElementById('themeToggle').addEventListener('click', () => {
+const themeToggle = document.getElementById('themeToggle');
+const flipTheme = () => {
   root.dataset.theme = root.dataset.theme === 'dark' ? 'light' : 'dark';
-  if (hasGSAP) ScrollTrigger.refresh();
+  try { localStorage.setItem('theme', root.dataset.theme); } catch(e){}
+};
+
+/* Der neue Zustand wischt als Kreis vom Umschalter aus ueber die Seite.
+   Ohne View-Transition-API oder bei reduzierter Bewegung bleibt es beim
+   harten Umschalten — der Wisch ist reine Zugabe, keine Voraussetzung. */
+themeToggle.addEventListener('click', () => {
+  const done = () => { if (hasGSAP) ScrollTrigger.refresh(); };
+  if (reduced || typeof document.startViewTransition !== 'function') { flipTheme(); done(); return; }
+
+  const box = themeToggle.getBoundingClientRect();
+  const x = box.left + box.width / 2;
+  const y = box.top + box.height / 2;
+  // Bis in die entfernteste Ecke, sonst bleibt ein Rest im alten Zustand.
+  const radius = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
+
+  root.classList.add('is-vt');
+  const vt = document.startViewTransition(flipTheme);
+  vt.ready.then(() => {
+    root.animate(
+      { clipPath: ['circle(0px at ' + x + 'px ' + y + 'px)',
+                   'circle(' + radius + 'px at ' + x + 'px ' + y + 'px)'] },
+      { duration: 640, easing: 'cubic-bezier(0.16,1,0.3,1)',
+        pseudoElement: '::view-transition-new(root)' }
+    );
+  }).catch(() => {});
+  vt.finished.catch(() => {}).then(() => { root.classList.remove('is-vt'); done(); });
 });
+
+/* ---------- Mobilmenue ---------- */
+/* Unter 961 px traegt die Leiste die Links nicht mehr. Ohne dieses Panel
+   kaeme man auf Telefon und Tablet nur per Scrollen durch die Seite. */
+const navToggle = document.getElementById('navToggle');
+const navPanel  = document.getElementById('navPanel');
+let navOpen = false, focusBeforeNav = null;
+
+function setNav(open){
+  if (open === navOpen) return;
+  navOpen = open;
+  navPanel.dataset.open = open;
+  navToggle.setAttribute('aria-expanded', String(open));
+  navToggle.setAttribute('aria-label', open ? 'Menü schließen' : 'Menü öffnen');
+  root.toggleAttribute('data-nav-open', open);
+
+  if (open) {
+    focusBeforeNav = document.activeElement;
+    // Ueber dem Hero steht die Leiste in Weiss. Vor dem hellen Panel waere
+    // sie unsichtbar — also in denselben Zustand wie nach dem Scrollen.
+    nav.dataset.scrolled = 'true';
+    if (lenis) lenis.stop();
+    // Erst nach dem Sichtbarwerden fokussierbar — vorher schluckt
+    // visibility:hidden den Fokus.
+    requestAnimationFrame(() => navPanel.querySelector('a.item').focus());
+  } else {
+    if (lenis) lenis.start();
+    navState();                       // Farbzustand der Leiste zurueckrechnen
+    if (focusBeforeNav && focusBeforeNav.isConnected) focusBeforeNav.focus();
+    focusBeforeNav = null;
+  }
+}
+
+navToggle.addEventListener('click', () => setNav(!navOpen));
+
+// Tastatur im offenen Panel: Escape schliesst, Tab bleibt drin.
+addEventListener('keydown', e => {
+  if (!navOpen) return;
+  if (e.key === 'Escape') { e.preventDefault(); setNav(false); return; }
+  if (e.key !== 'Tab') return;
+  const items = [...navPanel.querySelectorAll('a[href],button')];
+  const first = items[0], last = items[items.length - 1];
+  if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+  else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+});
+
+// Wird die Leiste breit genug fuer die Links, ist ein offenes Panel sinnlos.
+matchMedia('(min-width: 961px)').addEventListener('change', e => { if (e.matches) setNav(false); });
 
 /* Fehlt die Logo-Datei, faellt die Marke auf reine Typo zurueck
    statt ein kaputtes Bild-Icon zu zeigen. */
 const brandMark = document.getElementById('brandMark');
-const dropMark = () => brandMark.remove();
-brandMark.addEventListener('error', dropMark);
-// Das error-Event kann schon vor diesem Script gefeuert haben.
-if (brandMark.complete && brandMark.naturalWidth === 0) dropMark();
+const dropMark = () => { if (brandMark.isConnected) brandMark.remove(); };
+brandMark.querySelectorAll('img').forEach(img => {
+  img.addEventListener('error', dropMark);
+  // Das error-Event kann schon vor diesem Script gefeuert haben.
+  if (img.complete && img.naturalWidth === 0) dropMark();
+});
 
 /* ---------- Nav + Fortschrittsbalken ---------- */
 const nav = document.getElementById('nav');
 const bar = document.getElementById('progress');
 const heroEl = document.getElementById('heroScroll');
+/* Aktiver Abschnitt: gemessen wird an der Bildschirmmitte, nicht an der
+   Oberkante. Sonst springt die Markierung erst, wenn der Abschnitt schon
+   halb durch ist. getBoundingClientRect statt offsetTop, weil der gepinnte
+   Projektbereich seine Dokumentposition waehrend des Pins nicht aendert. */
+const spySections = [...document.querySelectorAll('main section[id]')];
+const spyLinks = [...document.querySelectorAll('.nav-links a[href^="#"], #navPanelLinks a[href^="#"]')];
+let spyCurrent = null;
+
+function navSpy(){
+  const line = innerHeight * 0.45;
+  let active = null;
+  for (const s of spySections) {
+    const box = s.getBoundingClientRect();
+    if (box.top <= line && box.bottom > line) active = s.id;
+  }
+  // Ganz unten gewinnt der letzte Abschnitt, auch wenn die Linie ihn verfehlt.
+  if (!active && scrollY + innerHeight >= document.documentElement.scrollHeight - 4) {
+    active = spySections[spySections.length - 1].id;
+  }
+  if (active === spyCurrent) return;
+  spyCurrent = active;
+  spyLinks.forEach(a => {
+    const on = a.getAttribute('href') === '#' + active;
+    if (on) a.setAttribute('aria-current', 'true');
+    else a.removeAttribute('aria-current');
+  });
+}
+
 function navState(){
   const trigger = reduced ? 80 : Math.max(heroEl.offsetHeight - innerHeight * 0.6, 80);
   nav.dataset.scrolled = scrollY > trigger;
   const max = document.documentElement.scrollHeight - innerHeight;
   bar.style.transform = 'scaleX(' + (max > 0 ? scrollY / max : 0) + ')';
+  navSpy();
 }
 navState();
 addEventListener('scroll', navState, { passive: true });
@@ -1064,8 +1941,17 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
     const target = document.querySelector(id);
     if (!target) return;
     e.preventDefault();
-    if (lenis) lenis.scrollTo(target, { offset: -70 });
-    else target.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth' });
+    // Aus dem Panel heraus erst schliessen: solange es offen ist, steht
+    // die Seite auf overflow:hidden und Lenis pausiert. Der Fokus soll
+    // dabei nicht auf den Burger zurueckspringen, es geht ja weiter.
+    const wasOpen = navOpen;
+    focusBeforeNav = null;
+    setNav(false);
+    const go = () => {
+      if (lenis) lenis.scrollTo(target, { offset: -70 });
+      else target.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth' });
+    };
+    wasOpen ? requestAnimationFrame(go) : go();
   });
 });
 
@@ -1088,13 +1974,29 @@ function runCounter(el, dur){
    ============================================================ */
 const planPaths = document.querySelectorAll('#heroPlan .plan');
 const heroAfter = document.getElementById('heroAfter');
-const areaCounter = document.getElementById('areaCounter');
 const heroSlider = document.getElementById('heroSlider');
 
+/* Leerlauf-Wanderlicht: pro Planlinie ein Klon mit kurzem Strichmuster.
+   Laeuft rein ueber CSS, braucht also kein GSAP — sichtbar wird ein Klon
+   erst, wenn "seine" Linie fertig gezeichnet ist. */
+const sparks = new Map();
+if (!reduced) {
+  planPaths.forEach((p, i) => {
+    const s = p.cloneNode(false);
+    s.setAttribute('class', 'plan-spark');
+    s.setAttribute('pathLength', '100');
+    s.removeAttribute('data-prelude');
+    // Negativer Delay verschiebt die Phase, damit die Punkte nicht im Gleichschritt laufen.
+    s.style.animationDelay = (i * -1.3) + 's';
+    p.parentNode.insertBefore(s, p.nextSibling);
+    sparks.set(p, s);
+  });
+}
+const setSpark = (p, on) => { const s = sparks.get(p); if (s) s.classList.toggle('is-live', on); };
+
 if (reduced || !hasGSAP) {
-  planPaths.forEach(p => { p.style.strokeDasharray = 'none'; });
+  planPaths.forEach(p => { p.style.strokeDasharray = 'none'; setSpark(p, true); });
   document.getElementById('heroPlan').style.opacity = 1;
-  areaCounter.textContent = '420';
   const apply = () => { heroAfter.style.clipPath = 'inset(0 ' + (100 - heroSlider.value) + '% 0 0)'; };
   apply();
   heroSlider.addEventListener('input', apply);
@@ -1115,17 +2017,30 @@ if (reduced || !hasGSAP) {
 
   gsap.set('#heroPlan', { opacity: 1 });
   gsap.to(preludePaths, {
-    strokeDashoffset: 0, duration: 1.4, ease: 'power2.inOut', stagger: 0.16, delay: 0.55
+    strokeDashoffset: 0, duration: 1.4, ease: 'power2.inOut', stagger: 0.16, delay: 0.55,
+    onComplete: () => preludePaths.forEach(p => setSpark(p, true))
   });
+
+  /* Leerlauf-Drift: der ganze Plan atmet langsam weiter, auch wenn nicht
+     gescrollt wird. Zwei Tweens mit unterschiedlicher Laufzeit, damit die
+     Bewegung nicht sichtbar in einen Takt faellt. */
+  gsap.to('#planGroup', { x: 16, y: -11, duration: 9, ease: 'sine.inOut', yoyo: true, repeat: -1 });
+  gsap.to('#planGroup', { rotation: 0.45, transformOrigin: '50% 100%',
+    duration: 14, ease: 'sine.inOut', yoyo: true, repeat: -1 });
 
   const tl = gsap.timeline({
     scrollTrigger: { trigger: '#heroScroll', start: 'top top', end: 'bottom bottom', scrub: 0.6 }
   });
-  tl.to(scrollPaths, { strokeDashoffset: 0, duration: 52, ease: 'none', stagger: 3.5 });
-  tl.to(heroAfter, {
-    clipPath: 'inset(0 0% 0 0)', duration: 38, ease: 'power1.inOut',
-    onStart: () => runCounter(areaCounter, 1400)
-  }, 52);
+  // Einzeltweens statt stagger: nur so kann jede Linie ihr Wanderlicht selbst
+  // ein- und beim Zurueckscrollen wieder ausschalten.
+  scrollPaths.forEach((p, i) => {
+    tl.to(p, {
+      strokeDashoffset: 0, duration: 52, ease: 'none',
+      onComplete: () => setSpark(p, true),
+      onReverseComplete: () => setSpark(p, false)
+    }, i * 3.5);
+  });
+  tl.to(heroAfter, { clipPath: 'inset(0 0% 0 0)', duration: 38, ease: 'power1.inOut' }, 52);
   tl.to('#heroPlan', { opacity: 0.3, duration: 10, ease: 'none' }, 82);
   // Langsamer Zoom über den gesamten Hero — Tiefe ohne Layout-Shift
   gsap.fromTo('.hero-layer', { scale: 1.06 }, {
@@ -1139,14 +2054,14 @@ if (reduced || !hasGSAP) {
 }
 
 /* ---------- Hero-Einstieg ---------- */
-const heroIntro = ['.hero-title .line > span', '.hero-eyebrow', '.hero-foot', '.hero-meta', '.hero-plan'];
+const heroIntro = ['.hero-title .line > span', '.hero-eyebrow', '.hero-foot', '.hero-plan'];
 if (!reduced && hasGSAP) {
   // y:0 ist Pflicht — GSAP liest den CSS-Startwert translateY(110%) als
   // px-Basis ein und wuerde yPercent sonst nur obendrauf rechnen.
   gsap.fromTo('.hero-title .line > span',
     { yPercent: 110, y: 0 },
     { yPercent: 0, y: 0, duration: 1.15, ease: 'expo.out', stagger: 0.1, delay: 0.15 });
-  gsap.fromTo(['.hero-eyebrow', '.hero-foot', '.hero-meta'],
+  gsap.fromTo(['.hero-eyebrow', '.hero-foot'],
     { y: 24, opacity: 0 },
     { y: 0, opacity: 1, duration: 0.9, ease: 'power2.out', stagger: 0.1, delay: 0.5 });
 } else {
@@ -1157,9 +2072,74 @@ if (!reduced && hasGSAP) {
   }));
 }
 
+/* ---------- Woerter einpacken (Basis fuer Zeilen- und Wort-Effekte) ---------- */
+/* Nur Textknoten werden zerlegt, <br> und vorhandene Elemente bleiben stehen. */
+function wrapWords(el){
+  const words = [];
+  [...el.childNodes].forEach(node => {
+    if (node.nodeType !== Node.TEXT_NODE) return;
+    const frag = document.createDocumentFragment();
+    node.textContent.split(/(\s+)/).forEach(part => {
+      if (!part) return;
+      if (/^\s+$/.test(part)) { frag.append(part); return; }
+      const w = document.createElement('span');
+      w.className = 'w';
+      w.textContent = part;
+      frag.append(w);
+      words.push(w);
+    });
+    node.replaceWith(frag);
+  });
+  return words;
+}
+
+/* ---------- Zeilen-Splitter ---------- */
+/* Bewusst ohne SplitText: das ist ein kostenpflichtiges GSAP-Plugin.
+   Woerter wrappen, nach ihrer gemessenen Zeilenhoehe gruppieren, dann je
+   Zeile eine Maske bauen. Muss nach dem Laden der Schriften laufen —
+   sonst gruppiert es die Umbrueche der Ersatzschrift. */
+function splitLines(el){
+  if (el.children.length) return [];        // <br> oder Markup: unberuehrt lassen
+  const words = wrapWords(el);
+  if (!words.length) return [];
+  const groups = [];
+  let top = null;
+  words.forEach(w => {
+    const t = Math.round(w.offsetTop);
+    if (top === null || Math.abs(t - top) > 4) { top = t; groups.push([]); }
+    groups[groups.length - 1].push(w.textContent);
+  });
+  el.textContent = '';
+  const inner = groups.map((group, i) => {
+    const line = document.createElement('span');
+    line.className = 'line';
+    const span = document.createElement('span');
+    // Das Leerzeichen am Zeilenende bleibt sichtbar folgenlos (es faellt beim
+    // Umbruch weg), haelt aber Vorlesen, Markieren und Kopieren zusammen.
+    span.textContent = group.join(' ') + (i < groups.length - 1 ? ' ' : '');
+    line.append(span);
+    el.append(line);
+    return span;
+  });
+  el.classList.add('lines');
+  return inner;
+}
+
 /* ---------- Reveals ---------- */
+const headings = (!reduced && hasGSAP)
+  ? gsap.utils.toArray('.section-head h2, .figures h2')
+  : [];
+/* Ueberschriften, die gleich in Zeilen zerlegt werden, bringen ihre Bewegung
+   selbst mit. Ihr .reveal-Block blendet dann nur noch ein, statt zusaetzlich
+   zu schieben — sonst laufen zwei Bewegungen uebereinander. */
+headings.forEach(h => {
+  const host = h.closest('.reveal');
+  if (host) host.dataset.linesHost = '';
+});
+
 if (!reduced && hasGSAP) {
   document.querySelectorAll('.reveal').forEach(el => {
+    if ('linesHost' in el.dataset) gsap.set(el, { y: 0 });
     gsap.to(el, { opacity: 1, y: 0, duration: 0.85, ease: 'power2.out',
       scrollTrigger: { trigger: el, start: 'top 86%', once: true } });
   });
@@ -1169,6 +2149,64 @@ if (!reduced && hasGSAP) {
   });
 } else {
   document.querySelectorAll('.reveal').forEach(el => { el.style.opacity = 1; el.style.transform = 'none'; });
+}
+
+/* ---------- Ueberschriften: Zeilen steigen aus der Maske ---------- */
+if (headings.length) {
+  const plain = new Map(headings.map(h => [h, h.textContent.replace(/\s+/g, ' ').trim()]));
+  let lineTweens = [];
+
+  function buildLines(){
+    lineTweens.forEach(t => { if (t.scrollTrigger) t.scrollTrigger.kill(); t.kill(); });
+    lineTweens = [];
+    headings.forEach(h => {
+      h.classList.remove('lines');
+      h.textContent = plain.get(h);
+      const lines = splitLines(h);
+      if (!lines.length) return;
+      // Steht die Ueberschrift beim Neubau schon im Bild (Resize), waere ein
+      // erneutes Einfahren nur Unruhe — dann direkt in die Endlage.
+      if (h.getBoundingClientRect().top < innerHeight * 0.88) { gsap.set(lines, { yPercent: 0 }); return; }
+      lineTweens.push(gsap.fromTo(lines, { yPercent: 110 }, {
+        yPercent: 0, duration: 1, ease: 'expo.out', stagger: 0.08,
+        scrollTrigger: { trigger: h, start: 'top 88%', once: true }
+      }));
+    });
+    ScrollTrigger.refresh();
+  }
+
+  const fontsReady = document.fonts ? document.fonts.ready : Promise.resolve();
+  fontsReady.catch(() => {}).then(buildLines);
+
+  // Nur auf Breitenaenderung neu umbrechen — auf Mobilgeraeten wackelt die
+  // Hoehe beim Ein- und Ausblenden der Browserleiste staendig.
+  let lastWidth = innerWidth, rebuild;
+  addEventListener('resize', () => {
+    if (innerWidth === lastWidth) return;
+    lastWidth = innerWidth;
+    clearTimeout(rebuild);
+    rebuild = setTimeout(buildLines, 250);
+  }, { passive: true });
+}
+
+/* ---------- Statement: das Foto fuellt die Worte nacheinander ---------- */
+const fillEl = document.querySelector('.statement .fill');
+if (fillEl && !reduced && hasGSAP && CSS.supports('color', 'color-mix(in srgb, red, blue)')) {
+  const words = wrapWords(fillEl);
+  if (words.length) {
+    // Aufhaenger ist die Zeile selbst, nicht der Abschnitt: dessen Polster
+    // waere schon durchlaufen, bevor der Satz ueberhaupt im Bild steht.
+    gsap.fromTo(words, { '--f': 1 }, {
+      '--f': 0, ease: 'none', stagger: { amount: 0.65 },
+      scrollTrigger: { trigger: '.statement h2', start: 'top 88%', end: 'top 32%', scrub: 0.6 }
+    });
+  }
+  // Das Foto in der Schrift wandert leicht mit — sonst klebt es beim
+  // Scrollen starr in den Buchstaben.
+  gsap.fromTo(fillEl, { backgroundPosition: '50% 42%' }, {
+    backgroundPosition: '50% 58%', ease: 'none',
+    scrollTrigger: { trigger: '.statement', start: 'top bottom', end: 'bottom top', scrub: true }
+  });
 }
 
 /* ---------- Parallax ---------- */
@@ -1182,30 +2220,236 @@ if (!reduced && hasGSAP) {
     scrollTrigger: { trigger: bg.closest('.figures'), start: 'top bottom', end: 'bottom top', scrub: true } });
 }
 
-/* ---------- Projekte: horizontaler Scroll ---------- */
+/* ---------- Scrolltempo als Material ---------- */
+/* Lenis liefert bei jedem Tick die aktuelle Geschwindigkeit. Daraus ein
+   sehr flacher Skew auf Karten und Bildrahmen: bewusst wahrnehmen soll man
+   das nicht, es nimmt der Seite nur die Steifheit. Gedeckelt bei 2,5 Grad. */
+if (!reduced && hasGSAP && lenis) {
+  const skewTargets = gsap.utils.toArray('.project, .svc-media');
+  const zoomTargets = gsap.utils.toArray('.svc-media img');
+  if (skewTargets.length) {
+    const setSkew = gsap.quickSetter(skewTargets, 'skewY', 'deg');
+    // scaleX/scaleY einzeln: die Sammeleigenschaft 'scale' kennt der
+    // Schnellsetzer nicht, sie wird erst beim Tween-Aufbau zerlegt.
+    const setZoomX = zoomTargets.length ? gsap.quickSetter(zoomTargets, 'scaleX') : null;
+    const setZoomY = zoomTargets.length ? gsap.quickSetter(zoomTargets, 'scaleY') : null;
+    const clampSkew = gsap.utils.clamp(-2.5, 2.5);
+    let skew = 0, skewTo = 0, zoom = 1, zoomTo = 1, settle;
+
+    lenis.on('scroll', ({ velocity }) => {
+      skewTo = clampSkew(velocity * 0.05);
+      zoomTo = 1 + Math.min(Math.abs(velocity) * 0.0007, 0.02);
+      // Beim Anhalten kommt kein Ereignis mit Tempo 0 mehr — ohne diesen
+      // Nachlauf bliebe die letzte Neigung stehen.
+      clearTimeout(settle);
+      settle = setTimeout(() => { skewTo = 0; zoomTo = 1; }, 120);
+    });
+
+    /* Eigene Interpolation statt gsap.quickTo: 'scale' ist eine Sammel-
+       eigenschaft, die GSAP intern in scaleX/scaleY zerlegt — quickTo findet
+       sie deshalb nicht wieder und verwirft jeden Tick. */
+    gsap.ticker.add(() => {
+      const ds = skewTo - skew, dz = zoomTo - zoom;
+      if (Math.abs(ds) < 0.0015 && Math.abs(dz) < 0.0002) return;
+      skew += ds * 0.12;
+      zoom += dz * 0.12;
+      setSkew(skew);
+      if (setZoomX) { setZoomX(zoom); setZoomY(zoom); }
+    });
+  }
+}
+
+/* ---------- Projekte: horizontaler Scroll, Ziehen, Gegen-Parallax ---------- */
 const track = document.getElementById('projectsTrack');
-if (!reduced && hasGSAP && matchMedia('(min-width: 901px)').matches) {
+const cards = track ? [...track.querySelectorAll('.project')] : [];
+
+if (track && cards.length && !reduced && hasGSAP) {
+  /* Hover laeuft ab hier ueber GSAP statt ueber CSS: auf denselben
+     Elementen liegen Skew und Parallax, und zwei Quellen fuer dieselbe
+     transform-Eigenschaft wuerden sich gegenseitig ueberschreiben. */
+  track.classList.add('is-driven');
+  cards.forEach(card => {
+    const img = card.querySelector('.project-img img');
+    const lift = gsap.to(card, { y: -8, duration: 0.35, ease: 'power2.out', paused: true });
+    const zoom = img ? gsap.to(img, { scale: 1.06, duration: 0.5, ease: 'power2.out', paused: true }) : null;
+    card.addEventListener('pointerenter', () => { lift.play(); if (zoom) zoom.play(); });
+    card.addEventListener('pointerleave', () => { lift.reverse(); if (zoom) zoom.reverse(); });
+  });
+}
+
+/* ---------- Laufweite der Kartenbahn anzeigen ---------- */
+/* Der Balken sagt, wie viel von der Bahn noch kommt — auf dem Desktop
+   laeuft sie am Scrollrad, auf dem Telefon am Finger. Der Reiter ist so
+   breit wie der sichtbare Anteil, wie bei einer Bildlaufleiste. */
+const trackBar = document.querySelector('#trackProgress span');
+function setTrackProgress(p, visibleFraction){
+  if (!trackBar) return;
+  const f = Math.min(Math.max(visibleFraction, 0.08), 1);
+  trackBar.style.width = (f * 100) + '%';
+  // Verschiebung in Vielfachen der eigenen Breite, damit der Reiter genau
+  // am rechten Rand ankommt.
+  trackBar.style.transform = 'translateX(' + (Math.min(Math.max(p, 0), 1) * (1 - f) / f * 100) + '%)';
+}
+if (track) {
+  // Mobil und bei reduzierter Bewegung scrollt die Bahn selbst.
+  const fromScroll = () => {
+    const max = track.scrollWidth - track.clientWidth;
+    setTrackProgress(max > 0 ? track.scrollLeft / max : 0,
+                     track.clientWidth / track.scrollWidth);
+  };
+  track.addEventListener('scroll', fromScroll, { passive: true });
+  fromScroll();
+}
+
+if (track && cards.length && !reduced && hasGSAP && matchMedia('(min-width: 901px)').matches) {
   const distance = () => track.scrollWidth - innerWidth + 48;
   gsap.to(track, { x: () => -distance(), ease: 'none',
     scrollTrigger: { trigger: '#projekte', start: 'top top', end: () => '+=' + distance(),
-      pin: true, scrub: 0.5, invalidateOnRefresh: true, anticipatePin: 1 } });
+      pin: true, scrub: 0.5, invalidateOnRefresh: true, anticipatePin: 1,
+      onUpdate: self => setTrackProgress(self.progress, innerWidth / track.scrollWidth),
+      onRefresh: self => setTrackProgress(self.progress, innerWidth / track.scrollWidth) } });
+
+  // Gegen-Parallax: die Bilder laufen dem Kartenlauf leicht hinterher.
+  // Den Spielraum dafuer liefert die Breite von 112 % aus dem CSS.
+  cards.forEach(card => {
+    const img = card.querySelector('.project-img img');
+    if (!img) return;
+    gsap.fromTo(img, { xPercent: -5 }, { xPercent: 5, ease: 'none',
+      scrollTrigger: { trigger: '#projekte', start: 'top top', end: () => '+=' + distance(),
+        scrub: 0.5, invalidateOnRefresh: true } });
+  });
+
+  /* Ziehen mit Nachlauf. Der Zug veraendert nicht die Bahn selbst, sondern
+     die Scrollposition der Seite — so bleibt ScrollTrigger die einzige
+     Quelle der Wahrheit und Pin, Fortschrittsbalken und Parallax bleiben
+     synchron. */
+  const posNow = () => (lenis ? lenis.scroll : scrollY);
+  const goTo = (y, immediate) => {
+    if (lenis) lenis.scrollTo(y, immediate ? { immediate: true }
+                                           : { duration: 1.1, easing: t => 1 - Math.pow(1 - t, 4) });
+    else window.scrollTo(0, y);
+  };
+
+  let dragging = false, lastX = 0, startX = 0, drift = 0, pointer = null;
+  track.classList.add('is-grab');
+  track.addEventListener('dragstart', e => e.preventDefault());
+
+  track.addEventListener('pointerdown', e => {
+    if (e.pointerType === 'mouse' && e.button !== 0) return;
+    dragging = true; drift = 0;
+    startX = lastX = e.clientX;
+    pointer = e.pointerId;
+    track.setPointerCapture(pointer);
+    track.classList.add('is-dragging');
+  });
+
+  track.addEventListener('pointermove', e => {
+    if (!dragging) return;
+    const dx = e.clientX - lastX;
+    lastX = e.clientX;
+    drift = drift * 0.7 + dx * 0.3;   // geglaettet, sonst zaehlt nur das letzte Ruckeln
+    goTo(posNow() - dx, true);
+  });
+
+  const endDrag = () => {
+    if (!dragging) return;
+    dragging = false;
+    track.classList.remove('is-dragging');
+    if (pointer !== null && track.hasPointerCapture(pointer)) track.releasePointerCapture(pointer);
+    pointer = null;
+    if (Math.abs(drift) > 1) goTo(posNow() - drift * 14, false);
+  };
+  track.addEventListener('pointerup', endDrag);
+  track.addEventListener('pointercancel', endDrag);
+
+  // Nach einem echten Zug darf der abschliessende Klick nichts mehr ausloesen.
+  track.addEventListener('click', e => {
+    if (Math.abs(e.clientX - startX) > 8) { e.preventDefault(); e.stopPropagation(); }
+  }, true);
 }
 
-/* ---------- Drag-Cursor über der Galerie ---------- */
-const cursor = document.getElementById('dragCursor');
-if (fine && !reduced) {
-  let raf = null;
-  track.addEventListener('pointerenter', () => cursor.classList.add('on'));
-  track.addEventListener('pointerleave', () => cursor.classList.remove('on'));
-  track.addEventListener('pointermove', e => {
-    if (raf) cancelAnimationFrame(raf);
-    raf = requestAnimationFrame(() => {
-      cursor.style.top = e.clientY + 'px';
-      cursor.style.left = e.clientX + 'px';
-    });
+/* ---------- Lightbox fuer die Projektbilder ---------- */
+/* Die Karten hoben sich schon immer beim Hover — jetzt fuehrt der Klick
+   auch irgendwohin. Die Inhalte kommen aus den Karten selbst, damit Text
+   und Bild nicht an zwei Stellen gepflegt werden muessen. */
+const lb = document.getElementById('lightbox');
+if (lb && cards.length) {
+  const lbStage = document.getElementById('lbStage');
+  const lbKind  = document.getElementById('lbKind');
+  const lbTitle = document.getElementById('lbTitle');
+  const lbText  = document.getElementById('lbText');
+  const lbCount = document.getElementById('lbCount');
+  const lbClose = document.getElementById('lbClose');
+
+  const shots = cards.map(card => ({
+    kind:  card.querySelector('.project-body .mono').textContent.trim(),
+    title: card.querySelector('.project-open').textContent.trim(),
+    text:  card.querySelectorAll('.project-body p')[1].textContent.trim(),
+    card
+  }));
+
+  let lbIndex = 0, lbBefore = null;
+
+  // Das <picture> der Karte wird geklont, damit AVIF und die Groessenstaffel
+  // auch hier greifen — nur ohne Bildausschnitt und Lazy-Laden.
+  function stageOf(card){
+    const pic = card.querySelector('.project-img picture').cloneNode(true);
+    pic.querySelectorAll('source,img').forEach(n => n.setAttribute('sizes', '92vw'));
+    const img = pic.querySelector('img');
+    img.removeAttribute('style');
+    img.removeAttribute('loading');
+    return pic;
+  }
+
+  function renderLb(){
+    const s = shots[lbIndex];
+    lbStage.replaceChildren(stageOf(s.card));
+    lbKind.textContent  = s.kind;
+    lbTitle.textContent = s.title;
+    lbText.textContent  = s.text;
+    lbCount.textContent = (lbIndex + 1) + ' / ' + shots.length;
+  }
+
+  function openLb(i){
+    lbIndex = (i + shots.length) % shots.length;
+    renderLb();
+    lbBefore = document.activeElement;
+    lb.dataset.open = 'true';
+    root.toggleAttribute('data-lb-open', true);   // sperrt das Scrollen dahinter
+    if (lenis) lenis.stop();
+    requestAnimationFrame(() => lbClose.focus());
+  }
+  function closeLb(){
+    if (lb.dataset.open !== 'true') return;
+    lb.dataset.open = 'false';
+    root.toggleAttribute('data-lb-open', false);
+    if (lenis) lenis.start();
+    if (lbBefore && lbBefore.isConnected) lbBefore.focus();
+    lbBefore = null;
+  }
+  const stepLb = d => { lbIndex = (lbIndex + d + shots.length) % shots.length; renderLb(); };
+
+  cards.forEach((card, i) => {
+    card.querySelector('.project-open').addEventListener('click', () => openLb(i));
   });
-} else {
-  cursor.remove();
+  lbClose.addEventListener('click', closeLb);
+  document.getElementById('lbPrev').addEventListener('click', () => stepLb(-1));
+  document.getElementById('lbNext').addEventListener('click', () => stepLb(1));
+  // Klick neben das Bild schliesst — die Knoepfe fangen ihre Klicks selbst ab.
+  lb.addEventListener('click', e => { if (e.target === lb || e.target === lbStage) closeLb(); });
+
+  addEventListener('keydown', e => {
+    if (lb.dataset.open !== 'true') return;
+    if (e.key === 'Escape')     { e.preventDefault(); closeLb(); }
+    else if (e.key === 'ArrowLeft')  { e.preventDefault(); stepLb(-1); }
+    else if (e.key === 'ArrowRight') { e.preventDefault(); stepLb(1); }
+    else if (e.key === 'Tab') {
+      const items = [...lb.querySelectorAll('button')];
+      const first = items[0], last = items[items.length - 1];
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    }
+  });
 }
 
 /* ---------- Counter auslösen ---------- */
@@ -1214,29 +2458,6 @@ document.querySelectorAll('.counter').forEach(el => {
   else el.textContent = el.dataset.target + (el.dataset.suffix || '');
 });
 
-/* ---------- Magnetische Buttons ---------- */
-if (!reduced && fine) {
-  document.querySelectorAll('[data-magnetic]').forEach(btn => {
-    let raf = null;
-    btn.addEventListener('pointermove', e => {
-      const r = btn.getBoundingClientRect();
-      const x = (e.clientX - r.left - r.width / 2) * 0.28;
-      const y = (e.clientY - r.top - r.height / 2) * 0.28;
-      if (raf) cancelAnimationFrame(raf);
-      raf = requestAnimationFrame(() => {
-        btn.style.willChange = 'transform';
-        btn.style.transform = 'translate(' + x + 'px,' + y + 'px)';
-      });
-    });
-    btn.addEventListener('pointerenter', () => { btn.style.transition = ''; });
-    btn.addEventListener('pointerleave', () => {
-      btn.style.transition = 'transform 420ms cubic-bezier(0.4,0,0.2,1)';
-      btn.style.transform = 'translate(0,0)';
-      setTimeout(() => { btn.style.transition = ''; btn.style.willChange = 'auto'; }, 440);
-    });
-  });
-}
-
 /* ============================================================
    FORMULAR-VALIDIERUNG (generisch)
    ============================================================ */
@@ -1244,7 +2465,9 @@ const MSG = {
   vorname:'Bitte Vornamen angeben.', nachname:'Bitte Nachnamen angeben.',
   email:'Bitte eine gültige E-Mail-Adresse angeben.',
   anliegen:'Bitte ein Anliegen auswählen.', stelle:'Bitte eine Stelle auswählen.',
-  nachricht:'Bitte beschreiben Sie kurz Ihr Anliegen.'
+  nachricht:'Bitte beschreiben Sie kurz Ihr Anliegen.',
+  captcha:'Bitte die Rechenaufgabe lösen.',
+  datenschutz:'Ohne Ihre Einwilligung dürfen wir die Angaben nicht verarbeiten.'
 };
 function setError(form, name, msg, field){
   const box = form.querySelector('.error[data-for="' + name + '"]');
@@ -1253,32 +2476,157 @@ function setError(form, name, msg, field){
 }
 function validateField(form, f){
   if (!f.required) return true;
-  let ok = f.value.trim() !== '';
-  if (ok && f.type === 'email') ok = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(f.value.trim());
-  setError(form, f.name, ok ? '' : (MSG[f.name] || 'Pflichtfeld.'), f);
-  return ok;
+  // Kaestchen haben immer value="on" — hier zaehlt allein der Haken
+  if (f.type === 'checkbox'){
+    setError(form, f.name, f.checked ? '' : (MSG[f.name] || 'Pflichtfeld.'), f);
+    return f.checked;
+  }
+  const val = f.value.trim();
+  let msg = '';
+  if (val === '')                                                   msg = MSG[f.name] || 'Pflichtfeld.';
+  else if (f.type === 'email' && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(val)) msg = MSG.email;
+  else if ('captcha' in f.dataset && !captchaSolved(form, val))      msg = 'Das Ergebnis stimmt nicht. Bitte noch einmal rechnen.';
+  setError(form, f.name, msg, f);
+  return !msg;
 }
 function wire(form){
   form.querySelectorAll('[required]').forEach(f => {
     f.addEventListener('blur', () => validateField(form, f));
     f.addEventListener('input', () => { if (f.getAttribute('aria-invalid') === 'true') validateField(form, f); });
   });
+  setupCaptcha(form);
 }
+
+/* ============================================================
+   SICHERHEITSABFRAGE (Rechen-Captcha + Honigtopf)
+   Bewusst ohne Drittanbieter: kein Datenabfluss, keine Einwilligung
+   noetig, funktioniert auch mit Screenreader und Tastatur.
+   ============================================================ */
+const ZAHLWORT = ['null','eins','zwei','drei','vier','fünf','sechs','sieben','acht','neun',
+                  'zehn','elf','zwölf','dreizehn','vierzehn','fünfzehn','sechzehn','siebzehn','achtzehn'];
+const answers = new WeakMap();   // Formular -> aktuelles Ergebnis
+
+function newTask(form){
+  const task  = form.querySelector('[data-captcha-task]');
+  const input = form.querySelector('[data-captcha]');
+  if (!task || !input) return;
+  const rnd = n => Math.floor(Math.random() * n);
+  const plus = Math.random() < 0.5;
+  // Beim Minus bleibt das Ergebnis immer >= 2: nie negativ und nie null,
+  // denn eine leere Eingabe darf keine gueltige Antwort sein.
+  const a = plus ? 1 + rnd(9) : 3 + rnd(7);
+  const b = plus ? 1 + rnd(9) : 1 + rnd(a - 2);
+  answers.set(form, plus ? a + b : a - b);
+  task.textContent = a + (plus ? ' + ' : ' − ') + b + ' =';
+  input.value = '';
+  setError(form, input.name, '', input);
+}
+
+// Ziffer oder ausgeschriebenes Zahlwort werden akzeptiert
+function captchaSolved(form, value){
+  const v = value.trim().toLowerCase().replace(/[.,!?]/g, '');
+  const wort = ZAHLWORT.indexOf(v);
+  const num  = wort > -1 ? wort : (/^\d{1,2}$/.test(v) ? Number(v) : NaN);
+  return num === answers.get(form);
+}
+
+function setupCaptcha(form){
+  if (!form.querySelector('[data-captcha]')) return;
+  newTask(form);
+  // Erst ab der zweiten Aufgabe vorlesen — die erste steht schon beim Fokus da
+  form.querySelector('[data-captcha-task]').setAttribute('aria-live', 'polite');
+  const btn = form.querySelector('[data-captcha-new]');
+  if (btn) btn.addEventListener('click', () => {
+    newTask(form);
+    form.querySelector('[data-captcha]').focus();
+  });
+}
+
+// Honigtopf ausgefuellt -> Bot. Nicht verraten, einfach nichts tun.
+const isBot = form => [...form.querySelectorAll('[data-hp]')].some(f => f.value.trim() !== '');
+
+/* ============================================================
+   VERSAND ueber MAILTO
+   Die Seite ist statisch, es gibt keinen Server, der eine Mail
+   verschicken koennte. Wir oeffnen darum das Mailprogramm des
+   Besuchers mit fertigem Entwurf — abschicken muss er selbst.
+   Dateianhaenge kennt mailto: nicht, die PDFs werden im Text
+   nur namentlich aufgefuehrt.
+   ============================================================ */
+const EMPFAENGER = 'leon-kolb@live.de';
+
+// Outlook und einige Android-Clients kappen lange mailto-Links
+// stillschweigend. 1800 Zeichen fuer den fertigen Link sind ueberall
+// unkritisch; laengere Nachrichten werden sichtbar gekuerzt.
+const MAILTO_MAX = 1800;
+
+// "Label: Wert" — leere Felder liefern null und fallen unten raus.
+// Leerstrings bleiben erhalten, sie erzeugen die Absaetze im Text.
+const zeile = (label, wert) => (wert && wert.trim()) ? label + ': ' + wert.trim() : null;
+
+function mailtoUrl(betreff, zeilen){
+  const kopf = 'mailto:' + EMPFAENGER + '?subject=' + encodeURIComponent(betreff) + '&body=';
+  let body = zeilen.filter(z => z !== null).join('\r\n');
+  if ((kopf + encodeURIComponent(body)).length > MAILTO_MAX) {
+    const rest = '\r\n\r\n[Text gekürzt — bitte im Mailprogramm ergänzen]';
+    // Kodierte Laenge ist nicht linear zur Zeichenzahl (Umlaute, Zeilenumbrueche),
+    // darum in Schritten kuerzen und jedes Mal neu messen.
+    while (body && (kopf + encodeURIComponent(body + rest)).length > MAILTO_MAX) {
+      body = body.slice(0, -32);
+    }
+    body += rest;
+  }
+  return kopf + encodeURIComponent(body);
+}
+
+// Mailprogramm oeffnen und einen Ersatzlink in der Statuszeile hinterlassen:
+// Ist kein Mailclient eingerichtet — Webmail im Browser, frisches Windows —
+// passiert beim Klick sonst sichtbar gar nichts.
+function oeffneEntwurf(url, statusEl, text){
+  statusEl.textContent = text + ' ';
+  const a = document.createElement('a');
+  a.className = 'status-link';
+  a.href = url;
+  a.textContent = 'Entwurf erneut öffnen';
+  statusEl.append(a);
+  window.location.href = url;
+}
+
+// Vor- und Nachname zu einem Namen, ohne doppelte Leerzeichen
+const ganzerName = form => [form.elements.vorname.value, form.elements.nachname.value]
+  .map(s => s.trim()).filter(Boolean).join(' ');
 
 const contactForm = document.getElementById('contactForm');
 wire(contactForm);
 contactForm.addEventListener('submit', e => {
   e.preventDefault();
+  const status = document.getElementById('formStatus');
+  if (isBot(contactForm)) return;
   const fields = [...contactForm.querySelectorAll('[required]')];
   const valid = fields.map(f => validateField(contactForm, f)).every(Boolean);
-  const status = document.getElementById('formStatus');
   if (!valid) {
     status.textContent = 'Bitte prüfen Sie die markierten Felder.';
     const bad = fields.find(f => f.getAttribute('aria-invalid') === 'true');
     if (bad) bad.focus();
     return;
   }
-  status.textContent = 'Prototyp — es wurde nichts versendet. Im Livebetrieb ginge die Anfrage jetzt raus.';
+  const el   = contactForm.elements;
+  const name = ganzerName(contactForm);
+  oeffneEntwurf(mailtoUrl(
+    'Anfrage: ' + el.anliegen.value + (name ? ' — ' + name : ''),
+    [
+      zeile('Name',     name),
+      zeile('E-Mail',   el.email.value),
+      zeile('Telefon',  el.telefon.value),
+      zeile('Anliegen', el.anliegen.value),
+      '',
+      'Nachricht:',
+      el.nachricht.value.trim(),
+      '',
+      '— gesendet über das Kontaktformular von gartengestaltung-belzner.de'
+    ]
+  ), status, 'Ihr Mailprogramm öffnet sich mit der fertigen Anfrage — bitte dort noch auf „Senden" klicken.');
+  newTask(contactForm);   // fuer den naechsten Versuch eine frische Aufgabe
 });
 
 /* ============================================================
@@ -1378,20 +2726,114 @@ dropzone.addEventListener('drop', e => {
 }));
 
 wire(jobForm);
+
+/* ============================================================
+   BEWERBUNG: drei Schritte statt einer langen Liste
+   Alle Felder bleiben im selben <form>, nur ein- und ausgeblendet —
+   der Versand unten sieht deshalb genau dasselbe Formular wie zuvor.
+   ============================================================ */
+const panels    = [...jobForm.querySelectorAll('.step-panel')];
+const stepDots  = [...jobForm.querySelectorAll('#jobSteps .step')];
+const stepCount = document.getElementById('jobStepCount');
+const btnPrev   = jobForm.querySelector('[data-prev]');
+const btnNext   = jobForm.querySelector('[data-next]');
+const btnSend   = jobForm.querySelector('[data-send]');
+const LAST      = panels.length - 1;
+let step = 0;
+
+// Prueft nur den sichtbaren Schritt — der letzte haengt zusaetzlich an den PDFs
+function stepValid(i){
+  const fields = [...panels[i].querySelectorAll('[required]')];
+  let ok = fields.map(f => validateField(jobForm, f)).every(Boolean);
+  if (i === LAST && !picked.length) { fileError('Bitte mindestens ein PDF anhängen.'); ok = false; }
+  if (!ok) {
+    jobStatus.textContent = 'Bitte prüfen Sie die markierten Felder.';
+    const bad = fields.find(f => f.getAttribute('aria-invalid') === 'true');
+    (bad || dropzone).focus();
+  }
+  return ok;
+}
+
+function showStep(i, focus){
+  step = i;
+  panels.forEach((p, n) => { p.hidden = n !== i; });
+  stepDots.forEach((d, n) => {
+    d.dataset.state = n < i ? 'done' : (n === i ? 'current' : '');
+    if (n === i) d.setAttribute('aria-current', 'step');
+    else         d.removeAttribute('aria-current');
+  });
+  stepCount.textContent = 'Schritt ' + (i + 1) + ' von ' + panels.length;
+  btnPrev.hidden = i === 0;
+  btnNext.hidden = i === LAST;
+  btnSend.hidden = i !== LAST;
+  // Fokus auf die Gruppe: der Screenreader liest die Ueberschrift des Schritts
+  if (focus) panels[i].focus({ preventScroll: true });
+  // Ist der Formularkopf aus dem Bild gerutscht, sanft zurueckholen
+  const box = jobForm.getBoundingClientRect();
+  if (box.top < 0) {
+    const y = box.top + (lenis ? lenis.scroll : scrollY) - 96;
+    if (lenis) lenis.scrollTo(y);
+    else scrollTo({ top: y, behavior: reduced ? 'auto' : 'smooth' });
+  }
+  if (hasGSAP) ScrollTrigger.refresh();   // Sektionshoehe hat sich geaendert
+}
+
+btnNext.addEventListener('click', () => {
+  jobStatus.textContent = '';
+  if (stepValid(step)) showStep(step + 1, true);
+});
+btnPrev.addEventListener('click', () => {
+  jobStatus.textContent = '';
+  showStep(step - 1, true);
+});
+
 jobForm.addEventListener('submit', e => {
   e.preventDefault();
+  if (isBot(jobForm)) return;
+  // Enter im Textfeld loest sonst schon aus Schritt 1 den Versand aus
+  if (step < LAST) {
+    jobStatus.textContent = '';
+    if (stepValid(step)) showStep(step + 1, true);
+    return;
+  }
   const fields = [...jobForm.querySelectorAll('[required]')];
   let valid = fields.map(f => validateField(jobForm, f)).every(Boolean);
   if (!picked.length) { fileError('Bitte mindestens ein PDF anhängen.'); valid = false; }
   if (!valid) {
-    jobStatus.textContent = 'Bitte prüfen Sie die markierten Felder.';
     const bad = fields.find(f => f.getAttribute('aria-invalid') === 'true');
-    (bad || dropzone).focus();
+    // Der Fehler kann in einem eingeklappten Schritt liegen — erst hin, dann fokussieren
+    if (bad) {
+      const i = panels.indexOf(bad.closest('.step-panel'));
+      if (i > -1 && i !== step) showStep(i, false);
+      bad.focus();
+    } else {
+      dropzone.focus();
+    }
+    jobStatus.textContent = 'Bitte prüfen Sie die markierten Felder.';
     return;
   }
-  const total = picked.reduce((s, f) => s + f.size, 0);
-  jobStatus.textContent = 'Prototyp — nichts versendet. Es würden ' + picked.length +
-    ' PDF (' + fmt(total) + ') mitgeschickt.';
+  const el        = jobForm.elements;
+  const name      = ganzerName(jobForm);
+  const nachricht = el.nachricht.value.trim();
+  const total     = picked.reduce((s, f) => s + f.size, 0);
+  oeffneEntwurf(mailtoUrl(
+    'Bewerbung: ' + el.stelle.value + (name ? ' — ' + name : ''),
+    [
+      zeile('Name',    name),
+      zeile('E-Mail',  el.email.value),
+      zeile('Telefon', el.telefon.value),
+      zeile('Stelle',  el.stelle.value),
+      '',
+      ...(nachricht ? ['Nachricht:', nachricht, ''] : []),
+      'Bitte noch anhängen — ' + picked.length + ' Datei' + (picked.length === 1 ? '' : 'en') +
+        ', zusammen ' + fmt(total) + ':',
+      ...picked.map(p => '- ' + p.name + ' (' + fmt(p.size) + ')'),
+      '',
+      '— gesendet über das Bewerbungsformular von gartengestaltung-belzner.de'
+    ]
+  ), jobStatus, 'Ihr Mailprogramm öffnet sich. Wichtig: die ' + picked.length + ' PDF-Datei' +
+     (picked.length === 1 ? '' : 'en') + ' dort noch von Hand anhängen.');
+  newTask(jobForm);       // fuer den naechsten Versuch eine frische Aufgabe
 });
 
 /* ============================================================
