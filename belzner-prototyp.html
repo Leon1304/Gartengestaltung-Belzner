@@ -1,0 +1,1355 @@
+<!DOCTYPE html>
+<html lang="de" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gartengestaltung / Baumschule Belzner — Bensheim</title>
+<meta name="description" content="Garten- und Landschaftsbau aus Bensheim. Fertigrasen, Steinarbeiten, Pflanzenarbeiten, Wassersysteme, Mähroboter und Baumschule für die Region Bergstraße.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://static.wixstatic.com">
+<link rel="preload" as="image" fetchpriority="high"
+      href="https://static.wixstatic.com/media/272120_0699ced1dc9849d1ad04667e409174f4~mv2.jpg/v1/fill/w_1800,h_1350,al_c,q_82,enc_auto/x.jpg">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT,WONK@9..144,400..900,0..100,0..1&family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+/* ============================================================
+   1. DESIGN TOKENS
+   ============================================================ */
+:root{
+  --ink-900:#0B0C0B; --ink-800:#101210; --ink-700:#161815; --ink-600:#22251F;
+  --paper-000:#FAFAF8; --paper-100:#F0F0EC; --paper-200:#E4E5DF;
+  --stone-500:#8C9088; --stone-400:#A8ACA2; --stone-600:#55584F;
+  --accent-500:#4C9A4A; --accent-600:#3D7C3B; --accent-700:#2E5E2D; --accent-400:#5BAE57;
+
+  /* LIGHT MODE */
+  --color-bg:var(--paper-000);
+  --color-bg-alt:var(--paper-100);
+  --color-bg-sunk:var(--paper-200);
+  --color-fg:var(--ink-900);
+  --color-fg-muted:var(--stone-600);      /* 6,94:1 */
+  --color-line:rgba(11,12,11,.14);
+  --color-line-strong:rgba(11,12,11,.28);
+  --color-accent-text:var(--accent-600);  /* 4,85:1 */
+  --color-accent-hover:var(--accent-700); /* 7,29:1 */
+  --color-accent-surface:var(--accent-600);
+  --color-on-accent:var(--paper-000);     /* 4,85:1 */
+  --color-plan:#FAFAF8;
+  --color-danger:#B3301F;                 /* 5,98:1 */
+  --shadow-card:0 1px 2px rgba(11,12,11,.04),0 8px 24px -12px rgba(11,12,11,.12);
+  --shadow-lift:0 24px 60px -28px rgba(11,12,11,.42);
+
+  --radius-sm:8px; --radius-md:12px; --radius-lg:16px; --radius-xl:24px;
+  --radius-2xl:32px; --radius-full:999px;
+
+  --step--2:clamp(0.69rem,0.67rem + 0.12vw,0.76rem);
+  --step--1:clamp(0.83rem,0.79rem + 0.20vw,0.94rem);
+  --step-0:clamp(1.00rem,0.93rem + 0.33vw,1.19rem);
+  --step-1:clamp(1.20rem,1.09rem + 0.54vw,1.50rem);
+  --step-2:clamp(1.44rem,1.27rem + 0.85vw,1.90rem);
+  --step-3:clamp(1.73rem,1.47rem + 1.29vw,2.40rem);
+  --step-4:clamp(2.07rem,1.70rem + 1.88vw,3.03rem);
+  --step-5:clamp(2.49rem,1.94rem + 2.71vw,3.83rem);
+  --step-6:clamp(2.99rem,2.21rem + 3.87vw,4.85rem);
+  --step-7:clamp(3.58rem,2.44rem + 5.72vw,6.14rem);
+  --step-8:clamp(4.30rem,2.61rem + 8.45vw,7.78rem);
+
+  --space-3xs:clamp(0.25rem,0.24rem + 0.07vw,0.31rem);
+  --space-2xs:clamp(0.50rem,0.47rem + 0.17vw,0.59rem);
+  --space-xs:clamp(0.75rem,0.70rem + 0.25vw,0.89rem);
+  --space-s:clamp(1.00rem,0.93rem + 0.33vw,1.19rem);
+  --space-m:clamp(1.50rem,1.40rem + 0.50vw,1.78rem);
+  --space-l:clamp(2.00rem,1.87rem + 0.67vw,2.38rem);
+  --space-xl:clamp(3.00rem,2.80rem + 1.00vw,3.56rem);
+  --space-2xl:clamp(4.00rem,3.73rem + 1.34vw,4.75rem);
+  --space-3xl:clamp(6.00rem,5.60rem + 2.01vw,7.13rem);
+
+  --ease-out:cubic-bezier(0.4,0,0.2,1);
+  --ease-expo:cubic-bezier(0.16,1,0.3,1);
+  --dur-fast:180ms; --dur-base:240ms; --dur-slow:420ms;
+
+  --wrap:min(100% - var(--space-l) * 2, 1320px);
+  --measure:68ch;
+}
+
+[data-theme="dark"]{
+  --color-bg:var(--ink-900);
+  --color-bg-alt:var(--ink-700);
+  --color-bg-sunk:var(--ink-800);
+  --color-fg:var(--paper-000);
+  --color-fg-muted:var(--stone-400);      /* 8,48:1 */
+  --color-line:rgba(250,250,248,.14);
+  --color-line-strong:rgba(250,250,248,.30);
+  --color-accent-text:var(--accent-500);  /* 5,63:1 */
+  --color-accent-hover:var(--accent-400);
+  --color-accent-surface:var(--accent-500);
+  --color-on-accent:var(--ink-900);       /* 5,63:1 */
+  --color-danger:#FF8F7E;                 /* 8,85:1 */
+  --shadow-card:0 1px 2px rgba(0,0,0,.4),0 8px 24px -12px rgba(0,0,0,.6);
+  --shadow-lift:0 24px 60px -28px rgba(0,0,0,.8);
+}
+
+/* Sektionen, die immer dunkel sind (unabhängig vom Modus) */
+.on-dark{
+  --color-bg:var(--ink-900);
+  --color-fg:var(--paper-000);
+  --color-fg-muted:var(--stone-400);
+  --color-line:rgba(250,250,248,.16);
+  --color-line-strong:rgba(250,250,248,.32);
+  --color-accent-text:var(--accent-500);
+  --color-accent-surface:var(--accent-500);
+  --color-on-accent:var(--ink-900);
+  color:var(--color-fg);
+}
+
+/* ============================================================
+   2. RESET
+   ============================================================ */
+*,*::before,*::after{box-sizing:border-box}
+*{margin:0}
+html{-webkit-text-size-adjust:100%}
+html:focus-within{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html:focus-within{scroll-behavior:auto}}
+
+body{
+  font-family:'Instrument Sans',system-ui,sans-serif;
+  font-size:var(--step-0);line-height:1.6;
+  color:var(--color-fg);background:var(--color-bg);
+  -webkit-font-smoothing:antialiased;overflow-x:hidden;
+  transition:background-color var(--dur-slow) var(--ease-out),color var(--dur-slow) var(--ease-out);
+}
+img,svg,video{display:block;max-width:100%;height:auto}
+button,input,textarea,select{font:inherit;color:inherit}
+h1,h2,h3,h4{line-height:1.02;text-wrap:balance;font-weight:400}
+p{text-wrap:pretty}
+
+.display{font-family:'Fraunces',Georgia,serif;font-variation-settings:'SOFT' 40,'WONK' 1,'opsz' 100;
+  font-weight:500;letter-spacing:-0.025em}
+.mono{font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:var(--step--2);
+  letter-spacing:0.1em;text-transform:uppercase;color:var(--color-fg-muted)}
+
+.wrap{width:var(--wrap);margin-inline:auto}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+:where(a,button,input,textarea,select,[tabindex]):focus-visible{
+  outline:3px solid var(--color-accent-text);outline-offset:3px;border-radius:var(--radius-sm)}
+
+/* ============================================================
+   3. NAV + SCROLL-PROGRESS
+   ============================================================ */
+.nav{
+  position:fixed;inset:0 0 auto 0;z-index:100;
+  display:flex;align-items:center;gap:var(--space-m);
+  padding:var(--space-xs) max(var(--space-l),calc((100vw - 1320px)/2));
+  color:var(--paper-000);
+  transition:background-color var(--dur-base) var(--ease-out),color var(--dur-base) var(--ease-out),
+             border-color var(--dur-base) var(--ease-out),backdrop-filter var(--dur-base) var(--ease-out);
+  border-bottom:1px solid transparent;
+}
+.nav[data-scrolled="true"]{
+  color:var(--color-fg);
+  background:color-mix(in srgb,var(--color-bg) 84%,transparent);
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  border-bottom-color:var(--color-line);
+}
+.progress{position:absolute;left:0;bottom:-1px;height:2px;width:100%;transform:scaleX(0);
+  transform-origin:left;background:var(--accent-500)}
+
+.brand{font-family:'IBM Plex Mono',monospace;font-size:var(--step--1);font-weight:500;
+  letter-spacing:0.16em;text-transform:uppercase;text-decoration:none;color:inherit;
+  margin-right:auto;white-space:nowrap}
+.brand span{color:var(--accent-400)}
+.nav[data-scrolled="true"] .brand span{color:var(--color-accent-text)}
+
+.nav-links{display:flex;gap:var(--space-m);list-style:none;padding:0}
+@media (max-width:960px){.nav-links{display:none}}
+.nav-links a{position:relative;text-decoration:none;color:inherit;font-size:var(--step--1);padding-block:var(--space-3xs)}
+.nav-links a::after{content:'';position:absolute;left:0;right:0;bottom:0;height:1.5px;
+  background:currentColor;transform:scaleX(0);transform-origin:right;
+  transition:transform var(--dur-fast) var(--ease-out)}
+.nav-links a:hover::after,.nav-links a:focus-visible::after{transform:scaleX(1);transform-origin:left}
+
+.theme-toggle{display:grid;place-items:center;width:44px;height:44px;background:none;
+  border:1px solid currentColor;border-radius:var(--radius-full);cursor:pointer;opacity:.75;
+  transition:opacity var(--dur-fast) var(--ease-out)}
+.theme-toggle:hover{opacity:1}
+.theme-toggle svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.6}
+[data-theme="light"] .icon-moon{display:none}
+[data-theme="dark"] .icon-sun{display:none}
+
+/* ============================================================
+   4. BUTTONS
+   ============================================================ */
+.btn{display:inline-flex;align-items:center;gap:var(--space-2xs);
+  min-height:52px;padding:var(--space-xs) var(--space-l);
+  border:none;border-radius:var(--radius-full);
+  background:var(--color-accent-surface);color:var(--color-on-accent);
+  font-size:var(--step-0);font-weight:500;text-decoration:none;cursor:pointer;
+  transition:background-color var(--dur-base) var(--ease-out),box-shadow var(--dur-base) var(--ease-out)}
+.btn:hover{background:var(--color-accent-hover);box-shadow:0 10px 30px -10px var(--color-accent-surface)}
+.btn .arrow{transition:transform var(--dur-base) var(--ease-out)}
+.btn:hover .arrow{transform:translateX(5px)}
+.btn-ghost{background:transparent;color:currentColor;border:1px solid var(--color-line-strong)}
+.btn-ghost:hover{background:color-mix(in srgb,currentColor 10%,transparent);border-color:currentColor;box-shadow:none}
+.btn-light{background:var(--paper-000);color:var(--ink-900)}
+.btn-light:hover{background:#fff;box-shadow:0 10px 30px -10px rgba(0,0,0,.5)}
+
+/* ============================================================
+   5. HERO — VOLLBILD-SIGNATURE
+   ============================================================ */
+.hero{position:relative}
+.hero-scroll{height:420vh}
+@media (prefers-reduced-motion:reduce){.hero-scroll{height:auto}}
+
+.hero-sticky{position:sticky;top:0;height:100svh;overflow:hidden;
+  display:flex;align-items:flex-end}
+@media (prefers-reduced-motion:reduce){
+  .hero-sticky{position:static;height:auto;min-height:84svh}
+}
+
+.hero-media{position:absolute;inset:0;overflow:hidden}
+.hero-layer{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+/* "Vorher": entsättigt. Echtes Vorher-Foto? -> src tauschen, .is-raw entfernen. */
+.is-raw{filter:saturate(.14) contrast(.94) brightness(.72)}
+.hero-after{clip-path:inset(0 100% 0 0)}
+.hero-plan{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.hero-plan path,.hero-plan circle{fill:none;stroke:var(--color-plan);stroke-width:2;
+  stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke;
+  filter:drop-shadow(0 1px 3px rgba(0,0,0,.55))}
+
+/* Scrim: 78 % unten -> Weisstext auch ueber hellen Bildstellen >= 4,5:1 */
+.hero-scrim{position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(to top,
+    rgba(11,12,11,.88) 0%,
+    rgba(11,12,11,.78) 26%,
+    rgba(11,12,11,.44) 52%,
+    rgba(11,12,11,.18) 74%,
+    rgba(11,12,11,.34) 100%)}
+
+.hero-inner{position:relative;z-index:3;width:var(--wrap);margin-inline:auto;
+  padding-block:var(--space-2xl) var(--space-xl);color:var(--paper-000)}
+@media (prefers-reduced-motion:reduce){.hero-inner{padding-top:calc(var(--space-3xl) * 2)}}
+
+.hero-eyebrow{display:flex;align-items:center;gap:var(--space-2xs);margin-bottom:var(--space-m);
+  color:var(--paper-000);opacity:.92}
+.hero-eyebrow::before{content:'';width:44px;height:1px;background:var(--accent-400)}
+
+.hero-title{font-size:var(--step-8);margin-bottom:var(--space-l);max-width:16ch}
+.hero-title .line{display:block;overflow:hidden;padding-bottom:.06em}
+.hero-title .line > span{display:block}
+.hero-title em{font-style:normal;color:var(--accent-400);
+  font-variation-settings:'SOFT' 90,'WONK' 1,'opsz' 144}
+
+.hero-foot{display:flex;flex-wrap:wrap;gap:var(--space-l);align-items:center;
+  justify-content:space-between;border-top:1px solid rgba(250,250,248,.24);padding-top:var(--space-m)}
+.hero-lede{max-width:38ch;color:var(--paper-000);opacity:.9;font-size:var(--step-0)}
+.hero-actions{display:flex;flex-wrap:wrap;gap:var(--space-s);align-items:center}
+.hero-tel{display:inline-flex;align-items:center;gap:var(--space-2xs);min-height:52px;
+  padding-inline:var(--space-s);text-decoration:none;color:var(--paper-000);
+  font-family:'IBM Plex Mono',monospace;font-size:var(--step--1);letter-spacing:.06em;
+  border:1px solid rgba(250,250,248,.34);border-radius:var(--radius-full)}
+.hero-tel:hover{background:rgba(250,250,248,.12)}
+
+.hero-meta{position:absolute;right:max(var(--space-l),calc((100vw - 1320px)/2));
+  top:calc(var(--space-3xl) + var(--space-l));z-index:3;
+  display:flex;gap:var(--space-s);align-items:baseline;
+  padding:var(--space-2xs) var(--space-m);
+  background:rgba(11,12,11,.62);backdrop-filter:blur(10px);
+  border:1px solid rgba(250,250,248,.24);border-radius:var(--radius-full);color:var(--paper-000)}
+.hero-meta .mono{color:rgba(250,250,248,.82)}
+.hero-meta .num{font-family:'IBM Plex Mono',monospace;font-size:var(--step-1);font-weight:500}
+@media (max-width:640px){.hero-meta{display:none}}
+
+.hero-cue{position:absolute;left:50%;bottom:var(--space-s);transform:translateX(-50%);z-index:3;
+  color:rgba(250,250,248,.8);display:grid;justify-items:center;gap:var(--space-3xs)}
+.hero-cue .bar{width:1px;height:38px;background:linear-gradient(to bottom,transparent,rgba(250,250,248,.9))}
+@media (max-width:900px){.hero-cue{display:none}}
+
+/* Reduced-Motion: Drag-Vergleich statt Scrub */
+.hero-slider{display:none}
+@media (prefers-reduced-motion:reduce){
+  .hero-after{clip-path:inset(0 50% 0 0)}
+  .hero-slider{display:block;position:absolute;inset:0;width:100%;height:100%;
+    appearance:none;background:none;margin:0;cursor:ew-resize;z-index:4}
+  .hero-slider::-webkit-slider-thumb{appearance:none;width:4px;height:100%;
+    background:var(--paper-000);cursor:ew-resize;box-shadow:0 0 0 1px rgba(0,0,0,.4)}
+  .hero-slider::-moz-range-thumb{width:4px;height:100%;border:none;border-radius:0;background:var(--paper-000)}
+}
+
+/* ============================================================
+   6. SEKTIONEN
+   ============================================================ */
+.section{padding-block:var(--space-3xl);position:relative}
+.section-head{margin-bottom:var(--space-2xl);max-width:var(--measure)}
+.section-head h2{font-size:var(--step-5);margin-block:var(--space-s) var(--space-s)}
+.section-head p{color:var(--color-fg-muted);max-width:54ch;font-size:var(--step-1)}
+
+/* --- Leistungen: grosse Bilder, sticky, Parallax --- */
+.svc-item{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+  gap:var(--space-2xl);align-items:center;padding-block:var(--space-2xl)}
+.svc-item + .svc-item{border-top:1px solid var(--color-line)}
+.svc-item:nth-child(even) .svc-media{order:-1}
+@media (max-width:900px){
+  .svc-item{grid-template-columns:1fr;gap:var(--space-l)}
+  .svc-item:nth-child(even) .svc-media{order:0}
+}
+.svc-media{position:sticky;top:16vh;aspect-ratio:4/5;border-radius:var(--radius-2xl);
+  overflow:hidden;background:var(--color-bg-sunk);box-shadow:var(--shadow-lift)}
+@media (max-width:900px){.svc-media{position:static;aspect-ratio:4/3}}
+.svc-media img{width:100%;height:118%;object-fit:cover;will-change:transform}
+
+/* Foto noch nicht geliefert: gleiche Fläche, klarer Leerzustand statt Blindtext-Bild */
+.svc-media.is-pending{display:grid;place-content:center;justify-items:center;gap:var(--space-xs);
+  padding:var(--space-l);text-align:center;box-shadow:none;
+  background:var(--color-bg-alt);border:1px dashed var(--color-line-strong)}
+.svc-media.is-pending svg{width:34px;height:34px;stroke:var(--color-accent-text);fill:none;stroke-width:1.4}
+.svc-media.is-pending .hint{font-size:var(--step--1);color:var(--color-fg-muted);max-width:26ch}
+
+.svc-num{font-family:'IBM Plex Mono',monospace;font-size:var(--step--1);
+  color:var(--color-accent-text);letter-spacing:.14em;display:block;margin-bottom:var(--space-s)}
+.svc-body h3{font-size:var(--step-4);margin-bottom:var(--space-m)}
+.svc-body p{color:var(--color-fg-muted);max-width:46ch;margin-bottom:var(--space-m);font-size:var(--step-0)}
+.svc-tags{display:flex;flex-wrap:wrap;gap:var(--space-2xs);list-style:none;padding:0}
+.svc-tags li{font-family:'IBM Plex Mono',monospace;font-size:var(--step--2);letter-spacing:.06em;
+  color:var(--color-fg-muted);padding:var(--space-3xs) var(--space-xs);
+  border:1px solid var(--color-line);border-radius:var(--radius-full)}
+
+/* --- Statement mit Foto in der Schrift --- */
+.statement{padding-block:var(--space-3xl);text-align:center;overflow:hidden}
+.statement h2{font-size:var(--step-8);line-height:.95;letter-spacing:-.03em}
+@supports (background-clip:text) or (-webkit-background-clip:text){
+  .statement .fill{
+    background-image:url("https://static.wixstatic.com/media/272120_1024211c6c97457d9e0a48eae7a21891~mv2.jpg/v1/fill/w_1600,h_900,al_c,q_82,enc_auto/x.jpg");
+    background-size:cover;background-position:center;background-attachment:scroll;
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    -webkit-text-fill-color:transparent;
+  }
+}
+.statement p{color:var(--color-fg-muted);max-width:46ch;margin:var(--space-l) auto 0;font-size:var(--step-1)}
+
+/* --- Projekte: horizontaler Scroll --- */
+.projects{background:var(--color-bg-alt);padding-block:var(--space-3xl);overflow:hidden;
+  transition:background-color var(--dur-slow) var(--ease-out)}
+.projects-track{display:flex;gap:var(--space-m);
+  padding-left:max(var(--space-l),calc((100vw - 1320px)/2))}
+@media (prefers-reduced-motion:reduce),(max-width:900px){
+  .projects-track{overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:var(--space-m)}
+  .project{scroll-snap-align:start}
+}
+.project{flex:0 0 min(80vw,460px);background:var(--color-bg);border-radius:var(--radius-xl);
+  overflow:hidden;box-shadow:var(--shadow-card);transition:transform var(--dur-base) var(--ease-out)}
+.project:hover{transform:translateY(-8px)}
+.project-img{aspect-ratio:4/3;background:var(--color-bg-sunk);overflow:hidden}
+.project-img img{width:100%;height:100%;object-fit:cover;transition:transform var(--dur-slow) var(--ease-out)}
+.project:hover .project-img img{transform:scale(1.06)}
+@media (prefers-reduced-motion:reduce){
+  .project:hover{transform:none}
+  .project:hover .project-img img{transform:none}
+}
+.project-body{padding:var(--space-m) var(--space-m) var(--space-l)}
+.project-body h3{font-size:var(--step-2);margin-block:var(--space-2xs) var(--space-2xs)}
+.project-body p{color:var(--color-fg-muted);font-size:var(--step--1)}
+
+.drag-cursor{position:fixed;top:0;left:0;z-index:200;width:88px;height:88px;border-radius:50%;
+  background:var(--accent-500);color:var(--ink-900);display:grid;place-items:center;
+  font-family:'IBM Plex Mono',monospace;font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;
+  pointer-events:none;opacity:0;transform:translate(-50%,-50%) scale(.5);
+  transition:opacity 220ms var(--ease-out),transform 220ms var(--ease-out)}
+.drag-cursor.on{opacity:1;transform:translate(-50%,-50%) scale(1)}
+
+/* --- Zahlen: dunkle Vollbildsektion mit Parallax --- */
+.figures{position:relative;overflow:hidden;padding-block:var(--space-3xl);isolation:isolate}
+.figures-bg{position:absolute;inset:-14% 0;width:100%;height:128%;object-fit:cover;z-index:-2;will-change:transform}
+/* 84 %: haelt Labels >=4,5:1 und die grossen Zahlen >=3:1 selbst ueber Weissabriss im Foto */
+.figures::after{content:'';position:absolute;inset:0;z-index:-1;background:rgba(11,12,11,.84)}
+.figures h2{font-size:var(--step-5);margin-block:var(--space-s) var(--space-2xl);max-width:20ch}
+.fig-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:var(--space-l)}
+.fig{border-top:1px solid var(--color-line-strong);padding-top:var(--space-m)}
+.fig .num{display:block;font-family:'Fraunces',serif;font-variation-settings:'SOFT' 40,'WONK' 1,'opsz' 144;
+  font-size:var(--step-7);line-height:.9;color:var(--accent-500);margin-bottom:var(--space-2xs)}
+
+/* --- Über uns --- */
+.about{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:var(--space-2xl);align-items:center}
+@media (max-width:900px){.about{grid-template-columns:1fr;gap:var(--space-xl)}}
+.about h2{font-size:var(--step-5);margin-block:var(--space-s) var(--space-m)}
+.about p{color:var(--color-fg-muted);margin-bottom:var(--space-s);max-width:50ch}
+.about-media{aspect-ratio:1;border-radius:var(--radius-2xl);overflow:hidden;box-shadow:var(--shadow-lift)}
+.about-media img{width:100%;height:100%;object-fit:cover}
+
+/* --- Karriere --- */
+.jobs{display:grid;gap:var(--space-s);margin-bottom:var(--space-2xl)}
+.job{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:var(--space-m);align-items:center;
+  padding:var(--space-l);border:1px solid var(--color-line);border-radius:var(--radius-xl);
+  background:var(--color-bg);
+  transition:border-color var(--dur-base) var(--ease-out),transform var(--dur-base) var(--ease-out)}
+.job:hover{border-color:var(--color-accent-text);transform:translateX(6px)}
+@media (prefers-reduced-motion:reduce){.job:hover{transform:none}}
+@media (max-width:640px){.job{grid-template-columns:1fr}}
+.job h3{font-size:var(--step-2);margin-bottom:var(--space-3xs)}
+.job p{color:var(--color-fg-muted);font-size:var(--step--1);max-width:52ch}
+
+/* ============================================================
+   7. FORMULARE
+   ============================================================ */
+.form{display:grid;gap:var(--space-s)}
+.field{display:grid;gap:var(--space-3xs)}
+.field label{font-size:var(--step--1);color:var(--color-fg-muted)}
+.field input,.field select,.field textarea{
+  width:100%;min-height:52px;padding:var(--space-xs) var(--space-s);
+  background:var(--color-bg);color:var(--color-fg);
+  border:1px solid var(--color-line-strong);border-radius:var(--radius-md);
+  transition:border-color var(--dur-fast) var(--ease-out),box-shadow var(--dur-fast) var(--ease-out)}
+.field textarea{min-height:140px;resize:vertical;padding-top:var(--space-s)}
+.field input:hover,.field select:hover,.field textarea:hover{border-color:var(--color-fg-muted)}
+.field input:focus,.field select:focus,.field textarea:focus{
+  border-color:var(--color-accent-text);outline:none;
+  box-shadow:0 0 0 3px color-mix(in srgb,var(--color-accent-text) 22%,transparent)}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:var(--space-s)}
+@media (max-width:520px){.field-row{grid-template-columns:1fr}}
+.error{font-size:var(--step--1);color:var(--color-danger);min-height:1.2em}
+.field :is(input,select,textarea)[aria-invalid="true"]{border-color:var(--color-danger);
+  box-shadow:0 0 0 3px color-mix(in srgb,var(--color-danger) 18%,transparent)}
+
+/* --- Dropzone für PDF-Anhänge --- */
+.dropzone{position:relative;display:grid;place-items:center;gap:var(--space-2xs);
+  padding:var(--space-xl) var(--space-m);text-align:center;
+  border:2px dashed var(--color-line-strong);border-radius:var(--radius-xl);
+  background:var(--color-bg);cursor:pointer;
+  transition:border-color var(--dur-fast) var(--ease-out),background-color var(--dur-fast) var(--ease-out)}
+.dropzone:hover,.dropzone:focus-within{border-color:var(--color-accent-text)}
+.dropzone[data-drag="true"]{border-color:var(--color-accent-text);
+  background:color-mix(in srgb,var(--color-accent-text) 10%,var(--color-bg))}
+.dropzone[aria-invalid="true"]{border-color:var(--color-danger)}
+.dropzone svg{width:30px;height:30px;stroke:var(--color-accent-text);fill:none;stroke-width:1.6}
+.dropzone input[type="file"]{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer}
+.dropzone strong{font-weight:500}
+.dropzone .hint{font-size:var(--step--1);color:var(--color-fg-muted)}
+
+.filelist{display:grid;gap:var(--space-2xs);list-style:none;padding:0;margin-top:var(--space-s)}
+.filelist:empty{display:none}
+.filelist li{display:grid;grid-template-columns:auto minmax(0,1fr) auto auto;gap:var(--space-s);
+  align-items:center;padding:var(--space-xs) var(--space-s);
+  border:1px solid var(--color-line);border-radius:var(--radius-md);background:var(--color-bg-alt)}
+.filelist .fname{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:var(--step--1)}
+.filelist .fsize{font-family:'IBM Plex Mono',monospace;font-size:var(--step--2);color:var(--color-fg-muted)}
+.filelist .fico{width:20px;height:20px;stroke:var(--color-accent-text);fill:none;stroke-width:1.6}
+.file-remove{display:grid;place-items:center;width:36px;height:36px;padding:0;
+  background:none;border:1px solid var(--color-line-strong);border-radius:var(--radius-full);cursor:pointer}
+.file-remove:hover{border-color:var(--color-danger);color:var(--color-danger)}
+.file-remove svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2}
+
+/* --- Kontakt --- */
+.contact{background:var(--color-bg-alt);transition:background-color var(--dur-slow) var(--ease-out)}
+.contact-grid{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1fr);gap:var(--space-2xl)}
+@media (max-width:900px){.contact-grid{grid-template-columns:1fr;gap:var(--space-xl)}}
+.contact-details{display:grid;gap:var(--space-m);align-content:start}
+.detail{display:grid;gap:var(--space-3xs)}
+.detail a{color:var(--color-fg);text-decoration:none;font-size:var(--step-1);
+  display:inline-flex;align-items:center;min-height:44px;position:relative;width:fit-content}
+.detail a::after{content:'';position:absolute;left:0;right:0;bottom:12px;height:1.5px;
+  background:var(--color-accent-text);transform:scaleX(0);transform-origin:right;
+  transition:transform var(--dur-fast) var(--ease-out)}
+.detail a:hover::after{transform:scaleX(1);transform-origin:left}
+
+/* --- Karte: Google wird erst auf Klick geladen (keine Drittanbieter-Verbindung beim Seitenaufruf) --- */
+.map{margin-top:var(--space-2xl)}
+.map-head{display:flex;flex-wrap:wrap;gap:var(--space-2xs) var(--space-l);
+  align-items:baseline;justify-content:space-between;margin-bottom:var(--space-s)}
+.map-head h3{font-size:var(--step-2)}
+.map-route{display:inline-flex;align-items:center;gap:var(--space-2xs);min-height:44px;
+  font-size:var(--step--1);color:var(--color-accent-text);text-decoration:none}
+.map-route svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.8;flex:none}
+.map-route:hover{color:var(--color-accent-hover);text-decoration:underline;text-underline-offset:4px}
+
+.map-frame{position:relative;aspect-ratio:21/9;overflow:hidden;background:var(--color-bg);
+  border:1px solid var(--color-line);border-radius:var(--radius-xl);box-shadow:var(--shadow-card)}
+@media (max-width:700px){.map-frame{aspect-ratio:4/3}}
+.map-frame iframe{position:absolute;inset:0;display:block;width:100%;height:100%;border:0}
+.map-consent{position:absolute;inset:0;display:grid;place-content:center;justify-items:center;
+  gap:var(--space-xs);padding:var(--space-l);text-align:center}
+.map-consent .pin{width:32px;height:32px;stroke:var(--color-accent-text);fill:none;stroke-width:1.5}
+.map-consent address{font-style:normal;font-size:var(--step-1);line-height:1.35}
+.map-consent .hint{font-size:var(--step--1);color:var(--color-fg-muted);max-width:44ch}
+
+/* ============================================================
+   8. FOOTER + STICKY CTA
+   ============================================================ */
+.footer{padding-block:var(--space-2xl) var(--space-xl);border-top:1px solid var(--color-line)}
+.footer-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
+  gap:var(--space-l);margin-bottom:var(--space-xl)}
+.footer h4{font-family:'IBM Plex Mono',monospace;font-size:var(--step--2);letter-spacing:.1em;
+  text-transform:uppercase;color:var(--color-fg-muted);margin-bottom:var(--space-s);font-weight:500}
+.footer ul{list-style:none;padding:0;display:grid;gap:var(--space-2xs)}
+.footer a{color:var(--color-fg);text-decoration:none;font-size:var(--step--1)}
+.footer a:hover{color:var(--color-accent-text)}
+.footer-bottom{display:flex;flex-wrap:wrap;gap:var(--space-s);justify-content:space-between;
+  padding-top:var(--space-m);border-top:1px solid var(--color-line)}
+
+.sticky-cta{position:fixed;left:0;right:0;bottom:0;z-index:90;display:none;gap:1px;
+  background:var(--color-line-strong);padding-bottom:env(safe-area-inset-bottom)}
+@media (max-width:767px){.sticky-cta{display:grid;grid-template-columns:1fr 1fr}
+  .footer{padding-bottom:calc(var(--space-xl) + 56px)}}
+.sticky-cta a{display:flex;align-items:center;justify-content:center;gap:var(--space-2xs);
+  min-height:56px;text-decoration:none;font-size:var(--step--1);font-weight:500;
+  background:var(--color-bg);color:var(--color-fg)}
+.sticky-cta a.primary{background:var(--color-accent-surface);color:var(--color-on-accent)}
+
+/* ============================================================
+   9. REVEAL
+   ============================================================ */
+.reveal{opacity:1}
+html.js .reveal{opacity:0;transform:translateY(28px)}
+@media (prefers-reduced-motion:reduce){
+  html.js .reveal{opacity:1 !important;transform:none !important}
+}
+</style>
+</head>
+<body>
+
+<a href="#main" class="sr-only">Zum Inhalt springen</a>
+
+<nav class="nav" id="nav">
+  <a href="#top" class="brand">Belzner<span>.</span></a>
+  <ul class="nav-links">
+    <li><a href="#leistungen">Leistungen</a></li>
+    <li><a href="#projekte">Projekte</a></li>
+    <li><a href="#ueber-uns">Betrieb</a></li>
+    <li><a href="#karriere">Karriere</a></li>
+    <li><a href="#kontakt">Kontakt</a></li>
+  </ul>
+  <button class="theme-toggle" id="themeToggle" aria-label="Farbschema wechseln">
+    <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+    <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+  </button>
+  <div class="progress" id="progress"></div>
+</nav>
+
+<main id="main">
+
+<!-- ========== HERO ========== -->
+<section class="hero" id="top">
+ <div class="hero-scroll" id="heroScroll">
+  <div class="hero-sticky">
+
+   <div class="hero-media">
+     <img class="hero-layer is-raw"
+          src="https://static.wixstatic.com/media/272120_0699ced1dc9849d1ad04667e409174f4~mv2.jpg/v1/fill/w_1800,h_1350,al_c,q_82,enc_auto/x.jpg"
+          width="1800" height="1350" fetchpriority="high" decoding="async" alt="">
+     <img class="hero-layer hero-after" id="heroAfter"
+          src="https://static.wixstatic.com/media/272120_0699ced1dc9849d1ad04667e409174f4~mv2.jpg/v1/fill/w_1800,h_1350,al_c,q_82,enc_auto/x.jpg"
+          width="1800" height="1350" fetchpriority="high" decoding="async"
+          alt="Fertiggestellter Garten in Bensheim: gestreift gemähter Rasen mit Pool, Natursteinkante und Solitärbaum">
+
+     <!-- Planlinie, am Foto abgegriffen -->
+     <svg class="hero-plan" id="heroPlan" viewBox="0 0 1400 1050" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+       <path class="plan" d="M558 540 L742 494 L1043 497 L875 587 Z"/>
+       <path class="plan" d="M166 613 L558 540"/>
+       <path class="plan" d="M875 587 L1105 530 L1400 515"/>
+       <path class="plan" d="M497 486 L663 450"/>
+       <path class="plan" d="M742 466 L1043 469"/>
+       <circle class="plan" cx="967" cy="193" r="122"/>
+       <path class="plan" d="M967 315 L967 440"/>
+     </svg>
+
+     <input type="range" class="hero-slider" id="heroSlider" min="0" max="100" value="50"
+            aria-label="Vergleich zwischen Planungszustand und fertigem Garten schieben">
+     <div class="hero-scrim"></div>
+   </div>
+
+   <div class="hero-meta">
+     <span class="mono">Fläche</span>
+     <span class="num" id="areaCounter" data-target="420">0</span>
+     <span class="mono">m²</span>
+   </div>
+
+   <div class="hero-inner">
+     <p class="mono hero-eyebrow">Garten- &amp; Landschaftsbau · Bensheim</p>
+     <h1 class="display hero-title">
+       <span class="line"><span>Ihr Garten.</span></span>
+       <span class="line"><span>Unsere <em>Handschrift</em>.</span></span>
+     </h1>
+     <div class="hero-foot">
+       <p class="hero-lede">Wir planen, bauen und pflegen Außenanlagen in der Region Bergstraße — vom Fertigrasen bis zur Trockenmauer.</p>
+       <div class="hero-actions">
+         <a href="#kontakt" class="btn btn-light" data-magnetic>
+           Beratung anfragen
+           <svg class="arrow" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h9M8.5 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+         </a>
+         <a href="tel:+4962513091" class="hero-tel">
+           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.2a2 2 0 0 1 2.1-.5c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/></svg>
+           06251 3091
+         </a>
+       </div>
+     </div>
+   </div>
+
+   <div class="hero-cue" aria-hidden="true"><span class="mono">Scrollen</span><span class="bar"></span></div>
+  </div>
+ </div>
+</section>
+
+<!-- ========== LEISTUNGEN ========== -->
+<section class="section" id="leistungen">
+  <div class="wrap">
+    <header class="section-head reveal">
+      <p class="mono">01 — Leistungen</p>
+      <h2 class="display">Was wir für Ihren Außenbereich tun</h2>
+      <p>Fünf Bereiche, die ineinandergreifen. Meist beginnt ein Projekt mit einer Ortsbegehung — daraus entsteht der Plan, dann die Umsetzung.</p>
+    </header>
+
+    <article class="svc-item">
+      <div class="svc-body reveal">
+        <span class="svc-num">Pos. 01</span>
+        <h3 class="display">Fertigrasen</h3>
+        <p>Sie möchten Ihren Garten möglichst schnell genießen? Wir liefern und verlegen den „grünen Teppich" in höchster Qualität — auf Wunsch mit eingearbeitetem Netz, das den Rasen vor Maulwurf und Wühlmaus schützt.</p>
+        <ul class="svc-tags"><li>Lieferung</li><li>Verlegung</li><li>Wühlmausschutz</li></ul>
+      </div>
+      <div class="svc-media">
+        <img data-parallax
+             src="https://static.wixstatic.com/media/272120_050876443b9c478f9498298d7dca08fc~mv2.jpg/v1/fill/w_900,h_1125,al_c,q_82,enc_auto/x.jpg"
+             width="900" height="1125" loading="lazy" decoding="async"
+             alt="Frisch verlegter Rasen mit angrenzendem Pflanzbeet und jungen Spalierbäumen">
+      </div>
+    </article>
+
+    <article class="svc-item">
+      <div class="svc-body reveal">
+        <span class="svc-num">Pos. 02</span>
+        <h3 class="display">Steinarbeiten &amp; Zäune</h3>
+        <p>Steinarbeiten aus Naturstein oder Beton — Trockenmauern, Gabionen, Terrassen, Treppen und Teichanlagen. Dazu Zäune aus Holz oder Gitterstabmatten, gerne auch mit Toren.</p>
+        <ul class="svc-tags"><li>Trockenmauer</li><li>Gabionen</li><li>Terrassen</li><li>Treppen</li><li>Teichanlagen</li></ul>
+      </div>
+      <div class="svc-media">
+        <img data-parallax
+             src="https://static.wixstatic.com/media/272120_765ae5ce6bd94e7db2857060b6c0288b~mv2.jpg/v1/fill/w_900,h_1125,al_c,q_82,enc_auto/x.jpg"
+             width="900" height="1125" loading="lazy" decoding="async"
+             alt="Trockenmauer aus Naturstein mit angrenzender Treppenanlage und neu bepflanztem Beet">
+      </div>
+    </article>
+
+    <article class="svc-item">
+      <div class="svc-body reveal">
+        <span class="svc-num">Pos. 03</span>
+        <h3 class="display">Pflanzenarbeiten &amp; Baumschule</h3>
+        <p>Wir setzen die Pflanzen fachgerecht und geben ihnen so den bestmöglichen Start. Unser Fuhrpark bietet für praktisch jede Aufgabe eine Lösung — auch wenn Ihr Wunschbaum schon eine stattliche Größe haben soll. Zum Wässern beraten wir individuell, angepasst an Bodenbeschaffenheit und Pflanzenauswahl.</p>
+        <ul class="svc-tags"><li>Großbäume</li><li>Beetanlagen</li><li>Bewässerung</li><li>Beratung</li></ul>
+      </div>
+      <div class="svc-media">
+        <img data-parallax
+             src="https://static.wixstatic.com/media/272120_1024211c6c97457d9e0a48eae7a21891~mv2.jpg/v1/fill/w_900,h_1125,al_c,q_82,enc_auto/x.jpg"
+             width="900" height="1125" loading="lazy" decoding="async"
+             alt="Dicht gewachsene Bepflanzung aus Farnen und Stauden von oben">
+      </div>
+    </article>
+
+    <article class="svc-item">
+      <div class="svc-body reveal">
+        <span class="svc-num">Pos. 04</span>
+        <h3 class="display">Wassersysteme</h3>
+        <p>Wasser entscheidet, ob ein Garten trägt oder Arbeit macht. Wir bauen automatische Bewässerung mit Versenkregnern und Tropfschläuchen, binden Zisterne und Regenwasser ein und legen Drainagen so an, dass nach dem Gewitter nichts stehen bleibt. Gesteuert wird über Zeitplan oder Bodenfeuchte — im Alltag merken Sie davon nur, dass es grün bleibt.</p>
+        <ul class="svc-tags"><li>Versenkregner</li><li>Tropfbewässerung</li><li>Zisterne</li><li>Drainage</li><li>Steuerung</li></ul>
+      </div>
+      <div class="svc-media is-pending">
+        <!-- BILD NACHREICHEN: is-pending entfernen und den Inhalt ersetzen durch
+             <img data-parallax src="…" width="900" height="1125" loading="lazy" decoding="async" alt="…"> -->
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9.5" r="1.5"/><path d="m3.5 17.5 4.8-4.8a2 2 0 0 1 2.7 0l3.5 3.5 2-2a2 2 0 0 1 2.7 0l2.3 2.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <p class="mono">Foto folgt</p>
+        <p class="hint">Aufnahme einer fertigen Bewässerungsanlage wird nachgereicht.</p>
+      </div>
+    </article>
+
+    <article class="svc-item">
+      <div class="svc-body reveal">
+        <span class="svc-num">Pos. 05</span>
+        <h3 class="display">Mähroboter</h3>
+        <p>Mähen ist Routine — das kann eine Maschine übernehmen. Wir messen die Fläche ein, verlegen das Begrenzungskabel oder richten ein kabelloses GPS-Modell ein, setzen Ladestation und Garage und stellen die Mähzeiten auf Ihren Rasen ein. Im Herbst holen wir das Gerät zur Wartung, im Frühjahr steht es startklar wieder da.</p>
+        <ul class="svc-tags"><li>Flächenaufmaß</li><li>Kabelverlegung</li><li>GPS-Modelle</li><li>Ladestation</li><li>Winterwartung</li></ul>
+      </div>
+      <div class="svc-media is-pending">
+        <!-- BILD NACHREICHEN: is-pending entfernen und den Inhalt ersetzen durch
+             <img data-parallax src="…" width="900" height="1125" loading="lazy" decoding="async" alt="…"> -->
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9.5" r="1.5"/><path d="m3.5 17.5 4.8-4.8a2 2 0 0 1 2.7 0l3.5 3.5 2-2a2 2 0 0 1 2.7 0l2.3 2.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <p class="mono">Foto folgt</p>
+        <p class="hint">Aufnahme eines installierten Mähroboters wird nachgereicht.</p>
+      </div>
+    </article>
+  </div>
+</section>
+
+<!-- ========== STATEMENT ========== -->
+<section class="statement">
+  <div class="wrap reveal">
+    <h2 class="display"><span class="fill">Zehn Jahre<br>später<br>immer noch<br>richtig.</span></h2>
+    <p>Ein Garten ist erst fertig, wenn er eingewachsen ist. Deshalb planen wir nicht für den Abnahmetermin, sondern für das Jahrzehnt danach.</p>
+  </div>
+</section>
+
+<!-- ========== PROJEKTE ========== -->
+<section class="projects" id="projekte">
+  <div class="wrap">
+    <header class="section-head reveal">
+      <p class="mono">02 — Referenzen</p>
+      <h2 class="display">Ausgeführte Projekte</h2>
+      <p>Ein Querschnitt aus der Region Bergstraße. Ort und Jahr ergänzen wir, sobald die Zuordnung feststeht.</p>
+    </header>
+  </div>
+
+  <div class="projects-track" id="projectsTrack">
+    <article class="project">
+      <div class="project-img"><img src="https://static.wixstatic.com/media/272120_553144510bff416ca47fa4544323248f~mv2.jpg/v1/fill/w_920,h_690,al_c,q_82,enc_auto/x.jpg" width="920" height="690" loading="lazy" decoding="async" alt="Holzterrasse mit umlaufenden Staudenbeeten, Kiesflächen und Heckenrahmung"></div>
+      <div class="project-body"><p class="mono">Referenzprojekt</p><h3 class="display">Holzterrasse mit Staudenbeeten</h3><p>Freistehendes Deck, eingefasst von Pflanzflächen und Kieswegen.</p></div>
+    </article>
+    <article class="project">
+      <div class="project-img"><img src="https://static.wixstatic.com/media/272120_0fdb8457f3a342de9ee4e0d97cf1a54b~mv2.jpg/v1/fill/w_920,h_690,al_c,q_82,enc_auto/x.jpg" width="920" height="690" loading="lazy" decoding="async" alt="Terrasse aus großformatigen Natursteinplatten mit direkt angrenzender Rasenkante"></div>
+      <div class="project-body"><p class="mono">Referenzprojekt</p><h3 class="display">Natursteinterrasse</h3><p>Großformatige Platten mit sauber gearbeiteter Rasenkante.</p></div>
+    </article>
+    <article class="project">
+      <div class="project-img"><img src="https://static.wixstatic.com/media/272120_69232a4e947a4057910ebbdc16d1134a~mv2.jpg/v1/fill/w_920,h_690,al_c,q_82,enc_auto/x.jpg" width="920" height="690" loading="lazy" decoding="async" alt="Gepflasterter Weg entlang einer Hauswand mit angrenzendem Rasenstreifen und Beet"></div>
+      <div class="project-body"><p class="mono">Referenzprojekt</p><h3 class="display">Wegebau &amp; Vorgarten</h3><p>Pflasterweg, Rasenstreifen und Beetanlage entlang der Fassade.</p></div>
+    </article>
+    <article class="project">
+      <div class="project-img"><img src="https://static.wixstatic.com/media/272120_5656ce81f6cf4037a9c428f643345a3a~mv2.jpg/v1/fill/w_920,h_690,al_c,q_82,enc_auto/x.jpg" width="920" height="690" loading="lazy" decoding="async" alt="Pflasterfläche mit Kiesstreifen zur Entwässerung und angrenzendem Rasen"></div>
+      <div class="project-body"><p class="mono">Referenzprojekt</p><h3 class="display">Pflasterfläche mit Entwässerung</h3><p>Kiesstreifen und Rinne für kontrollierten Wasserablauf.</p></div>
+    </article>
+  </div>
+
+  <div class="wrap" style="margin-top:var(--space-xl)">
+    <a href="https://www.instagram.com/gartengestaltung_belzner/" class="btn btn-ghost" target="_blank" rel="noopener noreferrer">
+      Mehr Projekte auf Instagram
+      <svg class="arrow" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h9M8.5 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+  </div>
+</section>
+
+<!-- ========== ZAHLEN ========== -->
+<section class="figures on-dark">
+  <img class="figures-bg" data-parallax-bg
+       src="https://static.wixstatic.com/media/272120_1024211c6c97457d9e0a48eae7a21891~mv2.jpg/v1/fill/w_1800,h_1013,al_c,q_80,enc_auto/x.jpg"
+       width="1800" height="1013" loading="lazy" decoding="async" alt="">
+  <div class="wrap reveal">
+    <p class="mono">03 — In Zahlen</p>
+    <h2 class="display">Was sich schlecht bebildern lässt</h2>
+    <div class="fig-grid">
+      <div class="fig"><span class="num counter" data-target="30" data-suffix="+">0</span><span class="mono">Jahre Erfahrung</span></div>
+      <div class="fig"><span class="num counter" data-target="450" data-suffix="+">0</span><span class="mono">Projekte</span></div>
+      <div class="fig"><span class="num counter" data-target="25" data-suffix=" km">0</span><span class="mono">Einzugsgebiet</span></div>
+      <div class="fig"><span class="num counter" data-target="100" data-suffix=" %">0</span><span class="mono">Eigene Ausführung</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== ÜBER UNS ========== -->
+<section class="section" id="ueber-uns">
+  <div class="wrap about">
+    <div class="reveal">
+      <p class="mono">04 — Der Betrieb</p>
+      <h2 class="display">Handwerk aus Bensheim</h2>
+      <p>Wir sind Gartengestaltung und Baumschule Belzner — ein Familienbetrieb an der Dammstraße in Bensheim. Was wir planen, bauen wir auch selbst. Kein Subunternehmer, der Ihren Garten zum ersten Mal sieht, wenn der Bagger schon läuft.</p>
+      <p>Mit eigenem Fuhrpark und eigener Baumschule decken wir von der ersten Skizze bis zur Pflege alles ab. Das dauert manchmal länger als bei anderen. Dafür steht es hinterher auch noch in zehn Jahren.</p>
+    </div>
+    <div class="about-media reveal">
+      <img src="https://static.wixstatic.com/media/272120_69232a4e947a4057910ebbdc16d1134a~mv2.jpg/v1/fill/w_900,h_900,al_c,q_82,enc_auto/x.jpg"
+           width="900" height="900" loading="lazy" decoding="async"
+           alt="Fertiggestellter Vorgarten mit Pflasterweg, Rasenstreifen und Beeteinfassung">
+    </div>
+  </div>
+</section>
+
+<!-- ========== KARRIERE ========== -->
+<section class="section" id="karriere">
+  <div class="wrap">
+    <header class="section-head reveal">
+      <p class="mono">05 — Karriere</p>
+      <h2 class="display">Offene Stellen</h2>
+      <p>Wir bilden selbst aus und übernehmen gern. Wenn Sie lieber draußen als im Büro arbeiten, passt das.</p>
+    </header>
+
+    <div class="jobs">
+      <article class="job reveal">
+        <div>
+          <p class="mono">Ausbildung · ab August</p>
+          <h3 class="display">Gärtner (m/w/d) — Fachrichtung Garten- und Landschaftsbau</h3>
+          <p>Dreijährige Ausbildung im Betrieb. Sie lernen alles von der Pflanzung über Steinarbeiten bis zur Pflege — und fahren von Anfang an mit auf die Baustelle.</p>
+        </div>
+        <a href="#bewerbung" class="btn btn-ghost">Bewerben</a>
+      </article>
+      <article class="job reveal">
+        <div>
+          <p class="mono">Vollzeit · unbefristet</p>
+          <h3 class="display">Garten- und Landschaftsbaugärtner (m/w/d)</h3>
+          <p>Sie übernehmen eigenverantwortlich die Umsetzung von Gartenanlagen — Steinarbeiten, Pflanzung, Wegebau. Führerschein Klasse BE von Vorteil.</p>
+        </div>
+        <a href="#bewerbung" class="btn btn-ghost">Bewerben</a>
+      </article>
+    </div>
+
+    <!-- ===== Bewerbungsformular mit PDF-Anhang ===== -->
+    <div id="bewerbung" class="reveal">
+      <header class="section-head" style="margin-bottom:var(--space-l)">
+        <h2 class="display" style="font-size:var(--step-3)">Online bewerben</h2>
+        <p style="font-size:var(--step-0)">Lebenslauf und Zeugnisse als PDF anhängen. Ein Anschreiben ist nett, aber kein Muss.</p>
+      </header>
+
+      <form class="form" id="jobForm" novalidate enctype="multipart/form-data">
+        <div class="field-row">
+          <div class="field">
+            <label for="b-vorname">Vorname *</label>
+            <input type="text" id="b-vorname" name="vorname" required autocomplete="given-name" aria-describedby="err-b-vorname">
+            <span class="error" id="err-b-vorname" data-for="vorname"></span>
+          </div>
+          <div class="field">
+            <label for="b-nachname">Nachname *</label>
+            <input type="text" id="b-nachname" name="nachname" required autocomplete="family-name" aria-describedby="err-b-nachname">
+            <span class="error" id="err-b-nachname" data-for="nachname"></span>
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label for="b-email">E-Mail-Adresse *</label>
+            <input type="email" id="b-email" name="email" required autocomplete="email" aria-describedby="err-b-email">
+            <span class="error" id="err-b-email" data-for="email"></span>
+          </div>
+          <div class="field">
+            <label for="b-tel">Telefon</label>
+            <input type="tel" id="b-tel" name="telefon" autocomplete="tel">
+            <span class="error" data-for="telefon"></span>
+          </div>
+        </div>
+        <div class="field">
+          <label for="b-stelle">Stelle *</label>
+          <select id="b-stelle" name="stelle" required aria-describedby="err-b-stelle">
+            <option value="">Bitte wählen</option>
+            <option>Ausbildung zum Gärtner (m/w/d)</option>
+            <option>Garten- und Landschaftsbaugärtner (m/w/d)</option>
+            <option>Initiativbewerbung</option>
+          </select>
+          <span class="error" id="err-b-stelle" data-for="stelle"></span>
+        </div>
+        <div class="field">
+          <label for="b-nachricht">Ihre Nachricht</label>
+          <textarea id="b-nachricht" name="nachricht" placeholder="Kurz zu Ihnen: was Sie bisher gemacht haben und ab wann Sie können."></textarea>
+        </div>
+
+        <div class="field">
+          <label for="b-files" id="lbl-files">Unterlagen als PDF *</label>
+          <div class="dropzone" id="dropzone" data-drag="false">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4M7 9l5-5 5 5" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 15v3a3 3 0 0 0 3 3h12a3 3 0 0 0 3-3v-3" stroke-linecap="round"/></svg>
+            <p><strong>PDF hierher ziehen</strong> oder klicken zum Auswählen</p>
+            <p class="hint">Nur PDF · max. 10 MB pro Datei · bis zu 5 Dateien</p>
+            <input type="file" id="b-files" name="unterlagen" accept="application/pdf,.pdf" multiple
+                   aria-labelledby="lbl-files" aria-describedby="err-b-files">
+          </div>
+          <span class="error" id="err-b-files" data-for="unterlagen" role="status" aria-live="polite"></span>
+          <ul class="filelist" id="fileList"></ul>
+        </div>
+
+        <button type="submit" class="btn" data-magnetic>
+          Bewerbung absenden
+          <svg class="arrow" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h9M8.5 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <p class="mono" id="jobStatus" role="status" aria-live="polite"></p>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- ========== KONTAKT ========== -->
+<section class="section contact" id="kontakt">
+  <div class="wrap">
+    <header class="section-head reveal">
+      <p class="mono">06 — Kontakt</p>
+      <h2 class="display">Beratungsgespräch anfragen</h2>
+      <p>Kostenlos und unverbindlich. Wir melden uns in der Regel innerhalb von zwei Werktagen.</p>
+    </header>
+
+    <div class="contact-grid">
+      <div class="contact-details reveal">
+        <div class="detail"><p class="mono">Telefon</p><a href="tel:+4962513091">06251 3091</a></div>
+        <div class="detail"><p class="mono">E-Mail</p><a href="mailto:info@gartengestaltung-belzner.de">info@gartengestaltung-belzner.de</a></div>
+        <div class="detail"><p class="mono">Adresse</p><p>Dammstraße 100–108<br>64625 Bensheim</p></div>
+        <div class="detail"><p class="mono">Einzugsgebiet</p><p>Bensheim, Heppenheim, Zwingenberg, Lorsch und Umgebung</p></div>
+      </div>
+
+      <form class="form reveal" id="contactForm" novalidate>
+        <div class="field-row">
+          <div class="field"><label for="vorname">Vorname</label>
+            <input type="text" id="vorname" name="vorname" autocomplete="given-name">
+            <span class="error" data-for="vorname"></span></div>
+          <div class="field"><label for="nachname">Nachname</label>
+            <input type="text" id="nachname" name="nachname" autocomplete="family-name">
+            <span class="error" data-for="nachname"></span></div>
+        </div>
+        <div class="field"><label for="email">E-Mail-Adresse *</label>
+          <input type="email" id="email" name="email" required autocomplete="email" aria-describedby="err-email">
+          <span class="error" id="err-email" data-for="email"></span></div>
+        <div class="field"><label for="anliegen">Anliegen *</label>
+          <select id="anliegen" name="anliegen" required aria-describedby="err-anliegen">
+            <option value="">Bitte wählen</option>
+            <option>Fertigrasen</option><option>Steinarbeiten &amp; Zäune</option>
+            <option>Pflanzenarbeiten &amp; Baumschule</option>
+            <option>Wassersysteme &amp; Bewässerung</option><option>Mähroboter</option>
+            <option>Komplette Gartenanlage</option>
+            <option>Gartenpflege</option><option>Sonstiges</option>
+          </select>
+          <span class="error" id="err-anliegen" data-for="anliegen"></span></div>
+        <div class="field"><label for="nachricht">Nachricht *</label>
+          <textarea id="nachricht" name="nachricht" required aria-describedby="err-nachricht"></textarea>
+          <span class="error" id="err-nachricht" data-for="nachricht"></span></div>
+        <button type="submit" class="btn" data-magnetic>
+          Anfrage senden
+          <svg class="arrow" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h9M8.5 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <p class="mono" id="formStatus" role="status" aria-live="polite"></p>
+      </form>
+    </div>
+
+    <!-- Karte: Google Maps wird erst auf Klick nachgeladen (DSGVO) -->
+    <div class="map reveal" role="region" aria-labelledby="map-h">
+      <div class="map-head">
+        <h3 class="display" id="map-h">So finden Sie uns</h3>
+        <a class="map-route" href="https://www.google.com/maps/dir/?api=1&amp;destination=Dammstr.%20100%2C%2064625%20Bensheim"
+           target="_blank" rel="noopener noreferrer">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11 22 3l-8 19-2.5-8.5L3 11z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Route planen
+        </a>
+      </div>
+
+      <div class="map-frame" id="mapFrame" tabindex="-1">
+        <div class="map-consent" id="mapConsent">
+          <svg class="pin" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z" stroke-linejoin="round"/><circle cx="12" cy="10" r="3"/></svg>
+          <address>Dammstr. 100<br>64625 Bensheim</address>
+          <button type="button" class="btn" id="mapLoad" data-magnetic>
+            Karte laden
+            <svg class="arrow" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h9M8.5 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <p class="hint">Erst beim Klick wird eine Verbindung zu Google Maps aufgebaut und dabei Ihre IP-Adresse an Google übertragen.</p>
+        </div>
+      </div>
+      <p class="mono" id="mapStatus" role="status" aria-live="polite" style="margin-top:var(--space-2xs)"></p>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div><h4>Belzner</h4>
+        <p style="color:var(--color-fg-muted);font-size:var(--step--1)">Gartengestaltung &amp; Baumschule<br>Sascha Belzner<br>Dammstraße 100–108<br>64625 Bensheim</p></div>
+      <div><h4>Leistungen</h4><ul>
+        <li><a href="#leistungen">Fertigrasen</a></li><li><a href="#leistungen">Steinarbeiten &amp; Zäune</a></li>
+        <li><a href="#leistungen">Pflanzenarbeiten</a></li><li><a href="#leistungen">Baumschule</a></li>
+        <li><a href="#leistungen">Wassersysteme</a></li><li><a href="#leistungen">Mähroboter</a></li></ul></div>
+      <div><h4>Kontakt</h4><ul>
+        <li><a href="tel:+4962513091">06251 3091</a></li>
+        <li><a href="mailto:info@gartengestaltung-belzner.de">info@gartengestaltung-belzner.de</a></li></ul></div>
+      <div><h4>Rechtliches</h4><ul><li><a href="#">Impressum</a></li><li><a href="#">Datenschutz</a></li></ul></div>
+      <div><h4>Social</h4><ul>
+        <li><a href="https://www.instagram.com/gartengestaltung_belzner/" target="_blank" rel="noopener noreferrer">Instagram</a></li></ul></div>
+    </div>
+    <div class="footer-bottom">
+      <p class="mono">© 2026 Gartengestaltung Sascha Belzner</p>
+      <p class="mono">Prototyp — Fotos aus der bestehenden Wix-Mediathek</p>
+    </div>
+  </div>
+</footer>
+
+<div class="sticky-cta">
+  <a href="tel:+4962513091" class="primary">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.2a2 2 0 0 1 2.1-.5c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/></svg>
+    Jetzt anrufen
+  </a>
+  <a href="#kontakt">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 4h16v16H4z"/><path d="m4 6 8 6 8-6"/></svg>
+    Nachricht
+  </a>
+</div>
+
+<div class="drag-cursor" id="dragCursor" aria-hidden="true">Ziehen</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js"></script>
+<script>
+document.documentElement.classList.add('js');
+
+(function(){
+'use strict';
+
+const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const hasGSAP = typeof window.gsap !== 'undefined' && typeof window.ScrollTrigger !== 'undefined';
+if (hasGSAP) gsap.registerPlugin(ScrollTrigger);
+const fine = matchMedia('(hover: hover) and (pointer: fine)').matches;
+
+/* ---------- Theme ---------- */
+const root = document.documentElement;
+if (matchMedia('(prefers-color-scheme: dark)').matches) root.dataset.theme = 'dark';
+document.getElementById('themeToggle').addEventListener('click', () => {
+  root.dataset.theme = root.dataset.theme === 'dark' ? 'light' : 'dark';
+  if (hasGSAP) ScrollTrigger.refresh();
+});
+
+/* ---------- Nav + Fortschrittsbalken ---------- */
+const nav = document.getElementById('nav');
+const bar = document.getElementById('progress');
+const heroEl = document.getElementById('heroScroll');
+function navState(){
+  const trigger = reduced ? 80 : Math.max(heroEl.offsetHeight - innerHeight * 0.6, 80);
+  nav.dataset.scrolled = scrollY > trigger;
+  const max = document.documentElement.scrollHeight - innerHeight;
+  bar.style.transform = 'scaleX(' + (max > 0 ? scrollY / max : 0) + ')';
+}
+navState();
+addEventListener('scroll', navState, { passive: true });
+
+/* ---------- Lenis ---------- */
+let lenis = null;
+if (!reduced && typeof window.Lenis !== 'undefined') {
+  lenis = new Lenis({ duration: 1.05, smoothWheel: true, syncTouch: false });
+  if (hasGSAP) {
+    lenis.on('scroll', ScrollTrigger.update);
+    gsap.ticker.add(t => lenis.raf(t * 1000));
+    gsap.ticker.lagSmoothing(0);
+  } else {
+    const raf = t => { lenis.raf(t); requestAnimationFrame(raf); };
+    requestAnimationFrame(raf);
+  }
+}
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    const id = a.getAttribute('href');
+    if (id.length < 2) return;
+    const target = document.querySelector(id);
+    if (!target) return;
+    e.preventDefault();
+    if (lenis) lenis.scrollTo(target, { offset: -70 });
+    else target.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth' });
+  });
+});
+
+/* ---------- Counter ---------- */
+function runCounter(el, dur){
+  dur = dur || 1600;
+  const target = parseInt(el.dataset.target, 10);
+  const suffix = el.dataset.suffix || '';
+  if (reduced) { el.textContent = target + suffix; return; }
+  const start = performance.now();
+  (function tick(now){
+    const p = Math.min((now - start) / dur, 1);
+    el.textContent = Math.round(target * (1 - Math.pow(1 - p, 3))) + suffix;
+    if (p < 1) requestAnimationFrame(tick);
+  })(start);
+}
+
+/* ============================================================
+   SIGNATURE: Planlinie zeichnen -> Farbe wischt über das Bild
+   ============================================================ */
+const planPaths = document.querySelectorAll('#heroPlan .plan');
+const heroAfter = document.getElementById('heroAfter');
+const areaCounter = document.getElementById('areaCounter');
+const heroSlider = document.getElementById('heroSlider');
+
+if (reduced || !hasGSAP) {
+  planPaths.forEach(p => { p.style.strokeDasharray = 'none'; });
+  areaCounter.textContent = '420';
+  const apply = () => { heroAfter.style.clipPath = 'inset(0 ' + (100 - heroSlider.value) + '% 0 0)'; };
+  apply();
+  heroSlider.addEventListener('input', apply);
+} else {
+  heroSlider.remove();
+  planPaths.forEach(p => {
+    const len = p.getTotalLength();
+    p.style.strokeDasharray = len;
+    p.style.strokeDashoffset = len;
+  });
+
+  const tl = gsap.timeline({
+    scrollTrigger: { trigger: '#heroScroll', start: 'top top', end: 'bottom bottom', scrub: 0.6 }
+  });
+  tl.to(planPaths, { strokeDashoffset: 0, duration: 52, ease: 'none', stagger: 3.5 });
+  tl.to(heroAfter, {
+    clipPath: 'inset(0 0% 0 0)', duration: 38, ease: 'power1.inOut',
+    onStart: () => runCounter(areaCounter, 1400)
+  }, 52);
+  tl.to('#heroPlan', { opacity: 0.3, duration: 10, ease: 'none' }, 82);
+  // Langsamer Zoom über den gesamten Hero — Tiefe ohne Layout-Shift
+  gsap.fromTo('.hero-layer', { scale: 1.06 }, {
+    scale: 1, ease: 'none',
+    scrollTrigger: { trigger: '#heroScroll', start: 'top top', end: 'bottom bottom', scrub: 1 }
+  });
+  gsap.to('.hero-cue', {
+    opacity: 0, ease: 'none',
+    scrollTrigger: { trigger: '#heroScroll', start: 'top top', end: '+=300', scrub: true }
+  });
+}
+
+/* ---------- Hero-Einstieg ---------- */
+if (!reduced && hasGSAP) {
+  gsap.from('.hero-title .line > span', { yPercent: 112, duration: 1.15, ease: 'expo.out', stagger: 0.1, delay: 0.15 });
+  gsap.from(['.hero-eyebrow', '.hero-foot', '.hero-meta'], { y: 24, opacity: 0, duration: 0.9, ease: 'power2.out', stagger: 0.1, delay: 0.5 });
+}
+
+/* ---------- Reveals ---------- */
+if (!reduced && hasGSAP) {
+  document.querySelectorAll('.reveal').forEach(el => {
+    gsap.to(el, { opacity: 1, y: 0, duration: 0.85, ease: 'power2.out',
+      scrollTrigger: { trigger: el, start: 'top 86%', once: true } });
+  });
+  gsap.utils.toArray('.svc-tags').forEach(list => {
+    gsap.from(list.children, { opacity: 0, y: 12, duration: 0.5, ease: 'power2.out', stagger: 0.06,
+      scrollTrigger: { trigger: list, start: 'top 92%', once: true } });
+  });
+} else {
+  document.querySelectorAll('.reveal').forEach(el => { el.style.opacity = 1; el.style.transform = 'none'; });
+}
+
+/* ---------- Parallax ---------- */
+if (!reduced && hasGSAP) {
+  gsap.utils.toArray('[data-parallax]').forEach(img => {
+    gsap.fromTo(img, { yPercent: -8 }, { yPercent: 0, ease: 'none',
+      scrollTrigger: { trigger: img.closest('.svc-media'), start: 'top bottom', end: 'bottom top', scrub: true } });
+  });
+  const bg = document.querySelector('[data-parallax-bg]');
+  if (bg) gsap.fromTo(bg, { yPercent: -8 }, { yPercent: 8, ease: 'none',
+    scrollTrigger: { trigger: bg.closest('.figures'), start: 'top bottom', end: 'bottom top', scrub: true } });
+}
+
+/* ---------- Projekte: horizontaler Scroll ---------- */
+const track = document.getElementById('projectsTrack');
+if (!reduced && hasGSAP && matchMedia('(min-width: 901px)').matches) {
+  const distance = () => track.scrollWidth - innerWidth + 48;
+  gsap.to(track, { x: () => -distance(), ease: 'none',
+    scrollTrigger: { trigger: '#projekte', start: 'top top', end: () => '+=' + distance(),
+      pin: true, scrub: 0.5, invalidateOnRefresh: true, anticipatePin: 1 } });
+}
+
+/* ---------- Drag-Cursor über der Galerie ---------- */
+const cursor = document.getElementById('dragCursor');
+if (fine && !reduced) {
+  let raf = null;
+  track.addEventListener('pointerenter', () => cursor.classList.add('on'));
+  track.addEventListener('pointerleave', () => cursor.classList.remove('on'));
+  track.addEventListener('pointermove', e => {
+    if (raf) cancelAnimationFrame(raf);
+    raf = requestAnimationFrame(() => {
+      cursor.style.top = e.clientY + 'px';
+      cursor.style.left = e.clientX + 'px';
+    });
+  });
+} else {
+  cursor.remove();
+}
+
+/* ---------- Counter auslösen ---------- */
+document.querySelectorAll('.counter').forEach(el => {
+  if (hasGSAP && !reduced) ScrollTrigger.create({ trigger: el, start: 'top 90%', once: true, onEnter: () => runCounter(el) });
+  else el.textContent = el.dataset.target + (el.dataset.suffix || '');
+});
+
+/* ---------- Magnetische Buttons ---------- */
+if (!reduced && fine) {
+  document.querySelectorAll('[data-magnetic]').forEach(btn => {
+    let raf = null;
+    btn.addEventListener('pointermove', e => {
+      const r = btn.getBoundingClientRect();
+      const x = (e.clientX - r.left - r.width / 2) * 0.28;
+      const y = (e.clientY - r.top - r.height / 2) * 0.28;
+      if (raf) cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => {
+        btn.style.willChange = 'transform';
+        btn.style.transform = 'translate(' + x + 'px,' + y + 'px)';
+      });
+    });
+    btn.addEventListener('pointerenter', () => { btn.style.transition = ''; });
+    btn.addEventListener('pointerleave', () => {
+      btn.style.transition = 'transform 420ms cubic-bezier(0.4,0,0.2,1)';
+      btn.style.transform = 'translate(0,0)';
+      setTimeout(() => { btn.style.transition = ''; btn.style.willChange = 'auto'; }, 440);
+    });
+  });
+}
+
+/* ============================================================
+   FORMULAR-VALIDIERUNG (generisch)
+   ============================================================ */
+const MSG = {
+  vorname:'Bitte Vornamen angeben.', nachname:'Bitte Nachnamen angeben.',
+  email:'Bitte eine gültige E-Mail-Adresse angeben.',
+  anliegen:'Bitte ein Anliegen auswählen.', stelle:'Bitte eine Stelle auswählen.',
+  nachricht:'Bitte beschreiben Sie kurz Ihr Anliegen.'
+};
+function setError(form, name, msg, field){
+  const box = form.querySelector('.error[data-for="' + name + '"]');
+  if (box) box.textContent = msg || '';
+  if (field) field.setAttribute('aria-invalid', msg ? 'true' : 'false');
+}
+function validateField(form, f){
+  if (!f.required) return true;
+  let ok = f.value.trim() !== '';
+  if (ok && f.type === 'email') ok = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(f.value.trim());
+  setError(form, f.name, ok ? '' : (MSG[f.name] || 'Pflichtfeld.'), f);
+  return ok;
+}
+function wire(form){
+  form.querySelectorAll('[required]').forEach(f => {
+    f.addEventListener('blur', () => validateField(form, f));
+    f.addEventListener('input', () => { if (f.getAttribute('aria-invalid') === 'true') validateField(form, f); });
+  });
+}
+
+const contactForm = document.getElementById('contactForm');
+wire(contactForm);
+contactForm.addEventListener('submit', e => {
+  e.preventDefault();
+  const fields = [...contactForm.querySelectorAll('[required]')];
+  const valid = fields.map(f => validateField(contactForm, f)).every(Boolean);
+  const status = document.getElementById('formStatus');
+  if (!valid) {
+    status.textContent = 'Bitte prüfen Sie die markierten Felder.';
+    const bad = fields.find(f => f.getAttribute('aria-invalid') === 'true');
+    if (bad) bad.focus();
+    return;
+  }
+  status.textContent = 'Prototyp — es wurde nichts versendet. Im Livebetrieb ginge die Anfrage jetzt raus.';
+});
+
+/* ============================================================
+   BEWERBUNG: PDF-Upload mit Drag & Drop
+   ============================================================ */
+const jobForm  = document.getElementById('jobForm');
+const dropzone = document.getElementById('dropzone');
+const fileInput= document.getElementById('b-files');
+const fileList = document.getElementById('fileList');
+const jobStatus= document.getElementById('jobStatus');
+
+const MAX_FILE  = 10 * 1024 * 1024;   // 10 MB pro Datei
+const MAX_TOTAL = 25 * 1024 * 1024;   // 25 MB gesamt
+const MAX_COUNT = 5;
+let picked = [];
+
+const fmt = b => b < 1024*1024 ? Math.max(1, Math.round(b/1024)) + ' KB'
+                               : (b/1024/1024).toFixed(1).replace('.', ',') + ' MB';
+const isPdf = f => f.type === 'application/pdf' || /\.pdf$/i.test(f.name);
+
+function fileError(msg){
+  const box = document.getElementById('err-b-files');
+  box.textContent = msg || '';
+  dropzone.setAttribute('aria-invalid', msg ? 'true' : 'false');
+}
+
+function render(){
+  fileList.innerHTML = '';
+  picked.forEach((f, i) => {
+    const li = document.createElement('li');
+
+    const ico = document.createElementNS('http://www.w3.org/2000/svg','svg');
+    ico.setAttribute('class','fico'); ico.setAttribute('viewBox','0 0 24 24'); ico.setAttribute('aria-hidden','true');
+    ico.innerHTML = '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/>';
+
+    const name = document.createElement('span');
+    name.className = 'fname'; name.textContent = f.name;
+
+    const size = document.createElement('span');
+    size.className = 'fsize'; size.textContent = fmt(f.size);
+
+    const btn = document.createElement('button');
+    btn.type = 'button'; btn.className = 'file-remove';
+    btn.setAttribute('aria-label', f.name + ' entfernen');
+    btn.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12" stroke-linecap="round"/></svg>';
+    btn.addEventListener('click', () => {
+      picked.splice(i, 1);
+      render();
+      fileError('');
+      jobStatus.textContent = f.name + ' wurde entfernt.';
+    });
+
+    li.append(ico, name, size, btn);
+    fileList.append(li);
+  });
+  // Native FileList kann nicht direkt gesetzt werden -> über DataTransfer synchronisieren
+  const dt = new DataTransfer();
+  picked.forEach(f => dt.items.add(f));
+  fileInput.files = dt.files;
+}
+
+function addFiles(list){
+  const errs = [];
+  [...list].forEach(f => {
+    if (!isPdf(f))                       { errs.push('„' + f.name + '" ist kein PDF.'); return; }
+    if (f.size > MAX_FILE)               { errs.push('„' + f.name + '" ist ' + fmt(f.size) + ' groß (max. 10 MB).'); return; }
+    if (picked.length >= MAX_COUNT)      { errs.push('Maximal ' + MAX_COUNT + ' Dateien.'); return; }
+    if (picked.some(p => p.name === f.name && p.size === f.size)) { errs.push('„' + f.name + '" ist bereits angehängt.'); return; }
+    const total = picked.reduce((s, p) => s + p.size, 0) + f.size;
+    if (total > MAX_TOTAL)               { errs.push('Zusammen über 25 MB — bitte weniger anhängen.'); return; }
+    picked.push(f);
+  });
+  render();
+  fileError(errs.length ? errs.join(' ') : '');
+  if (!errs.length && picked.length) {
+    jobStatus.textContent = picked.length + (picked.length === 1 ? ' Datei angehängt.' : ' Dateien angehängt.');
+  }
+}
+
+fileInput.addEventListener('change', () => {
+  const incoming = [...fileInput.files];
+  // Input leeren, damit dieselbe Datei erneut gewählt werden kann
+  fileInput.value = '';
+  addFiles(incoming);
+});
+
+['dragenter','dragover'].forEach(ev =>
+  dropzone.addEventListener(ev, e => { e.preventDefault(); dropzone.dataset.drag = 'true'; }));
+['dragleave','drop'].forEach(ev =>
+  dropzone.addEventListener(ev, e => { e.preventDefault(); dropzone.dataset.drag = 'false'; }));
+dropzone.addEventListener('drop', e => {
+  if (e.dataTransfer && e.dataTransfer.files.length) addFiles(e.dataTransfer.files);
+});
+// Ausserhalb der Dropzone fallengelassene Dateien nicht im Tab öffnen
+['dragover','drop'].forEach(ev => addEventListener(ev, e => {
+  if (!dropzone.contains(e.target)) e.preventDefault();
+}));
+
+wire(jobForm);
+jobForm.addEventListener('submit', e => {
+  e.preventDefault();
+  const fields = [...jobForm.querySelectorAll('[required]')];
+  let valid = fields.map(f => validateField(jobForm, f)).every(Boolean);
+  if (!picked.length) { fileError('Bitte mindestens ein PDF anhängen.'); valid = false; }
+  if (!valid) {
+    jobStatus.textContent = 'Bitte prüfen Sie die markierten Felder.';
+    const bad = fields.find(f => f.getAttribute('aria-invalid') === 'true');
+    (bad || dropzone).focus();
+    return;
+  }
+  const total = picked.reduce((s, f) => s + f.size, 0);
+  jobStatus.textContent = 'Prototyp — nichts versendet. Es würden ' + picked.length +
+    ' PDF (' + fmt(total) + ') mitgeschickt.';
+});
+
+/* ============================================================
+   KARTE: Google Maps erst auf Klick einbinden
+   ============================================================ */
+const ADRESSE = 'Dammstr. 100, 64625 Bensheim';
+const mapLoad = document.getElementById('mapLoad');
+mapLoad.addEventListener('click', () => {
+  const frame  = document.getElementById('mapFrame');
+  const iframe = document.createElement('iframe');
+  iframe.src = 'https://www.google.com/maps?q=' + encodeURIComponent(ADRESSE) + '&hl=de&z=16&output=embed';
+  iframe.title = 'Karte mit dem Standort ' + ADRESSE;
+  iframe.loading = 'lazy';
+  iframe.allowFullscreen = true;
+  iframe.referrerPolicy = 'no-referrer-when-downgrade';
+  frame.append(iframe);
+  document.getElementById('mapConsent').remove();
+  document.getElementById('mapStatus').textContent = 'Karte geladen — ' + ADRESSE;
+  frame.focus({ preventScroll: true });   // Fokus nicht verlieren, wenn der Button verschwindet
+  if (hasGSAP) ScrollTrigger.refresh();
+});
+
+/* ---------- Nach Font-Load neu vermessen ---------- */
+if (hasGSAP && document.fonts) document.fonts.ready.then(() => ScrollTrigger.refresh());
+})();
+</script>
+</body>
+</html>
