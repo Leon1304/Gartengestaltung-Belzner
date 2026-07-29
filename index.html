@@ -43,6 +43,9 @@
      und ein Round-Trip weniger. Erzeugt von scripts/fonts.mjs. -->
 <link rel="preload" as="font" type="font/woff2" crossorigin href="fonts/fraunces-400-900-latin.woff2">
 <link rel="preload" as="font" type="font/woff2" crossorigin href="fonts/instrument-sans-400-latin.woff2">
+<!-- Mono traegt Marke, Eyebrow und Telefonnummer im ersten Bild — bei nur
+     10 KB lohnt der Preload, sonst blitzen diese Zeilen in der Ersatzschrift. -->
+<link rel="preload" as="font" type="font/woff2" crossorigin href="fonts/ibm-plex-mono-400-latin.woff2">
 <link rel="stylesheet" href="fonts.css">
 
 <link rel="preload" as="image" fetchpriority="high" type="image/avif"
@@ -55,6 +58,9 @@
    1. DESIGN TOKENS
    ============================================================ */
 :root{
+  /* Sagt dem Browser das aktive Schema: Scrollbalken, Select-Aufklapplisten
+     und Autofill-Felder folgen sonst weiter dem Systemschema. */
+  color-scheme:light;
   --ink-900:#0B0C0B; --ink-800:#101210; --ink-700:#161815; --ink-600:#22251F;
   --paper-000:#FAFAF8; --paper-100:#F0F0EC; --paper-200:#E4E5DF;
   --stone-500:#8C9088; --stone-400:#A8ACA2; --stone-600:#55584F;
@@ -117,6 +123,7 @@
 }
 
 [data-theme="dark"]{
+  color-scheme:dark;
   --color-bg:var(--ink-900);
   --color-bg-alt:var(--ink-700);
   --color-bg-sunk:var(--ink-800);
@@ -155,8 +162,10 @@
 *,*::before,*::after{box-sizing:border-box}
 *{margin:0}
 html{-webkit-text-size-adjust:100%}
-html:focus-within{scroll-behavior:smooth}
-@media (prefers-reduced-motion:reduce){html:focus-within{scroll-behavior:auto}}
+/* Kein natives scroll-behavior:smooth — das Glaetten uebernimmt Lenis.
+   Beides zusammen macht aus jedem programmatischen Setzen von scrollTop
+   (Lenis-Ticks, ScrollTrigger-Refresh) eine eigene Browser-Animation,
+   die gegen Lenis arbeitet und die Seite wegspringen laesst. */
 
 body{
   font-family:'Instrument Sans',system-ui,sans-serif;
@@ -183,6 +192,11 @@ p{text-wrap:pretty}
 .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 :where(a,button,input,textarea,select,[tabindex]):focus-visible{
   outline:3px solid var(--color-accent-text);outline-offset:3px;border-radius:var(--radius-sm)}
+
+/* Ankerziele: kommt ein Besucher von einer Unterseite (projekte.html) direkt
+   auf index.html#…, springt der Browser ohne den Lenis-Versatz an — ohne
+   diesen Rand laege der Abschnittsanfang unter der fixierten Leiste. */
+main [id]{scroll-margin-top:76px}
 
 /* Sprungmarke: versteckt, bis sie den Fokus bekommt. Ohne diese Regel
    bliebe sie auch beim Tabben unsichtbar und damit nutzlos. */
@@ -543,6 +557,21 @@ html[data-nav-open],html[data-lb-open]{overflow:hidden}
   .project:hover{transform:none}
   .project:hover .project-img img{transform:none}
 }
+/* Mehrbild-Projekte: eine Karte darf mehrere <picture> tragen. Auf der Karte
+   ist nur das erste sichtbar — durch die weiteren blaettert die Lightbox.
+   Die versteckten Bilder laden dank loading="lazy" erst, wenn sie drankommen. */
+.project-img{position:relative}
+.project-img picture:not(:first-child) img{display:none}
+/* Kleine Anzeige auf dem Foto, sonst ahnt niemand, dass mehr dahinter steckt.
+   Kommt per JS nur auf Karten mit mehr als einem Bild. */
+.project-count{position:absolute;left:var(--space-s);bottom:var(--space-s);z-index:1;
+  display:inline-flex;align-items:center;gap:var(--space-3xs);
+  padding:var(--space-3xs) var(--space-xs);border-radius:var(--radius-full);
+  background:color-mix(in srgb,var(--ink-900) 55%,transparent);color:var(--paper-000);
+  backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+  font-family:'IBM Plex Mono',monospace;font-size:var(--step--2);letter-spacing:.08em;
+  pointer-events:none}
+.project-count svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.8}
 .project-body{padding:var(--space-m) var(--space-m) var(--space-l)}
 .project-body h3{font-size:var(--step-2);margin-block:var(--space-2xs) var(--space-2xs)}
 .project-body p{color:var(--color-fg-muted);font-size:var(--step--1)}
@@ -694,7 +723,9 @@ html[data-nav-open],html[data-lb-open]{overflow:hidden}
 .job:hover{border-color:var(--color-accent-text);transform:translateX(6px)}
 @media (prefers-reduced-motion:reduce){.job:hover{transform:none}}
 @media (max-width:640px){.job{grid-template-columns:1fr}}
-.job h3{font-size:var(--step-2);margin-bottom:var(--space-3xs)}
+/* Stellentitel im Akzentgruen: hebt das Bewerbbare als Blickfang hervor,
+   Kontrast in beiden Modi geprueft (hell 4,85:1, dunkel 5,63:1). */
+.job h3{font-size:var(--step-2);margin-bottom:var(--space-3xs);color:var(--color-accent-text)}
 .job p{color:var(--color-fg-muted);font-size:var(--step--1);max-width:52ch}
 
 /* ============================================================
@@ -1067,7 +1098,7 @@ html.is-vt *{transition:none !important}
   <ul class="nav-links" id="navLinks">
     <li><a href="#leistungen">Leistungen</a></li>
     <li><a href="#ablauf">Ablauf</a></li>
-    <li><a href="#projekte">Projekte</a></li>
+    <li><a href="projekte.html">Projekte</a></li>
     <li><a href="#ueber-uns">Betrieb</a></li>
     <li><a href="#karriere">Karriere</a></li>
     <li><a href="#kontakt">Kontakt</a></li>
@@ -1091,7 +1122,7 @@ html.is-vt *{transition:none !important}
   <ul id="navPanelLinks">
     <li><a class="item" style="--i:0" href="#leistungen"><span class="n">01</span>Leistungen</a></li>
     <li><a class="item" style="--i:1" href="#ablauf"><span class="n">02</span>Ablauf</a></li>
-    <li><a class="item" style="--i:2" href="#projekte"><span class="n">03</span>Projekte</a></li>
+    <li><a class="item" style="--i:2" href="projekte.html"><span class="n">03</span>Projekte</a></li>
     <li><a class="item" style="--i:3" href="#ueber-uns"><span class="n">04</span>Betrieb</a></li>
     <li><a class="item" style="--i:4" href="#karriere"><span class="n">05</span>Karriere</a></li>
     <li><a class="item" style="--i:5" href="#kontakt"><span class="n">06</span>Kontakt</a></li>
@@ -1184,7 +1215,7 @@ html.is-vt *{transition:none !important}
     <article class="svc-item" id="leistung-fertigrasen">
       <div class="svc-body reveal">
         <span class="svc-num">Pos. 01</span>
-        <h3 class="display">Fertigrasen</h3>
+        <h3 class="display">Fertigrasen <span aria-hidden="true">🌱</span></h3>
         <p>Sie möchten Ihren Garten möglichst schnell genießen? Wir liefern und verlegen den „grünen Teppich" in höchster Qualität — auf Wunsch mit eingearbeitetem Netz, das den Rasen vor Maulwurf und Wühlmaus schützt.</p>
         <ul class="svc-tags"><li>Lieferung</li><li>Verlegung</li><li>Wühlmausschutz</li></ul>
       </div>
@@ -1203,7 +1234,7 @@ html.is-vt *{transition:none !important}
     <article class="svc-item" id="leistung-steinarbeiten">
       <div class="svc-body reveal">
         <span class="svc-num">Pos. 02</span>
-        <h3 class="display">Steinarbeiten &amp; Zäune</h3>
+        <h3 class="display">Steinarbeiten &amp; Zäune <span aria-hidden="true">🧱</span></h3>
         <p>Steinarbeiten aus Naturstein oder Beton — Trockenmauern, Gabionen, Terrassen, Treppen und Teichanlagen. Dazu Zäune aus Holz oder Gitterstabmatten, gerne auch mit Toren.</p>
         <ul class="svc-tags"><li>Trockenmauer</li><li>Gabionen</li><li>Terrassen</li><li>Treppen</li><li>Teichanlagen</li></ul>
       </div>
@@ -1222,7 +1253,7 @@ html.is-vt *{transition:none !important}
     <article class="svc-item" id="leistung-pflanzen">
       <div class="svc-body reveal">
         <span class="svc-num">Pos. 03</span>
-        <h3 class="display">Pflanzenarbeiten &amp; Baumschule</h3>
+        <h3 class="display">Pflanzenarbeiten &amp; Baumschule <span aria-hidden="true">🌳</span></h3>
         <p>Wir setzen die Pflanzen fachgerecht und geben ihnen so den bestmöglichen Start. Unser Fuhrpark bietet für praktisch jede Aufgabe eine Lösung — auch wenn Ihr Wunschbaum schon eine stattliche Größe haben soll. Zum Wässern beraten wir individuell, angepasst an Bodenbeschaffenheit und Pflanzenauswahl.</p>
         <ul class="svc-tags"><li>Großbäume</li><li>Beetanlagen</li><li>Bewässerung</li><li>Beratung</li></ul>
       </div>
@@ -1241,7 +1272,7 @@ html.is-vt *{transition:none !important}
     <article class="svc-item" id="leistung-wasser">
       <div class="svc-body reveal">
         <span class="svc-num">Pos. 04</span>
-        <h3 class="display">Wassersysteme</h3>
+        <h3 class="display">Wassersysteme <span aria-hidden="true">💧</span></h3>
         <p>Wasser entscheidet, ob ein Garten trägt oder Arbeit macht. Wir bauen automatische Bewässerung mit Versenkregnern und Tropfschläuchen, binden Zisterne und Regenwasser ein und legen Drainagen so an, dass nach dem Gewitter nichts stehen bleibt. Gesteuert wird über Zeitplan oder Bodenfeuchte — im Alltag merken Sie davon nur, dass es grün bleibt.</p>
         <ul class="svc-tags"><li>Versenkregner</li><li>Tropfbewässerung</li><li>Zisterne</li><li>Drainage</li><li>Steuerung</li></ul>
       </div>
@@ -1260,7 +1291,7 @@ html.is-vt *{transition:none !important}
     <article class="svc-item" id="leistung-maehroboter">
       <div class="svc-body reveal">
         <span class="svc-num">Pos. 05</span>
-        <h3 class="display">Mähroboter</h3>
+        <h3 class="display">Mähroboter <span aria-hidden="true">🤖</span></h3>
         <p>Mähen ist Routine — das kann eine Maschine übernehmen. Wir messen die Fläche ein, verlegen das Begrenzungskabel oder richten ein kabelloses GPS-Modell ein, setzen Ladestation und Garage und stellen die Mähzeiten auf Ihren Rasen ein.</p>
         <ul class="svc-tags"><li>Flächenaufmaß</li><li>Kabelverlegung</li><li>GPS-Modelle</li><li>Ladestation</li><li>Winterwartung</li></ul>
       </div>
@@ -1411,7 +1442,13 @@ html.is-vt *{transition:none !important}
       <span class="project-zoom" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.6-3.6M11 8v6M8 11h6" stroke-linecap="round"/></svg></span>
       <div class="project-img"><picture>
         <source type="image/avif" sizes="(min-width:901px) 520px, 90vw" srcset="Bilder/opt/IMG_0070-3-640.avif 640w, Bilder/opt/IMG_0070-3-1024.avif 1024w">
-        <img sizes="(min-width:901px) 520px, 90vw" srcset="Bilder/opt/IMG_0070-3-640.jpg 640w, Bilder/opt/IMG_0070-3-1024.jpg 1024w" src="Bilder/opt/IMG_0070-3-1024.jpg" width="1800" height="1200" loading="lazy" decoding="async" alt="Weg durch die Quartiere der Baumschule Belzner, gesäumt von Ahorn, Hortensien und Formgehölzen"></picture></div>
+        <img sizes="(min-width:901px) 520px, 90vw" srcset="Bilder/opt/IMG_0070-3-640.jpg 640w, Bilder/opt/IMG_0070-3-1024.jpg 1024w" src="Bilder/opt/IMG_0070-3-1024.jpg" width="1800" height="1200" loading="lazy" decoding="async" alt="Weg durch die Quartiere der Baumschule Belzner, gesäumt von Ahorn, Hortensien und Formgehölzen"></picture>
+      <!-- Weitere Bilder desselben Projekts: einfach zusaetzliche <picture>-Bloecke
+           hier anhaengen. Die Karte zeigt nur das erste, die Lightbox blaettert
+           mit den Pfeilen durch alle. -->
+      <picture>
+        <source type="image/avif" sizes="(min-width:901px) 520px, 90vw" srcset="Bilder/opt/IMG_0070-2-640.avif 640w, Bilder/opt/IMG_0070-2-1024.avif 1024w, Bilder/opt/IMG_0070-2-1600.avif 1600w">
+        <img sizes="(min-width:901px) 520px, 90vw" srcset="Bilder/opt/IMG_0070-2-640.jpg 640w, Bilder/opt/IMG_0070-2-1024.jpg 1024w, Bilder/opt/IMG_0070-2-1600.jpg 1600w" src="Bilder/opt/IMG_0070-2-1024.jpg" width="2400" height="1600" loading="lazy" decoding="async" alt="Schmaler Plattenweg zwischen dicht gewachsenen Gehölzen und Buchskugeln in der Baumschule"></picture></div>
       <div class="project-body"><p class="mono">Eigener Betrieb</p><h3 class="display"><button type="button" class="project-open" data-lb="6">Schaugarten der Baumschule</button></h3><p>Unsere Quartiere an der Dammstraße. Hier suchen Sie Ihre Pflanzen im gewachsenen Zustand aus, nicht im Katalog.</p></div>
     </article>
   </div>
@@ -1420,7 +1457,11 @@ html.is-vt *{transition:none !important}
     <div class="track-progress" id="trackProgress" aria-hidden="true"><span></span></div>
   </div>
 
-  <div class="wrap" style="margin-top:var(--space-xl)">
+  <div class="wrap" style="margin-top:var(--space-xl);display:flex;flex-wrap:wrap;gap:var(--space-s)">
+    <a href="projekte.html" class="btn">
+      Alle Projekte ansehen
+      <svg class="arrow" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h9M8.5 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
     <a href="https://www.instagram.com/gartengestaltung_belzner/" class="btn btn-ghost" target="_blank" rel="noopener noreferrer">
       Mehr Projekte auf Instagram
       <svg class="arrow" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h9M8.5 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -1497,6 +1538,14 @@ html.is-vt *{transition:none !important}
         </div>
         <a href="#bewerbung" class="btn btn-ghost">Bewerben</a>
       </article>
+      <article class="job reveal">
+        <div>
+          <p class="mono">Vollzeit oder Teilzeit · unbefristet</p>
+          <h3 class="display">Gartenpfleger (m/w/d)</h3>
+          <p>Sie betreuen unsere Pflegegärten durch die Saison — Hecken- und Formschnitt, Rasen- und Beetpflege, Stauden und Gehölze. Erfahrung in der Gartenpflege ist willkommen, Sorgfalt zählt mehr als Zeugnisse. Führerschein Klasse B von Vorteil.</p>
+        </div>
+        <a href="#bewerbung" class="btn btn-ghost">Bewerben</a>
+      </article>
     </div>
 
     <!-- ===== Bewerbungsformular mit PDF-Anhang ===== -->
@@ -1567,6 +1616,7 @@ html.is-vt *{transition:none !important}
               <option value="">Bitte wählen</option>
               <option>Ausbildung zum Gärtner (m/w/d)</option>
               <option>Garten- und Landschaftsbaugärtner (m/w/d)</option>
+              <option>Gartenpfleger (m/w/d)</option>
               <option>Initiativbewerbung</option>
             </select>
             <span class="error" id="err-b-stelle" data-for="stelle"></span>
@@ -1812,10 +1862,10 @@ html.is-vt *{transition:none !important}
   <button type="button" class="lb-btn lb-close" id="lbClose" aria-label="Schließen">
     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12" stroke-linecap="round"/></svg>
   </button>
-  <button type="button" class="lb-btn lb-prev" id="lbPrev" aria-label="Vorheriges Projekt">
+  <button type="button" class="lb-btn lb-prev" id="lbPrev" aria-label="Vorheriges Bild">
     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
   </button>
-  <button type="button" class="lb-btn lb-next" id="lbNext" aria-label="Nächstes Projekt">
+  <button type="button" class="lb-btn lb-next" id="lbNext" aria-label="Nächstes Bild">
     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
   </button>
   <div class="lb-stage" id="lbStage"></div>
@@ -1884,17 +1934,26 @@ if (hasGSAP) gsap.registerPlugin(ScrollTrigger);
    ums Umschalten und ums Merken der Wahl ueber den Besuch hinaus. */
 const root = document.documentElement;
 const themeToggle = document.getElementById('themeToggle');
+/* Die beiden theme-color-Metas haengen an prefers-color-scheme, nicht an
+   der Wahl am Schalter. Nach einem manuellen Wechsel behielte die
+   Browserleiste am Telefon sonst die Farbe des Systemschemas. */
+const themeMetas = document.querySelectorAll('meta[name="theme-color"]');
+const syncThemeColor = () => {
+  const c = root.dataset.theme === 'dark' ? '#0B0C0B' : '#FAFAF8';
+  themeMetas.forEach(m => m.setAttribute('content', c));
+};
+syncThemeColor();   // gespeicherte Wahl kann vom Systemschema abweichen
 const flipTheme = () => {
   root.dataset.theme = root.dataset.theme === 'dark' ? 'light' : 'dark';
   try { localStorage.setItem('theme', root.dataset.theme); } catch(e){}
+  syncThemeColor();
 };
 
 /* Der neue Zustand wischt als Kreis vom Umschalter aus ueber die Seite.
    Ohne View-Transition-API oder bei reduzierter Bewegung bleibt es beim
    harten Umschalten — der Wisch ist reine Zugabe, keine Voraussetzung. */
 themeToggle.addEventListener('click', () => {
-  const done = () => { if (hasGSAP) ScrollTrigger.refresh(); };
-  if (reduced || typeof document.startViewTransition !== 'function') { flipTheme(); done(); return; }
+  if (reduced || typeof document.startViewTransition !== 'function') { flipTheme(); return; }
 
   const box = themeToggle.getBoundingClientRect();
   const x = box.left + box.width / 2;
@@ -1908,15 +1967,15 @@ themeToggle.addEventListener('click', () => {
     root.animate(
       { clipPath: ['circle(0px at ' + x + 'px ' + y + 'px)',
                    'circle(' + radius + 'px at ' + x + 'px ' + y + 'px)'] },
-      { duration: 640, easing: 'cubic-bezier(0.16,1,0.3,1)',
+      { duration: 400, easing: 'cubic-bezier(0.16,1,0.3,1)',
         pseudoElement: '::view-transition-new(root)' }
     );
   }).catch(() => {});
-  vt.finished.catch(() => {}).then(() => { root.classList.remove('is-vt'); done(); });
+  vt.finished.catch(() => {}).then(() => { root.classList.remove('is-vt'); });
 });
 
 /* ---------- Mobilmenue ---------- */
-/* Unter 961 px traegt die Leiste die Links nicht mehr. Ohne dieses Panel
+/* Unter 1151 px traegt die Leiste die Links nicht mehr. Ohne dieses Panel
    kaeme man auf Telefon und Tablet nur per Scrollen durch die Seite. */
 const navToggle = document.getElementById('navToggle');
 const navPanel  = document.getElementById('navPanel');
@@ -1961,7 +2020,9 @@ addEventListener('keydown', e => {
 });
 
 // Wird die Leiste breit genug fuer die Links, ist ein offenes Panel sinnlos.
-matchMedia('(min-width: 961px)').addEventListener('change', e => { if (e.matches) setNav(false); });
+// 1151 wie im CSS (.nav-links ab 1151 px) — nicht frueher schliessen, sonst
+// steht man zwischen 961 und 1150 px ploetzlich ohne Navigation da.
+matchMedia('(min-width: 1151px)').addEventListener('change', e => { if (e.matches) setNav(false); });
 
 /* Fehlt die Logo-Datei, faellt die Marke auf reine Typo zurueck
    statt ein kaputtes Bild-Icon zu zeigen. */
@@ -2659,19 +2720,40 @@ if (lb && cards.length) {
   const lbCount = document.getElementById('lbCount');
   const lbClose = document.getElementById('lbClose');
 
-  const shots = cards.map(card => ({
-    kind:  card.querySelector('.project-body .mono').textContent.trim(),
-    title: card.querySelector('.project-open').textContent.trim(),
-    text:  card.querySelectorAll('.project-body p')[1].textContent.trim(),
-    card
-  }));
+  /* Ein Eintrag je Bild, nicht je Karte: traegt eine Karte mehrere <picture>,
+     blaettern die Pfeile erst durch deren Bilder und dann zum naechsten
+     Projekt weiter. */
+  const shots = [];
+  const firstShot = [];   // Kartenindex -> Position ihres ersten Bilds
+  cards.forEach((card, ci) => {
+    const kind  = card.querySelector('.project-body .mono').textContent.trim();
+    const title = card.querySelector('.project-open').textContent.trim();
+    const text  = card.querySelectorAll('.project-body p')[1].textContent.trim();
+    const pics  = card.querySelectorAll('.project-img picture');
+    firstShot[ci] = shots.length;
+    pics.forEach((pic, pi) => shots.push({
+      kind, title, text, card, pic,
+      num: ci, imgNo: pi, imgCount: pics.length
+    }));
+  });
+
+  /* Mehrbild-Karten bekommen eine kleine Anzeige aufs Foto — sonst ahnt
+     niemand, dass die Lightbox noch mehr zu zeigen hat. */
+  cards.forEach(card => {
+    const n = card.querySelectorAll('.project-img picture').length;
+    if (n < 2) return;
+    const chip = document.createElement('span');
+    chip.className = 'project-count';
+    chip.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="7" width="14" height="14" rx="2"/><path d="M8.5 3.5H19a1.5 1.5 0 0 1 1.5 1.5V15.5"/></svg>' + n + ' Bilder';
+    card.querySelector('.project-img').appendChild(chip);
+  });
 
   let lbIndex = 0, lbBefore = null;
 
   // Das <picture> der Karte wird geklont, damit AVIF und die Groessenstaffel
   // auch hier greifen — nur ohne Bildausschnitt und Lazy-Laden.
-  function stageOf(card){
-    const pic = card.querySelector('.project-img picture').cloneNode(true);
+  function stageOf(shot){
+    const pic = shot.pic.cloneNode(true);
     pic.querySelectorAll('source,img').forEach(n => n.setAttribute('sizes', '92vw'));
     const img = pic.querySelector('img');
     img.removeAttribute('style');
@@ -2681,11 +2763,12 @@ if (lb && cards.length) {
 
   function renderLb(){
     const s = shots[lbIndex];
-    lbStage.replaceChildren(stageOf(s.card));
+    lbStage.replaceChildren(stageOf(s));
     lbKind.textContent  = s.kind;
     lbTitle.textContent = s.title;
     lbText.textContent  = s.text;
-    lbCount.textContent = (lbIndex + 1) + ' / ' + shots.length;
+    lbCount.textContent = (s.num + 1) + ' / ' + cards.length +
+      (s.imgCount > 1 ? ' · Bild ' + (s.imgNo + 1) + '/' + s.imgCount : '');
   }
 
   /* FLIP von Hand statt Flip-Plugin: einmal Karte messen, einmal Buehne
@@ -2710,7 +2793,8 @@ if (lb && cards.length) {
   }
 
   function openLb(i){
-    lbIndex = (i + shots.length) % shots.length;
+    // Geoeffnet wird immer beim ersten Bild der angeklickten Karte.
+    lbIndex = firstShot[(i + cards.length) % cards.length];
     renderLb();
     lbBefore = document.activeElement;
     lb.dataset.open = 'true';
@@ -3074,7 +3158,9 @@ function stepValid(i){
   if (!ok) {
     jobStatus.textContent = 'Bitte prüfen Sie die markierten Felder.';
     const bad = fields.find(f => f.getAttribute('aria-invalid') === 'true');
-    (bad || dropzone).focus();
+    // preventScroll: die Fehlermeldungen stehen am Feld und am Status —
+    // die Seite soll beim Klick auf »Weiter« nicht wegscrollen.
+    (bad || dropzone).focus({ preventScroll: true });
   }
   return ok;
 }
@@ -3093,13 +3179,6 @@ function showStep(i, focus){
   btnSend.hidden = i !== LAST;
   // Fokus auf die Gruppe: der Screenreader liest die Ueberschrift des Schritts
   if (focus) panels[i].focus({ preventScroll: true });
-  // Ist der Formularkopf aus dem Bild gerutscht, sanft zurueckholen
-  const box = jobForm.getBoundingClientRect();
-  if (box.top < 0) {
-    const y = box.top + (lenis ? lenis.scroll : scrollY) - 96;
-    if (lenis) lenis.scrollTo(y);
-    else scrollTo({ top: y, behavior: reduced ? 'auto' : 'smooth' });
-  }
   if (hasGSAP) ScrollTrigger.refresh();   // Sektionshoehe hat sich geaendert
 }
 

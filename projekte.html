@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="de" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Projekte — Gartengestaltung &amp; Baumschule Belzner</title>
+<meta name="description" content="Ausgeführte Projekte aus der Region Bergstraße: Trockenmauern, Terrassen, Pflasterarbeiten, Gartenanlagen und Zaunbau — geplant und gebaut von Gartengestaltung Belzner, Bensheim.">
+<link rel="canonical" href="https://gartengestaltung-belzner.de/projekte.html">
+
+<!-- Farbschema setzen, bevor das erste Pixel steht — dieselbe Wahl wie auf der
+     Startseite, sie liegt in localStorage. -->
+<script>
+(function(){
+  try{
+    var w = localStorage.getItem('theme');
+    document.documentElement.dataset.theme =
+      (w === 'dark' || w === 'light') ? w
+      : (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  }catch(e){}
+})();
+</script>
+
+<link rel="icon" href="assets/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="assets/favicon-180.png">
+<meta name="theme-color" content="#FAFAF8" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0B0C0B" media="(prefers-color-scheme: dark)">
+
+<meta property="og:type" content="website">
+<meta property="og:locale" content="de_DE">
+<meta property="og:url" content="https://gartengestaltung-belzner.de/projekte.html">
+<meta property="og:site_name" content="Gartengestaltung &amp; Baumschule Belzner">
+<meta property="og:title" content="Projekte — Gartengestaltung &amp; Baumschule Belzner">
+<meta property="og:description" content="Ausgeführte Projekte aus der Region Bergstraße — vom Fertigrasen bis zur Trockenmauer, geplant und gebaut vom eigenen Betrieb.">
+<meta property="og:image" content="https://gartengestaltung-belzner.de/assets/og-bild.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Weg durch die Quartiere der Baumschule Belzner in Bensheim">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="preload" as="font" type="font/woff2" crossorigin href="fonts/fraunces-400-900-latin.woff2">
+<link rel="preload" as="font" type="font/woff2" crossorigin href="fonts/instrument-sans-400-latin.woff2">
+<!-- Mono traegt Marke und Eyebrow im ersten Bild — bei nur 10 KB lohnt der
+     Preload, sonst blitzen diese Zeilen in der Ersatzschrift. -->
+<link rel="preload" as="font" type="font/woff2" crossorigin href="fonts/ibm-plex-mono-400-latin.woff2">
+<link rel="stylesheet" href="fonts.css">
+
+<style>
+/* ============================================================
+   1. DESIGN TOKENS — identisch mit der Startseite
+   ============================================================ */
+:root{
+  /* Sagt dem Browser das aktive Schema: Scrollbalken und native Controls
+     folgen sonst weiter dem Systemschema. */
+  color-scheme:light;
+  --ink-900:#0B0C0B; --ink-800:#101210; --ink-700:#161815; --ink-600:#22251F;
+  --paper-000:#FAFAF8; --paper-100:#F0F0EC; --paper-200:#E4E5DF;
+  --stone-500:#8C9088; --stone-400:#A8ACA2; --stone-600:#55584F;
+  --accent-500:#4C9A4A; --accent-600:#3D7C3B; --accent-700:#2E5E2D; --accent-400:#5BAE57;
+
+  --color-bg:var(--paper-000);
+  --color-bg-alt:var(--paper-100);
+  --color-bg-sunk:var(--paper-200);
+  --color-fg:var(--ink-900);
+  --color-fg-muted:var(--stone-600);
+  --color-line:rgba(11,12,11,.14);
+  --color-line-strong:rgba(11,12,11,.28);
+  --color-accent-text:var(--accent-600);
+  --color-accent-hover:var(--accent-700);
+  --color-accent-surface:var(--accent-600);
+  --color-on-accent:var(--paper-000);
+  --shadow-card:0 1px 2px rgba(11,12,11,.04),0 8px 24px -12px rgba(11,12,11,.12);
+  --shadow-lift:0 24px 60px -28px rgba(11,12,11,.42);
+
+  --radius-sm:8px; --radius-md:12px; --radius-lg:16px; --radius-xl:24px;
+  --radius-2xl:32px; --radius-full:999px;
+
+  --step--2:clamp(0.69rem,0.67rem + 0.12vw,0.76rem);
+  --step--1:clamp(0.83rem,0.79rem + 0.20vw,0.94rem);
+  --step-0:clamp(1.00rem,0.93rem + 0.33vw,1.19rem);
+  --step-1:clamp(1.20rem,1.09rem + 0.54vw,1.50rem);
+  --step-2:clamp(1.44rem,1.27rem + 0.85vw,1.90rem);
+  --step-3:clamp(1.73rem,1.47rem + 1.29vw,2.40rem);
+  --step-4:clamp(2.07rem,1.70rem + 1.88vw,3.03rem);
+  --step-5:clamp(2.49rem,1.94rem + 2.71vw,3.83rem);
+  --step-6:clamp(2.99rem,2.21rem + 3.87vw,4.85rem);
+
+  --space-3xs:clamp(0.25rem,0.24rem + 0.07vw,0.31rem);
+  --space-2xs:clamp(0.50rem,0.47rem + 0.17vw,0.59rem);
+  --space-xs:clamp(0.75rem,0.70rem + 0.25vw,0.89rem);
+  --space-s:clamp(1.00rem,0.93rem + 0.33vw,1.19rem);
+  --space-m:clamp(1.50rem,1.40rem + 0.50vw,1.78rem);
+  --space-l:clamp(2.00rem,1.87rem + 0.67vw,2.38rem);
+  --space-xl:clamp(3.00rem,2.80rem + 1.00vw,3.56rem);
+  --space-2xl:clamp(4.00rem,3.73rem + 1.34vw,4.75rem);
+  --space-3xl:clamp(6.00rem,5.60rem + 2.01vw,7.13rem);
+
+  --ease-out:cubic-bezier(0.4,0,0.2,1);
+  --ease-expo:cubic-bezier(0.16,1,0.3,1);
+  --dur-fast:180ms; --dur-base:240ms; --dur-slow:420ms;
+
+  --wrap:min(100% - var(--space-l) * 2, 1320px);
+  --measure:68ch;
+}
+
+[data-theme="dark"]{
+  color-scheme:dark;
+  --color-bg:var(--ink-900);
+  --color-bg-alt:var(--ink-700);
+  --color-bg-sunk:var(--ink-800);
+  --color-fg:var(--paper-000);
+  --color-fg-muted:var(--stone-400);
+  --color-line:rgba(250,250,248,.14);
+  --color-line-strong:rgba(250,250,248,.30);
+  --color-accent-text:var(--accent-500);
+  --color-accent-hover:var(--accent-400);
+  --color-accent-surface:var(--accent-500);
+  --color-on-accent:var(--ink-900);
+  --shadow-card:0 1px 2px rgba(0,0,0,.4),0 8px 24px -12px rgba(0,0,0,.6);
+  --shadow-lift:0 24px 60px -28px rgba(0,0,0,.8);
+}
+
+/* ============================================================
+   2. RESET + GRUNDLAGEN
+   ============================================================ */
+*,*::before,*::after{box-sizing:border-box}
+*{margin:0}
+html{-webkit-text-size-adjust:100%}
+html:focus-within{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html:focus-within{scroll-behavior:auto}}
+
+body{
+  font-family:'Instrument Sans',system-ui,sans-serif;
+  font-size:var(--step-0);line-height:1.6;
+  color:var(--color-fg);background:var(--color-bg);
+  -webkit-font-smoothing:antialiased;overflow-x:hidden;
+  transition:background-color var(--dur-slow) var(--ease-out),color var(--dur-slow) var(--ease-out);
+}
+img,svg,video{display:block;max-width:100%;height:auto}
+picture{display:contents}
+button,input,textarea,select{font:inherit;color:inherit}
+h1,h2,h3,h4{line-height:1.02;text-wrap:balance;font-weight:400}
+p{text-wrap:pretty}
+
+.display{font-family:'Fraunces',Georgia,serif;font-variation-settings:'SOFT' 40,'WONK' 1,'opsz' 100;
+  font-weight:500;letter-spacing:-0.025em}
+.mono{font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:var(--step--2);
+  letter-spacing:0.1em;text-transform:uppercase;color:var(--color-fg-muted)}
+
+.wrap{width:var(--wrap);margin-inline:auto}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+:where(a,button,input,textarea,select,[tabindex]):focus-visible{
+  outline:3px solid var(--color-accent-text);outline-offset:3px;border-radius:var(--radius-sm)}
+
+.skip{position:absolute;top:0;left:var(--space-s);z-index:200;
+  transform:translateY(-140%);
+  display:inline-flex;align-items:center;min-height:48px;
+  padding-inline:var(--space-m);border-radius:0 0 var(--radius-md) var(--radius-md);
+  background:var(--color-accent-surface);color:var(--color-on-accent);
+  text-decoration:none;font-size:var(--step--1);font-weight:500;
+  transition:transform var(--dur-fast) var(--ease-out)}
+.skip:focus{transform:translateY(0)}
+
+/* ============================================================
+   3. NAV — wie auf der Startseite, hier dauerhaft im Scroll-Zustand,
+   weil es keinen dunklen Hero gibt, über dem sie hell stehen müsste.
+   ============================================================ */
+.nav{
+  position:fixed;inset:0 0 auto 0;z-index:100;
+  display:flex;align-items:center;gap:var(--space-m);
+  padding:var(--space-xs) max(var(--space-l),calc((100vw - 1320px)/2));
+  color:var(--color-fg);
+  background:color-mix(in srgb,var(--color-bg) 84%,transparent);
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--color-line);
+  transition:background-color var(--dur-base) var(--ease-out),color var(--dur-base) var(--ease-out),
+             border-color var(--dur-base) var(--ease-out);
+}
+.progress{position:absolute;left:0;bottom:-1px;height:2px;width:100%;transform:scaleX(0);
+  transform-origin:left;background:var(--accent-500)}
+
+.brand{display:flex;align-items:center;gap:var(--space-2xs);
+  text-decoration:none;color:inherit;margin-right:auto}
+.brand-mark{position:relative;display:block;width:46px;height:41px;flex:none}
+.brand-mark img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;
+  transition:opacity var(--dur-base) var(--ease-out)}
+.brand-mark .is-paper{opacity:0}
+[data-theme="dark"] .brand-mark .is-ink{opacity:0}
+[data-theme="dark"] .brand-mark .is-paper{opacity:1}
+.brand-text{display:flex;flex-direction:column;line-height:1.18;white-space:nowrap;
+  font-family:'IBM Plex Mono',monospace;text-transform:uppercase}
+.brand-top{font-size:var(--step--2);font-weight:400;letter-spacing:0.14em;opacity:.74}
+.brand-name{font-size:var(--step--1);font-weight:500;letter-spacing:0.22em}
+@media (max-width:560px){.brand-top{display:none}}
+
+.nav-links{display:flex;gap:var(--space-m);list-style:none;padding:0}
+@media (max-width:1150px){.nav-links{display:none}}
+.nav-legal{display:flex;align-items:center;gap:var(--space-s)}
+.nav-legal::before{content:'';flex:none;width:1px;height:15px;background:currentColor;opacity:.32}
+.nav-legal a{font-size:var(--step--2);opacity:.82}
+.nav-legal a:hover{opacity:1}
+.nav-links a{position:relative;text-decoration:none;color:inherit;font-size:var(--step--1);padding-block:var(--space-3xs)}
+.nav-links a::after{content:'';position:absolute;left:0;right:0;bottom:0;height:1.5px;
+  background:currentColor;transform:scaleX(0);transform-origin:right;
+  transition:transform var(--dur-fast) var(--ease-out)}
+.nav-links a:hover::after,.nav-links a:focus-visible::after{transform:scaleX(1);transform-origin:left}
+.nav-links a[aria-current="page"]::after{transform:scaleX(1);transform-origin:left;
+  background:var(--accent-500);height:2px}
+
+.theme-toggle{display:grid;place-items:center;width:44px;height:44px;background:none;
+  border:1px solid currentColor;border-radius:var(--radius-full);cursor:pointer;opacity:.75;
+  transition:opacity var(--dur-fast) var(--ease-out)}
+.theme-toggle:hover{opacity:1}
+.theme-toggle svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.6}
+[data-theme="light"] .icon-moon{display:none}
+[data-theme="dark"] .icon-sun{display:none}
+.theme-toggle svg{grid-area:1/1}
+@media (prefers-reduced-motion:no-preference){
+  .theme-toggle svg{transition:opacity var(--dur-base) var(--ease-out),transform var(--dur-base) var(--ease-expo)}
+  [data-theme="light"] .icon-moon,[data-theme="dark"] .icon-sun{display:block;opacity:0}
+  [data-theme="light"] .icon-moon{transform:rotate(-60deg) scale(.55)}
+  [data-theme="dark"] .icon-sun{transform:rotate(60deg) scale(.55)}
+}
+
+.nav-toggle{display:none;place-items:center;width:44px;height:44px;flex:none;
+  background:none;border:1px solid currentColor;border-radius:var(--radius-full);
+  cursor:pointer;opacity:.75;transition:opacity var(--dur-fast) var(--ease-out)}
+.nav-toggle:hover{opacity:1}
+@media (max-width:1150px){.nav-toggle{display:grid}}
+.nav-toggle .box{position:relative;width:18px;height:12px}
+.nav-toggle .box span{position:absolute;left:0;width:100%;height:1.6px;border-radius:2px;
+  background:currentColor;
+  transition:transform var(--dur-base) var(--ease-expo),opacity var(--dur-fast) var(--ease-out)}
+.nav-toggle .box span:first-child{top:0}
+.nav-toggle .box span:last-child{bottom:0}
+.nav-toggle[aria-expanded="true"] .box span:first-child{transform:translateY(5.2px) rotate(45deg)}
+.nav-toggle[aria-expanded="true"] .box span:last-child{transform:translateY(-5.2px) rotate(-45deg)}
+
+.nav-panel{position:fixed;inset:0;z-index:95;display:flex;flex-direction:column;
+  justify-content:center;gap:var(--space-xl);
+  padding:calc(var(--space-3xl) + var(--space-m)) var(--space-l) var(--space-2xl);
+  background:var(--color-bg);color:var(--color-fg);overflow-y:auto;overscroll-behavior:contain;
+  opacity:0;visibility:hidden;transition:opacity var(--dur-base) var(--ease-out),visibility var(--dur-base)}
+.nav-panel[data-open="true"]{opacity:1;visibility:visible}
+@media (min-width:1151px){.nav-panel{display:none}}
+.nav-panel ul{list-style:none;padding:0;display:grid;gap:var(--space-2xs)}
+.nav-panel a.item{display:flex;align-items:baseline;gap:var(--space-s);
+  text-decoration:none;color:inherit;font-family:'Fraunces',Georgia,serif;
+  font-variation-settings:'SOFT' 40,'WONK' 1,'opsz' 100;font-weight:500;
+  font-size:var(--step-4);letter-spacing:-.025em;line-height:1.1;
+  padding-block:var(--space-2xs);border-bottom:1px solid var(--color-line)}
+.nav-panel a.item .n{font-family:'IBM Plex Mono',monospace;font-size:var(--step--2);
+  letter-spacing:.14em;color:var(--color-fg-muted);flex:none}
+.nav-panel a.item[aria-current="page"]{color:var(--color-accent-text)}
+.nav-panel a.item[aria-current="page"] .n{color:var(--color-accent-text)}
+.nav-panel a.item.is-legal{font-size:var(--step-2)}
+@media (prefers-reduced-motion:no-preference){
+  .nav-panel a.item{opacity:0;transform:translateY(14px);
+    transition:opacity var(--dur-base) var(--ease-out),transform var(--dur-base) var(--ease-expo)}
+  .nav-panel[data-open="true"] a.item{opacity:1;transform:none;
+    transition-delay:calc(60ms + var(--i) * 45ms)}
+}
+.nav-panel-foot{display:grid;gap:var(--space-s)}
+.nav-panel-foot .btn{justify-content:center}
+.nav-panel-foot .mail{color:var(--color-fg-muted);text-decoration:none;font-size:var(--step--1);
+  text-align:center;min-height:44px;display:grid;place-items:center}
+.nav-panel-foot .mail:hover{color:var(--color-accent-text)}
+html[data-nav-open],html[data-lb-open]{overflow:hidden}
+
+/* ============================================================
+   4. BUTTONS
+   ============================================================ */
+.btn{display:inline-flex;align-items:center;gap:var(--space-2xs);
+  min-height:52px;padding:var(--space-xs) var(--space-l);
+  border:none;border-radius:var(--radius-full);
+  background:var(--color-accent-surface);color:var(--color-on-accent);
+  font-size:var(--step-0);font-weight:500;text-decoration:none;cursor:pointer;
+  transition:background-color var(--dur-base) var(--ease-out),box-shadow var(--dur-base) var(--ease-out)}
+.btn:hover{background:var(--color-accent-hover);box-shadow:0 10px 30px -10px var(--color-accent-surface)}
+.btn .arrow{transition:transform var(--dur-base) var(--ease-out)}
+.btn:hover .arrow{transform:translateX(5px)}
+.btn-ghost{background:transparent;color:currentColor;border:1px solid var(--color-line-strong)}
+.btn-ghost:hover{background:color-mix(in srgb,currentColor 10%,transparent);border-color:currentColor;box-shadow:none}
+
+/* ============================================================
+   5. SEITENKOPF
+   ============================================================ */
+.page-head{padding:calc(var(--space-3xl) + 76px) 0 var(--space-2xl)}
+.page-head h1{font-size:var(--step-6);margin-block:var(--space-s)}
+.page-head .lede{color:var(--color-fg-muted);max-width:54ch;font-size:var(--step-1)}
+.page-head .meta{display:flex;align-items:center;gap:var(--space-2xs)}
+.page-head .meta::before{content:'';width:44px;height:1px;background:var(--color-accent-text)}
+
+/* ============================================================
+   6. GALERIE — Masonry über CSS-Spalten. Hoch- und Querformate
+   behalten ihr Seitenverhältnis, dadurch versetzen sich die Karten
+   von selbst zu einem lebendigen Raster.
+   ============================================================ */
+.gallery-sec{padding-bottom:var(--space-3xl)}
+.gallery{columns:3;column-gap:var(--space-m)}
+@media (max-width:1150px){.gallery{columns:2}}
+@media (max-width:640px){.gallery{columns:1}}
+
+.project{position:relative;break-inside:avoid;margin-bottom:var(--space-m);
+  background:var(--color-bg-alt);border-radius:var(--radius-xl);
+  overflow:hidden;box-shadow:var(--shadow-card);
+  transition:transform var(--dur-base) var(--ease-out),background-color var(--dur-slow) var(--ease-out)}
+.project:hover{transform:translateY(-8px)}
+.project-img{aspect-ratio:4/3;background:var(--color-bg-sunk);overflow:hidden}
+.project-img.is-tall{aspect-ratio:3/4}
+.project-img img{width:100%;height:100%;object-fit:cover;transition:transform var(--dur-slow) var(--ease-out)}
+.project:hover .project-img img{transform:scale(1.06)}
+@media (prefers-reduced-motion:reduce){
+  .project:hover{transform:none}
+  .project:hover .project-img img{transform:none}
+}
+/* Mehrbild-Projekte: eine Karte darf mehrere <picture> tragen. Auf der Karte
+   ist nur das erste sichtbar — durch die weiteren blaettert die Lightbox.
+   Die versteckten Bilder laden dank loading="lazy" erst, wenn sie drankommen. */
+.project-img{position:relative}
+.project-img picture:not(:first-child) img{display:none}
+/* Kleine Anzeige auf dem Foto, sonst ahnt niemand, dass mehr dahinter steckt.
+   Kommt per JS nur auf Karten mit mehr als einem Bild. */
+.project-count{position:absolute;left:var(--space-s);bottom:var(--space-s);z-index:1;
+  display:inline-flex;align-items:center;gap:var(--space-3xs);
+  padding:var(--space-3xs) var(--space-xs);border-radius:var(--radius-full);
+  background:color-mix(in srgb,var(--ink-900) 55%,transparent);color:var(--paper-000);
+  backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+  font-family:'IBM Plex Mono',monospace;font-size:var(--step--2);letter-spacing:.08em;
+  pointer-events:none}
+.project-count svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.8}
+.project-body{padding:var(--space-m) var(--space-m) var(--space-l)}
+.project-body h3{font-size:var(--step-2);margin-block:var(--space-2xs) var(--space-2xs)}
+.project-body p{color:var(--color-fg-muted);font-size:var(--step--1)}
+
+.project-open{background:none;border:0;padding:0;margin:0;text-align:left;
+  color:inherit;font:inherit;cursor:pointer}
+.project-open::after{content:'';position:absolute;inset:0;border-radius:var(--radius-xl)}
+.project-open:focus-visible{outline:none}
+.project:has(.project-open:focus-visible){outline:3px solid var(--color-accent-text);outline-offset:3px}
+.project-zoom{position:absolute;top:var(--space-s);right:var(--space-s);z-index:1;
+  display:grid;place-items:center;width:40px;height:40px;border-radius:var(--radius-full);
+  background:color-mix(in srgb,var(--ink-900) 55%,transparent);color:var(--paper-000);
+  backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+  opacity:0;transform:scale(.9);pointer-events:none;
+  transition:opacity var(--dur-base) var(--ease-out),transform var(--dur-base) var(--ease-expo)}
+.project:hover .project-zoom,.project:has(.project-open:focus-visible) .project-zoom{opacity:1;transform:none}
+.project-zoom svg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:1.9}
+@media (hover:none){.project-zoom{opacity:1;transform:none}}
+
+.gallery-foot{margin-top:var(--space-l)}
+
+/* ============================================================
+   7. LIGHTBOX — identisch mit der Startseite
+   ============================================================ */
+.lightbox{position:fixed;inset:0;z-index:120;display:grid;
+  grid-template-rows:minmax(0,1fr) auto;gap:var(--space-m);
+  padding:clamp(3.5rem,8vh,5.5rem) var(--space-l) var(--space-l);
+  background:color-mix(in srgb,var(--ink-900) 98%,transparent);
+  -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
+  opacity:0;visibility:hidden;
+  transition:opacity var(--dur-base) var(--ease-out),visibility var(--dur-base)}
+.lightbox[data-open="true"]{opacity:1;visibility:visible}
+.lightbox img{max-width:100%;max-height:100%;width:auto;height:auto;margin-inline:auto;
+  border-radius:var(--radius-lg);box-shadow:var(--shadow-lift)}
+.lb-stage{display:flex;align-items:center;justify-content:center;min-height:0}
+.lb-cap{width:min(100%,60ch);margin-inline:auto;text-align:center;color:var(--paper-000)}
+.lb-cap .mono{color:var(--stone-400)}
+.lb-cap h3{font-size:var(--step-2);margin-block:var(--space-3xs) var(--space-2xs)}
+.lb-cap p{color:var(--stone-400);font-size:var(--step--1)}
+.lb-btn{position:absolute;display:grid;place-items:center;width:48px;height:48px;
+  background:color-mix(in srgb,var(--paper-000) 12%,transparent);color:var(--paper-000);
+  border:1px solid rgba(250,250,248,.28);border-radius:var(--radius-full);cursor:pointer;
+  transition:background-color var(--dur-fast) var(--ease-out)}
+.lb-btn:hover{background:color-mix(in srgb,var(--paper-000) 26%,transparent)}
+.lb-btn svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.8}
+.lb-close{top:var(--space-s);right:var(--space-l)}
+.lb-prev{left:var(--space-s);top:50%;transform:translateY(-50%)}
+.lb-next{right:var(--space-s);top:50%;transform:translateY(-50%)}
+@media (max-width:640px){
+  .lb-prev{left:var(--space-2xs)}.lb-next{right:var(--space-2xs)}
+  .lb-btn{width:44px;height:44px}
+}
+.lb-count{position:absolute;top:var(--space-s);left:var(--space-l);
+  color:var(--stone-400);font-family:'IBM Plex Mono',monospace;font-size:var(--step--2);
+  letter-spacing:.1em;line-height:48px}
+
+/* ============================================================
+   8. CTA-BAND + FOOTER
+   ============================================================ */
+.cta-band{background:var(--color-bg-alt);padding-block:var(--space-3xl);
+  transition:background-color var(--dur-slow) var(--ease-out)}
+.cta-band h2{font-size:var(--step-5);margin-block:var(--space-s)}
+.cta-band .lede{color:var(--color-fg-muted);max-width:54ch;font-size:var(--step-1)}
+.cta-actions{display:flex;flex-wrap:wrap;gap:var(--space-s);margin-top:var(--space-l)}
+
+.footer{padding-block:var(--space-2xl) var(--space-xl);border-top:1px solid var(--color-line);
+  background:var(--color-bg);transition:background-color var(--dur-slow) var(--ease-out)}
+.footer-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
+  gap:var(--space-l);margin-bottom:var(--space-xl)}
+.footer h4{font-family:'IBM Plex Mono',monospace;font-size:var(--step--2);letter-spacing:.1em;
+  text-transform:uppercase;color:var(--color-fg-muted);margin-bottom:var(--space-s);font-weight:500}
+.footer ul{list-style:none;padding:0;display:grid;gap:var(--space-2xs)}
+.footer a{color:var(--color-fg);text-decoration:none;font-size:var(--step--1)}
+.footer a:hover{color:var(--color-accent-text)}
+.footer ul a{position:relative;display:inline-block}
+.footer ul a::after{content:'';position:absolute;left:0;right:0;bottom:-2px;height:1px;
+  background:currentColor;transform:scaleX(0);transform-origin:right;
+  transition:transform var(--dur-fast) var(--ease-out)}
+.footer ul a:hover::after,.footer ul a:focus-visible::after{transform:scaleX(1);transform-origin:left}
+.footer-bottom{display:flex;flex-wrap:wrap;gap:var(--space-s);justify-content:space-between;
+  padding-top:var(--space-m);border-top:1px solid var(--color-line)}
+
+/* ============================================================
+   9. REVEAL — hier per IntersectionObserver statt GSAP; die Seite
+   kommt ohne die grossen Animationsbibliotheken aus.
+   ============================================================ */
+.reveal{opacity:1}
+html.js .reveal{opacity:0;transform:translateY(28px);
+  transition:opacity .85s var(--ease-out),transform .85s var(--ease-expo)}
+html.js .reveal.is-in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){
+  html.js .reveal{opacity:1 !important;transform:none !important;transition:none}
+}
+
+/* ============================================================
+   10. THEME-WECHSEL ALS KREISWISCH (View Transitions)
+   ============================================================ */
+::view-transition-old(root),::view-transition-new(root){animation:none;mix-blend-mode:normal}
+::view-transition-old(root){z-index:0}
+::view-transition-new(root){z-index:1}
+html.is-vt *{transition:none !important}
+</style>
+</head>
+<body>
+
+<a href="#main" class="skip">Zum Inhalt springen</a>
+
+<nav class="nav" id="nav">
+  <a href="index.html" class="brand" aria-label="Gartengestaltung Baumschule Belzner — zur Startseite">
+    <span class="brand-mark" id="brandMark" aria-hidden="true">
+      <img class="is-ink" src="assets/logo-belzner.png" alt=""
+           width="320" height="285" decoding="async">
+      <img class="is-paper" src="assets/logo-belzner-light.png" alt=""
+           width="320" height="285" decoding="async">
+    </span>
+    <span class="brand-text" aria-hidden="true">
+      <span class="brand-top">Gartengestaltung · Baumschule</span>
+      <span class="brand-name">Belzner</span>
+    </span>
+  </a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="index.html#leistungen">Leistungen</a></li>
+    <li><a href="index.html#ablauf">Ablauf</a></li>
+    <li><a href="projekte.html" aria-current="page">Projekte</a></li>
+    <li><a href="index.html#ueber-uns">Betrieb</a></li>
+    <li><a href="index.html#karriere">Karriere</a></li>
+    <li><a href="index.html#kontakt">Kontakt</a></li>
+    <li class="nav-legal">
+      <a href="impressum.html">Impressum</a>
+      <a href="datenschutz.html">Datenschutz</a>
+    </li>
+  </ul>
+  <button class="theme-toggle" id="themeToggle" aria-label="Farbschema wechseln">
+    <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+    <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+  </button>
+  <button class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="navPanel"
+          aria-label="Menü öffnen">
+    <span class="box" aria-hidden="true"><span></span><span></span></span>
+  </button>
+  <div class="progress" id="progress"></div>
+</nav>
+
+<div class="nav-panel" id="navPanel" data-open="false" aria-label="Navigation" role="dialog" aria-modal="true">
+  <ul id="navPanelLinks">
+    <li><a class="item" style="--i:0" href="index.html#leistungen"><span class="n">01</span>Leistungen</a></li>
+    <li><a class="item" style="--i:1" href="index.html#ablauf"><span class="n">02</span>Ablauf</a></li>
+    <li><a class="item" style="--i:2" href="projekte.html" aria-current="page"><span class="n">03</span>Projekte</a></li>
+    <li><a class="item" style="--i:3" href="index.html#ueber-uns"><span class="n">04</span>Betrieb</a></li>
+    <li><a class="item" style="--i:4" href="index.html#karriere"><span class="n">05</span>Karriere</a></li>
+    <li><a class="item" style="--i:5" href="index.html#kontakt"><span class="n">06</span>Kontakt</a></li>
+    <li><a class="item is-legal" style="--i:6" href="impressum.html"><span class="n">07</span>Impressum</a></li>
+    <li><a class="item is-legal" style="--i:7" href="datenschutz.html"><span class="n">08</span>Datenschutz</a></li>
+  </ul>
+  <div class="nav-panel-foot">
+    <a href="tel:+4962513091" class="btn">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.2a2 2 0 0 1 2.1-.5c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/></svg>
+      06251 3091
+    </a>
+    <a class="mail" href="mailto:info@gartengestaltung-belzner.de">info@gartengestaltung-belzner.de</a>
+  </div>
+</div>
+
+<main id="main">
+
+<header class="page-head">
+  <div class="wrap">
+    <p class="mono meta reveal">Referenzen aus der Region Bergstraße</p>
+    <h1 class="display reveal">Ausgeführte Projekte</h1>
+    <p class="lede reveal">Von der Trockenmauer bis zum Hausgarten mit Teich — jedes dieser
+      Projekte haben wir selbst geplant und mit eigenen Leuten gebaut. Zum Vergrößern
+      auf eine Karte tippen.</p>
+  </div>
+</header>
+
+<section class="gallery-sec" aria-label="Projektgalerie">
+  <div class="wrap">
+    <div class="gallery" id="gallery">
+
+      <article class="project reveal">
+        <span class="project-zoom" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.6-3.6M11 8v6M8 11h6" stroke-linecap="round"/></svg></span>
+        <div class="project-img is-tall"><picture>
+          <source type="image/avif" sizes="(min-width:1151px) 420px, (min-width:641px) 46vw, 92vw" srcset="Bilder/opt/6-640.avif 640w, Bilder/opt/6-1024.avif 1024w">
+          <img sizes="(min-width:1151px) 420px, (min-width:641px) 46vw, 92vw" srcset="Bilder/opt/6-640.jpg 640w, Bilder/opt/6-1024.jpg 1024w" src="Bilder/opt/6-1024.jpg" width="1125" height="1500" loading="lazy" decoding="async" alt="Gepflasterte Einfahrt unter einem Carport, daneben eine Blockstufentreppe zur Haustür"></picture></div>
+        <div class="project-body"><p class="mono">Pflasterarbeiten</p><h3 class="display"><button type="button" class="project-open" data-lb="0">Einfahrt &amp; Hauszugang</button></h3><p>Pflasterfläche unter dem Carport, Blockstufen zum Eingang und eine Rinne an der Straße für den Wasserablauf.</p></div>
+      </article>
+
+      <article class="project reveal">
+        <span class="project-zoom" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.6-3.6M11 8v6M8 11h6" stroke-linecap="round"/></svg></span>
+        <div class="project-img"><picture>
+          <source type="image/avif" sizes="(min-width:1151px) 420px, (min-width:641px) 46vw, 92vw" srcset="Bilder/opt/11-640.avif 640w, Bilder/opt/11-1024.avif 1024w">
+          <img sizes="(min-width:1151px) 420px, (min-width:641px) 46vw, 92vw" srcset="Bilder/opt/11-640.jpg 640w, Bilder/opt/11-1024.jpg 1024w" src="Bilder/opt/11-1024.jpg" width="1500" height="1125" loading="lazy" decoding="async" alt="L-förmige Trockenmauer aus Naturstein mit dahinterliegendem Mulchbeet und junger Lavendelpflanzung"></picture></div>
+        <div class="project-body"><p class="mono">Steinarbeiten</p><h3 class="display"><button type="button" class="project-open" data-lb="1">Trockenmauer als Hochbeet</button></h3><p>Geschichtete Natursteinmauer fängt den Hang ab. Dahinter Mulchbeet mit Lavendel und neuer Heckenpflanzung.</p></div>
+      </article>
+
+      <article class="project reveal">
+        <span class="project-zoom" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.6-3.6M11 8v6M8 11h6" stroke-linecap="round"/></svg></span>
+        <div class="project-img"><picture>
+          <source type="image/avif" sizes="(min-width:1151px) 420px, (min-width:641px) 46vw, 92vw" srcset="Bilder/opt/5-640.avif 640w, Bilder/opt/5-1024.avif 1024w">
+          <img sizes="(min-width:1151px) 420px, (min-width:641px) 46vw, 92vw" srcset="Bilder/opt/5-640.jpg 640w, Bilder/opt/5-1024.jpg 1024w" src="Bilder/opt/5-1024.jpg" width="1500" height="1125" loading="lazy" decoding="async" alt="Rasenfläche mit eingelassener Plattenterrasse, Kiesband und Baumbank vor einer Thujahecke"></picture></div>
+        <div class="project-body"><p class="mono">Terrassenbau</p><h3 class="display"><button type="button" class="project-open" data-lb="2">Terrasseninsel im Rasen</button></h3><p>Plattenfläche als ruhige Mitte, sauber eingefasst vom Rasen. Kiesband und Baumbank schließen die Anlage nach hinten ab.</p></div>
+      </article>
+
+      <article class="project reveal">
+        <span class="project-zoom" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.6-3.6M11 8v6M8 11h6" stroke-linecap="round"/></svg></span>
+        <div class="project-img is-tall"><picture>
+          <source type="image/avif" sizes="(min-width:1151px) 420px, (min-width:641px) 46vw, 92vw" srcset="Bilder/opt/8-640.avif 640w, Bilder/opt/8-1024.avif 1024w">
+          <img sizes="(min-width:1151px) 420px, (min-width:641px) 46vw, 92vw" srcset="Bilder/opt/8-640.jpg 640w, Bilder/opt/8-1024.jpg 1024w" src="Bilder/opt/8-1024.jpg" width="1125" height="1500" loading="lazy" decoding="async" alt="Innenhofgarten mit Rasenfläche, Mulchbeeten, Kirschlorbeerhecke und angelegtem Teich"></picture></div>
+        <div class="project-body"><p class="mono">Gartenanlage</p><h3 class="display"><button type="button" class="project-open" data-lb="3">Hausgarten mit Teich</button></h3><p>Aus einem Hinterhof zwischen Brandwänden wird ein Garten: Rasen, Mulchbeete, Hecke als Rahmen und ein Teich als Mitte.</p></div>
+      </article>
+
+      <article class="project reveal">
+        <span class="project-zoom" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.6-3.6M11 8v6M8 11h6" stroke-linecap="round"/></svg></span>
+        <div class="project-img"><picture>
+          <source type="image/avif" sizes="(min-width:1151px) 420px, (min-width:641px) 46vw, 92vw" srcset="Bilder/opt/1-640.avif 640w, Bilder/opt/1-1024.avif 1024w">
+          <img sizes="(min-width:1151px) 420px, (min-width:641px) 46vw, 92vw" srcset="Bilder/opt/1-640.jpg 640w, Bilder/opt/1-1024.jpg 1024w" src="Bilder/opt/1-1024.jpg" width="1500" height="1125" loading="lazy" decoding="async" alt="Sichtschutzzaun in Holzoptik mit eingesetztem Glaselement, davor ein frisch gepflanzter Fächerahorn"></picture></div>
+        <div class="project-body"><p class="mono">Zaunbau</p><h3 class="display"><button type="button" class="project-open" data-lb="4">Sichtschutz &amp; Zaunanlage</button></h3><p>Waagerechte Lamellen mit Glaselement als Lichtfuge. Davor junge Gehölze, die den Zaun in ein paar Jahren auflösen.</p></div>
+      </article>
+
+      <article class="project reveal">
+        <span class="project-zoom" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.6-3.6M11 8v6M8 11h6" stroke-linecap="round"/></svg></span>
+        <div class="project-img"><picture>
+          <source type="image/avif" sizes="(min-width:1151px) 420px, (min-width:641px) 46vw, 92vw" srcset="Bilder/opt/9-640.avif 640w, Bilder/opt/9-1024.avif 1024w">
+          <img sizes="(min-width:1151px) 420px, (min-width:641px) 46vw, 92vw" srcset="Bilder/opt/9-640.jpg 640w, Bilder/opt/9-1024.jpg 1024w" src="Bilder/opt/9-1024.jpg" width="1500" height="1125" loading="lazy" decoding="async" alt="Runde Baumbank auf einer Kiesfläche mit Gräserpflanzung vor einer hohen Thujahecke"></picture></div>
+        <div class="project-body"><p class="mono">Pflanzenarbeiten</p><h3 class="display"><button type="button" class="project-open" data-lb="5">Kiesfläche mit Baumbank</button></h3><p>Der Bestandsbaum bleibt stehen und bekommt eine Rundbank. Kiesbett mit Gräsern statt Rasen unter der Krone.</p></div>
+      </article>
+
+      <article class="project reveal">
+        <span class="project-zoom" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.6-3.6M11 8v6M8 11h6" stroke-linecap="round"/></svg></span>
+        <div class="project-img"><picture>
+          <source type="image/avif" sizes="(min-width:1151px) 420px, (min-width:641px) 46vw, 92vw" srcset="Bilder/opt/IMG_0070-3-640.avif 640w, Bilder/opt/IMG_0070-3-1024.avif 1024w">
+          <img sizes="(min-width:1151px) 420px, (min-width:641px) 46vw, 92vw" srcset="Bilder/opt/IMG_0070-3-640.jpg 640w, Bilder/opt/IMG_0070-3-1024.jpg 1024w" src="Bilder/opt/IMG_0070-3-1024.jpg" width="1800" height="1200" loading="lazy" decoding="async" alt="Weg durch die Quartiere der Baumschule Belzner, gesäumt von Ahorn, Hortensien und Formgehölzen"></picture>
+        <!-- Weitere Bilder desselben Projekts: einfach zusaetzliche <picture>-Bloecke
+             hier anhaengen. Die Karte zeigt nur das erste, die Lightbox blaettert
+             mit den Pfeilen durch alle. -->
+        <picture>
+          <source type="image/avif" sizes="(min-width:1151px) 420px, (min-width:641px) 46vw, 92vw" srcset="Bilder/opt/IMG_0070-2-640.avif 640w, Bilder/opt/IMG_0070-2-1024.avif 1024w, Bilder/opt/IMG_0070-2-1600.avif 1600w">
+          <img sizes="(min-width:1151px) 420px, (min-width:641px) 46vw, 92vw" srcset="Bilder/opt/IMG_0070-2-640.jpg 640w, Bilder/opt/IMG_0070-2-1024.jpg 1024w, Bilder/opt/IMG_0070-2-1600.jpg 1600w" src="Bilder/opt/IMG_0070-2-1024.jpg" width="2400" height="1600" loading="lazy" decoding="async" alt="Schmaler Plattenweg zwischen dicht gewachsenen Gehölzen und Buchskugeln in der Baumschule"></picture></div>
+        <div class="project-body"><p class="mono">Eigener Betrieb</p><h3 class="display"><button type="button" class="project-open" data-lb="6">Schaugarten der Baumschule</button></h3><p>Unsere Quartiere an der Dammstraße. Hier suchen Sie Ihre Pflanzen im gewachsenen Zustand aus, nicht im Katalog.</p></div>
+      </article>
+
+    </div>
+
+    <div class="gallery-foot reveal">
+      <a href="https://www.instagram.com/gartengestaltung_belzner/" class="btn btn-ghost" target="_blank" rel="noopener noreferrer">
+        Mehr Projekte auf Instagram
+        <svg class="arrow" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h9M8.5 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section class="cta-band">
+  <div class="wrap reveal">
+    <p class="mono">Ihr Garten</p>
+    <h2 class="display">Das nächste Projekt planen wir gemeinsam</h2>
+    <p class="lede">Erzählen Sie uns, was Sie vorhaben — meist beginnt es mit einer
+      Ortsbegehung, daraus entsteht der Plan, dann die Umsetzung.</p>
+    <div class="cta-actions">
+      <a href="index.html#kontakt" class="btn">
+        Projekt anfragen
+        <svg class="arrow" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h9M8.5 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+      <a href="tel:+4962513091" class="btn btn-ghost">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.2a2 2 0 0 1 2.1-.5c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/></svg>
+        06251 3091
+      </a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div><h4>Belzner</h4>
+        <p style="color:var(--color-fg-muted);font-size:var(--step--1)">Gartengestaltung &amp; Baumschule<br>Sascha Belzner<br>Dammstraße 100–108<br>64625 Bensheim</p></div>
+      <div><h4>Leistungen</h4><ul>
+        <li><a href="index.html#leistung-fertigrasen">Fertigrasen</a></li>
+        <li><a href="index.html#leistung-steinarbeiten">Steinarbeiten &amp; Zäune</a></li>
+        <li><a href="index.html#leistung-pflanzen">Pflanzenarbeiten &amp; Baumschule</a></li>
+        <li><a href="index.html#leistung-wasser">Wassersysteme</a></li>
+        <li><a href="index.html#leistung-maehroboter">Mähroboter</a></li>
+        <li><a href="index.html#ablauf">Ablauf</a></li></ul></div>
+      <div><h4>Kontakt</h4><ul>
+        <li><a href="tel:+4962513091">06251 3091</a></li>
+        <li><a href="mailto:info@gartengestaltung-belzner.de">info@gartengestaltung-belzner.de</a></li>
+        <li style="color:var(--color-fg-muted);font-size:var(--step--1)">Termin nach Absprache</li></ul></div>
+      <div><h4>Rechtliches</h4><ul><li><a href="impressum.html">Impressum</a></li><li><a href="datenschutz.html">Datenschutz</a></li></ul></div>
+      <div><h4>Social</h4><ul>
+        <li><a href="https://www.instagram.com/gartengestaltung_belzner/" target="_blank" rel="noopener noreferrer">Instagram</a></li></ul></div>
+    </div>
+    <div class="footer-bottom">
+      <p class="mono">© 2026 Gartengestaltung Sascha Belzner</p>
+      <p class="mono">Prototyp — Fotos aus der bestehenden Wix-Mediathek</p>
+    </div>
+  </div>
+</footer>
+
+<!-- Projektbild gross. Inhalt kommt beim Oeffnen aus der angeklickten Karte. -->
+<div class="lightbox" id="lightbox" data-open="false" role="dialog" aria-modal="true"
+     aria-labelledby="lbTitle">
+  <p class="lb-count" id="lbCount"></p>
+  <button type="button" class="lb-btn lb-close" id="lbClose" aria-label="Schließen">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12" stroke-linecap="round"/></svg>
+  </button>
+  <button type="button" class="lb-btn lb-prev" id="lbPrev" aria-label="Vorheriges Bild">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+  <button type="button" class="lb-btn lb-next" id="lbNext" aria-label="Nächstes Bild">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+  <div class="lb-stage" id="lbStage"></div>
+  <div class="lb-cap">
+    <p class="mono" id="lbKind"></p>
+    <h3 class="display" id="lbTitle"></h3>
+    <p id="lbText"></p>
+  </div>
+</div>
+
+<script>
+document.documentElement.classList.add('js');
+
+(function(){
+'use strict';
+
+const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const root = document.documentElement;
+
+/* ---------- Theme ---------- */
+/* Den Startwert setzt das kurze Skript im <head> — hier geht es nur noch
+   ums Umschalten und ums Merken der Wahl ueber den Besuch hinaus. */
+const themeToggle = document.getElementById('themeToggle');
+/* Die theme-color-Metas haengen an prefers-color-scheme — nach manuellem
+   Umschalten behielte die Browserleiste sonst die Farbe des Systemschemas. */
+const themeMetas = document.querySelectorAll('meta[name="theme-color"]');
+const syncThemeColor = () => {
+  const c = root.dataset.theme === 'dark' ? '#0B0C0B' : '#FAFAF8';
+  themeMetas.forEach(m => m.setAttribute('content', c));
+};
+syncThemeColor();   // gespeicherte Wahl kann vom Systemschema abweichen
+const flipTheme = () => {
+  root.dataset.theme = root.dataset.theme === 'dark' ? 'light' : 'dark';
+  try { localStorage.setItem('theme', root.dataset.theme); } catch(e){}
+  syncThemeColor();
+};
+themeToggle.addEventListener('click', () => {
+  if (reduced || typeof document.startViewTransition !== 'function') { flipTheme(); return; }
+  const box = themeToggle.getBoundingClientRect();
+  const x = box.left + box.width / 2;
+  const y = box.top + box.height / 2;
+  const radius = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
+  root.classList.add('is-vt');
+  const vt = document.startViewTransition(flipTheme);
+  vt.ready.then(() => {
+    root.animate(
+      { clipPath: ['circle(0px at ' + x + 'px ' + y + 'px)',
+                   'circle(' + radius + 'px at ' + x + 'px ' + y + 'px)'] },
+      { duration: 400, easing: 'cubic-bezier(0.16,1,0.3,1)',
+        pseudoElement: '::view-transition-new(root)' }
+    );
+  }).catch(() => {});
+  vt.finished.catch(() => {}).then(() => { root.classList.remove('is-vt'); });
+});
+
+/* ---------- Mobilmenue ---------- */
+const navToggle = document.getElementById('navToggle');
+const navPanel  = document.getElementById('navPanel');
+let navOpen = false, focusBeforeNav = null;
+
+function setNav(open){
+  if (open === navOpen) return;
+  navOpen = open;
+  navPanel.dataset.open = open;
+  navToggle.setAttribute('aria-expanded', String(open));
+  navToggle.setAttribute('aria-label', open ? 'Menü schließen' : 'Menü öffnen');
+  root.toggleAttribute('data-nav-open', open);
+  if (open) {
+    focusBeforeNav = document.activeElement;
+    requestAnimationFrame(() => navPanel.querySelector('a.item').focus());
+  } else {
+    if (focusBeforeNav && focusBeforeNav.isConnected) focusBeforeNav.focus();
+    focusBeforeNav = null;
+  }
+}
+navToggle.addEventListener('click', () => setNav(!navOpen));
+
+addEventListener('keydown', e => {
+  if (!navOpen) return;
+  if (e.key === 'Escape') { e.preventDefault(); setNav(false); return; }
+  if (e.key !== 'Tab') return;
+  const items = [...navPanel.querySelectorAll('a[href],button')];
+  const first = items[0], last = items[items.length - 1];
+  if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+  else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+});
+matchMedia('(min-width: 1151px)').addEventListener('change', e => { if (e.matches) setNav(false); });
+
+/* Fehlt die Logo-Datei, faellt die Marke auf reine Typo zurueck. */
+const brandMark = document.getElementById('brandMark');
+const dropMark = () => { if (brandMark.isConnected) brandMark.remove(); };
+brandMark.querySelectorAll('img').forEach(img => {
+  img.addEventListener('error', dropMark);
+  if (img.complete && img.naturalWidth === 0) dropMark();
+});
+
+/* ---------- Fortschrittsbalken ---------- */
+const bar = document.getElementById('progress');
+function navState(){
+  const max = document.documentElement.scrollHeight - innerHeight;
+  bar.style.transform = 'scaleX(' + (max > 0 ? scrollY / max : 0) + ')';
+}
+navState();
+addEventListener('scroll', navState, { passive: true });
+
+/* ---------- Reveals ---------- */
+if (typeof IntersectionObserver !== 'undefined') {
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(en => {
+      if (en.isIntersecting) { en.target.classList.add('is-in'); io.unobserve(en.target); }
+    });
+  }, { rootMargin: '0px 0px -8% 0px' });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+} else {
+  document.querySelectorAll('.reveal').forEach(el => el.classList.add('is-in'));
+}
+
+/* ---------- Lightbox ---------- */
+/* Wie auf der Startseite kommen die Inhalte aus den Karten selbst, damit
+   Text und Bild nicht an zwei Stellen gepflegt werden muessen. */
+const cards = [...document.querySelectorAll('#gallery .project')];
+const lb = document.getElementById('lightbox');
+if (lb && cards.length) {
+  const lbStage = document.getElementById('lbStage');
+  const lbKind  = document.getElementById('lbKind');
+  const lbTitle = document.getElementById('lbTitle');
+  const lbText  = document.getElementById('lbText');
+  const lbCount = document.getElementById('lbCount');
+  const lbClose = document.getElementById('lbClose');
+
+  /* Ein Eintrag je Bild, nicht je Karte: traegt eine Karte mehrere <picture>,
+     blaettern die Pfeile erst durch deren Bilder und dann zum naechsten
+     Projekt weiter. */
+  const shots = [];
+  const firstShot = [];   // Kartenindex -> Position ihres ersten Bilds
+  cards.forEach((card, ci) => {
+    const kind  = card.querySelector('.project-body .mono').textContent.trim();
+    const title = card.querySelector('.project-open').textContent.trim();
+    const text  = card.querySelectorAll('.project-body p')[1].textContent.trim();
+    const pics  = card.querySelectorAll('.project-img picture');
+    firstShot[ci] = shots.length;
+    pics.forEach((pic, pi) => shots.push({
+      kind, title, text, card, pic,
+      num: ci, imgNo: pi, imgCount: pics.length
+    }));
+  });
+
+  /* Mehrbild-Karten bekommen eine kleine Anzeige aufs Foto — sonst ahnt
+     niemand, dass die Lightbox noch mehr zu zeigen hat. */
+  cards.forEach(card => {
+    const n = card.querySelectorAll('.project-img picture').length;
+    if (n < 2) return;
+    const chip = document.createElement('span');
+    chip.className = 'project-count';
+    chip.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="7" width="14" height="14" rx="2"/><path d="M8.5 3.5H19a1.5 1.5 0 0 1 1.5 1.5V15.5"/></svg>' + n + ' Bilder';
+    card.querySelector('.project-img').appendChild(chip);
+  });
+
+  let lbIndex = 0, lbBefore = null;
+
+  function stageOf(shot){
+    const pic = shot.pic.cloneNode(true);
+    pic.querySelectorAll('source,img').forEach(n => n.setAttribute('sizes', '92vw'));
+    const img = pic.querySelector('img');
+    img.removeAttribute('style');
+    img.removeAttribute('loading');
+    return pic;
+  }
+
+  function renderLb(){
+    const s = shots[lbIndex];
+    lbStage.replaceChildren(stageOf(s));
+    lbKind.textContent  = s.kind;
+    lbTitle.textContent = s.title;
+    lbText.textContent  = s.text;
+    lbCount.textContent = (s.num + 1) + ' / ' + cards.length +
+      (s.imgCount > 1 ? ' · Bild ' + (s.imgNo + 1) + '/' + s.imgCount : '');
+  }
+
+  function popIn(){
+    if (reduced) return;
+    const img = lbStage.querySelector('img');
+    if (img && img.animate) img.animate(
+      { opacity: [0, 1], transform: ['scale(.96)', 'scale(1)'] },
+      { duration: 300, easing: 'cubic-bezier(0.16,1,0.3,1)' });
+  }
+
+  function openLb(i){
+    // Geoeffnet wird immer beim ersten Bild der angeklickten Karte.
+    lbIndex = firstShot[(i + cards.length) % cards.length];
+    renderLb();
+    lbBefore = document.activeElement;
+    lb.dataset.open = 'true';
+    root.toggleAttribute('data-lb-open', true);
+    popIn();
+    requestAnimationFrame(() => lbClose.focus());
+  }
+  function closeLb(){
+    if (lb.dataset.open !== 'true') return;
+    lb.dataset.open = 'false';
+    root.toggleAttribute('data-lb-open', false);
+    if (lbBefore && lbBefore.isConnected) lbBefore.focus();
+    lbBefore = null;
+  }
+  const stepLb = d => {
+    lbIndex = (lbIndex + d + shots.length) % shots.length;
+    renderLb();
+    if (reduced) return;
+    const img = lbStage.querySelector('img');
+    if (img && img.animate) img.animate(
+      { opacity: [0, 1], transform: ['translateX(' + (d * 36) + 'px)', 'translateX(0)'] },
+      { duration: 350, easing: 'cubic-bezier(0.4,0,0.2,1)' });
+  };
+
+  cards.forEach((card, i) => {
+    card.querySelector('.project-open').addEventListener('click', () => openLb(i));
+  });
+  lbClose.addEventListener('click', closeLb);
+  document.getElementById('lbPrev').addEventListener('click', () => stepLb(-1));
+  document.getElementById('lbNext').addEventListener('click', () => stepLb(1));
+  lb.addEventListener('click', e => { if (e.target === lb || e.target === lbStage) closeLb(); });
+
+  addEventListener('keydown', e => {
+    if (lb.dataset.open !== 'true') return;
+    if (e.key === 'Escape')     { e.preventDefault(); closeLb(); }
+    else if (e.key === 'ArrowLeft')  { e.preventDefault(); stepLb(-1); }
+    else if (e.key === 'ArrowRight') { e.preventDefault(); stepLb(1); }
+    else if (e.key === 'Tab') {
+      const items = [...lb.querySelectorAll('button')];
+      const first = items[0], last = items[items.length - 1];
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    }
+  });
+}
+
+})();
+</script>
+</body>
+</html>

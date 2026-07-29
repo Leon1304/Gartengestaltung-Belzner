@@ -4,6 +4,9 @@
    Bewegung — hier will niemand scrollen, hier will jemand nachlesen.
    ============================================================ */
 :root{
+  /* Sagt dem Browser das aktive Schema: Scrollbalken und native Controls
+     folgen sonst weiter dem Systemschema. */
+  color-scheme:light;
   --ink-900:#0B0C0B; --paper-000:#FAFAF8; --paper-100:#F0F0EC;
   --stone-400:#A8ACA2; --stone-600:#55584F;
   --accent-500:#4C9A4A; --accent-600:#3D7C3B; --accent-700:#2E5E2D;
@@ -33,6 +36,7 @@
    von der Startseite hierher wieder zurueck ins Dunkle. */
 @media (prefers-color-scheme:dark){
   :root:not([data-theme="light"]){
+    color-scheme:dark;
     --color-bg:var(--ink-900);
     --color-bg-alt:#161815;
     --color-fg:var(--paper-000);
@@ -42,6 +46,7 @@
   }
 }
 :root[data-theme="dark"]{
+  color-scheme:dark;
   --color-bg:var(--ink-900);
   --color-bg-alt:#161815;
   --color-fg:var(--paper-000);
