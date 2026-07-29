@@ -262,6 +262,17 @@ p{text-wrap:pretty}
 .theme-toggle svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.6}
 [data-theme="light"] .icon-moon{display:none}
 [data-theme="dark"] .icon-sun{display:none}
+/* Sonne und Mond drehen ineinander statt hart zu tauschen. Beide Icons
+   liegen in derselben Rasterzelle; ohne Bewegungswunsch greift weiter der
+   display-Wechsel von oben. Waehrend des Kreiswischs schaltet html.is-vt
+   alle Transitions ab — dort traegt der Wisch den Wechsel allein. */
+.theme-toggle svg{grid-area:1/1}
+@media (prefers-reduced-motion:no-preference){
+  .theme-toggle svg{transition:opacity var(--dur-base) var(--ease-out),transform var(--dur-base) var(--ease-expo)}
+  [data-theme="light"] .icon-moon,[data-theme="dark"] .icon-sun{display:block;opacity:0}
+  [data-theme="light"] .icon-moon{transform:rotate(-60deg) scale(.55)}
+  [data-theme="dark"] .icon-sun{transform:rotate(60deg) scale(.55)}
+}
 
 /* --- Burger + Mobilmenue --- */
 /* Ab 1151 px traegt die Leiste die Links selbst. Darunter — und damit auch
@@ -440,8 +451,34 @@ html[data-nav-open],html[data-lb-open]{overflow:hidden}
 }
 .svc-media{position:sticky;top:16vh;aspect-ratio:4/5;border-radius:var(--radius-2xl);
   overflow:hidden;background:var(--color-bg-sunk);box-shadow:var(--shadow-lift)}
-@media (max-width:900px){.svc-media{position:static;aspect-ratio:4/3}}
+@media (max-width:900px){.svc-media{position:relative;aspect-ratio:4/3}}
 .svc-media img{width:100%;height:118%;object-fit:cover;will-change:transform}
+
+/* Maehstreifen-Reveal: das Bild wird in acht Bahnen freigelegt, abwechselnd
+   nach unten und oben — wie frisch gemaeht. Das Overlay kommt per JS nur in
+   den GSAP-Pfad und raeumt sich nach dem einen Durchlauf selbst weg. */
+.svc-stripes{position:absolute;inset:0;display:flex;z-index:1;pointer-events:none}
+.svc-stripes span{flex:1;background:var(--color-bg)}
+
+/* Eck-Striche im Plan-Vokabular des Heros: vier Winkel, die sich zeichnen,
+   sobald das Bild freigelegt ist. Ohne Scharfschaltung (.is-armed) stehen
+   sie einfach da — so bleiben sie auch ohne GSAP und bei reduzierter
+   Bewegung sichtbar. */
+.corner-marks{position:absolute;inset:0;pointer-events:none;z-index:2}
+.corner-marks svg{position:absolute;width:26px;height:26px;overflow:visible}
+.corner-marks .cm-tl{top:16px;left:16px}
+.corner-marks .cm-tr{top:16px;right:16px;transform:scaleX(-1)}
+.corner-marks .cm-bl{bottom:16px;left:16px;transform:scaleY(-1)}
+.corner-marks .cm-br{bottom:16px;right:16px;transform:scale(-1)}
+.corner-marks path{fill:none;stroke:var(--color-plan);stroke-width:2;
+  stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke;
+  filter:drop-shadow(0 1px 3px rgba(0,0,0,.5))}
+.corner-marks.is-armed path{stroke-dasharray:1;stroke-dashoffset:1;
+  transition:stroke-dashoffset .55s var(--ease-out)}
+.corner-marks.is-armed .cm-tr path{transition-delay:.12s}
+.corner-marks.is-armed .cm-br path{transition-delay:.24s}
+.corner-marks.is-armed .cm-bl path{transition-delay:.36s}
+.is-marked .corner-marks.is-armed path{stroke-dashoffset:0}
 
 /* Foto noch nicht geliefert: gleiche Fläche, klarer Leerzustand statt Blindtext-Bild */
 .svc-media.is-pending{display:grid;place-content:center;justify-items:center;gap:var(--space-xs);
@@ -460,7 +497,11 @@ html[data-nav-open],html[data-lb-open]{overflow:hidden}
   border:1px solid var(--color-line);border-radius:var(--radius-full)}
 
 /* --- Statement mit Foto in der Schrift --- */
-.statement{padding-block:var(--space-3xl);text-align:center;overflow:hidden}
+.statement{position:relative;padding-block:var(--space-3xl);text-align:center;overflow:hidden}
+/* Blaetterschatten: ein Canvas hinter dem Text, als fiele Licht durch eine
+   Krone der Baumschule. Wird per JS befuellt; ohne JS bleibt er leer. */
+.statement .wrap{position:relative;z-index:1}
+.leaf-shade{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0}
 .statement h2{font-size:var(--step-8);line-height:.95;letter-spacing:-.03em}
 @supports (background-clip:text) or (-webkit-background-clip:text){
   /* Der Farbauftrag vor dem Foto haelt den Kontrast unabhaengig davon,
@@ -600,6 +641,31 @@ html[data-nav-open],html[data-lb-open]{overflow:hidden}
 .ablauf-step h3{font-size:var(--step-2);margin-block:var(--space-3xs) var(--space-2xs)}
 .ablauf-step p{color:var(--color-fg-muted);font-size:var(--step--1);max-width:34ch}
 
+/* Wurzellinie: die Verbindungslinie zeichnet sich in Akzentfarbe von Schritt
+   zu Schritt nach, die Icons ziehen ihren Strich hinterher — dasselbe
+   Vokabular wie die Planzeichnung im Hero. Nur aktiv, wenn das Skript die
+   Sektion scharf schaltet (.is-armed); sonst steht alles wie gehabt. */
+.ablauf-flow.is-armed .ablauf-step:not(:last-child)::after{content:'';position:absolute;
+  background:var(--color-accent-text);left:27px;top:56px;width:1px;
+  height:calc(100% - 56px + var(--space-l));
+  transform:scaleY(0);transform-origin:top;
+  transition:transform var(--dur-slow) var(--ease-out) .1s}
+@media (min-width:901px){
+  .ablauf-flow.is-armed .ablauf-step:not(:last-child)::after{left:56px;top:27px;height:1px;
+    width:calc(100% - 56px + var(--space-m));transform:scaleX(0);transform-origin:left}
+}
+.ablauf-flow.is-armed .ablauf-step.is-on:not(:last-child)::after{transform:none}
+.ablauf-flow.is-armed .ablauf-ico{transition:border-color var(--dur-base) var(--ease-out)}
+/* pathLength="1" setzt das Skript — so zeichnet jede Teillinie im selben Takt */
+.ablauf-flow.is-armed .ablauf-ico :is(path,circle){stroke-dasharray:1;stroke-dashoffset:1;
+  transition:stroke-dashoffset .55s var(--ease-out)}
+.ablauf-flow.is-armed .ablauf-ico :is(path,circle):nth-child(2){transition-delay:.15s}
+.ablauf-flow.is-armed .ablauf-ico :is(path,circle):nth-child(3){transition-delay:.28s}
+.ablauf-flow.is-armed .ablauf-step.is-on .ablauf-ico{border-color:var(--color-accent-text);
+  animation:ablauf-pop .5s var(--ease-out)}
+.ablauf-flow.is-armed .ablauf-step.is-on .ablauf-ico :is(path,circle){stroke-dashoffset:0}
+@keyframes ablauf-pop{40%{transform:scale(1.1)}}
+
 /* --- Zahlen: dunkle Vollbildsektion mit Parallax --- */
 .figures{position:relative;overflow:hidden;padding-block:var(--space-3xl);isolation:isolate}
 .figures-bg{position:absolute;inset:-14% 0;width:100%;height:128%;object-fit:cover;z-index:-2;will-change:transform}
@@ -616,7 +682,7 @@ html[data-nav-open],html[data-lb-open]{overflow:hidden}
 @media (max-width:900px){.about{grid-template-columns:1fr;gap:var(--space-xl)}}
 .about h2{font-size:var(--step-5);margin-block:var(--space-s) var(--space-m)}
 .about p{color:var(--color-fg-muted);margin-bottom:var(--space-s);max-width:50ch}
-.about-media{aspect-ratio:1;border-radius:var(--radius-2xl);overflow:hidden;box-shadow:var(--shadow-lift)}
+.about-media{position:relative;aspect-ratio:1;border-radius:var(--radius-2xl);overflow:hidden;box-shadow:var(--shadow-lift)}
 .about-media img{width:100%;height:100%;object-fit:cover}
 
 /* --- Karriere --- */
@@ -789,11 +855,17 @@ html[data-nav-open],html[data-lb-open]{overflow:hidden}
   gap:var(--space-2xs);list-style:none;padding:0;margin-bottom:var(--space-2xs)}
 .step{display:grid;gap:var(--space-3xs);font-size:var(--step--2);
   color:var(--color-fg-muted)}
+/* Der Balken waechst von links auf, statt nur die Farbe zu tauschen —
+   dieselbe Information, aber mit Richtung. */
 .step::before{content:'';height:3px;border-radius:var(--radius-full);
-  background:var(--color-field-line-hover);
-  transition:background-color var(--dur-base) var(--ease-out)}
-.step[data-state="done"]::before{background:color-mix(in srgb,var(--color-accent-text) 55%,transparent)}
-.step[data-state="current"]::before{background:var(--color-accent-text)}
+  --fill:var(--color-accent-text);
+  background:linear-gradient(var(--fill),var(--fill)) left center/var(--grow,0%) 100% no-repeat,
+             linear-gradient(var(--color-field-line-hover),var(--color-field-line-hover))}
+@media (prefers-reduced-motion:no-preference){
+  .step::before{transition:background-size var(--dur-slow) var(--ease-out)}
+}
+.step[data-state="done"]::before{--fill:color-mix(in srgb,var(--color-accent-text) 55%,transparent);--grow:100%}
+.step[data-state="current"]::before{--grow:100%}
 .step[data-state="current"]{color:var(--color-fg)}
 .step-count{font-family:'IBM Plex Mono',ui-monospace,monospace;
   font-size:var(--step--2);letter-spacing:.1em;color:var(--color-fg-muted);
@@ -855,7 +927,14 @@ html[data-nav-open],html[data-lb-open]{overflow:hidden}
 /* ============================================================
    8. FOOTER + STICKY CTA
    ============================================================ */
-.footer{padding-block:var(--space-2xl) var(--space-xl);border-top:1px solid var(--color-line)}
+.footer{padding-block:var(--space-2xl) var(--space-xl);border-top:1px solid var(--color-line);
+  background:var(--color-bg);transition:background-color var(--dur-slow) var(--ease-out)}
+/* Vorhang: die Seite hebt sich am Ende vom feststehenden Footer ab. Der
+   Rahmen bekommt per JS die Hoehe des Footers, clip-path beschneidet den
+   fixierten Footer auf genau dieses Fenster. Ohne JS oder bei reduzierter
+   Bewegung bleibt der Footer normal im Fluss. */
+html[data-curtain] .footer-stage{position:relative;clip-path:inset(0)}
+html[data-curtain] .footer{position:fixed;left:0;right:0;bottom:0}
 .footer-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
   gap:var(--space-l);margin-bottom:var(--space-xl)}
 .footer h4{font-family:'IBM Plex Mono',monospace;font-size:var(--step--2);letter-spacing:.1em;
@@ -863,6 +942,12 @@ html[data-nav-open],html[data-lb-open]{overflow:hidden}
 .footer ul{list-style:none;padding:0;display:grid;gap:var(--space-2xs)}
 .footer a{color:var(--color-fg);text-decoration:none;font-size:var(--step--1)}
 .footer a:hover{color:var(--color-accent-text)}
+/* Die Unterstreichung zeichnet sich von links — wie in der Hauptnavigation */
+.footer ul a{position:relative;display:inline-block}
+.footer ul a::after{content:'';position:absolute;left:0;right:0;bottom:-2px;height:1px;
+  background:currentColor;transform:scaleX(0);transform-origin:right;
+  transition:transform var(--dur-fast) var(--ease-out)}
+.footer ul a:hover::after,.footer ul a:focus-visible::after{transform:scaleX(1);transform-origin:left}
 .footer-bottom{display:flex;flex-wrap:wrap;gap:var(--space-s);justify-content:space-between;
   padding-top:var(--space-m);border-top:1px solid var(--color-line)}
 
@@ -874,6 +959,13 @@ html[data-nav-open],html[data-lb-open]{overflow:hidden}
   min-height:56px;text-decoration:none;font-size:var(--step--1);font-weight:500;
   background:var(--color-bg);color:var(--color-fg)}
 .sticky-cta a.primary{background:var(--color-accent-surface);color:var(--color-on-accent)}
+/* Manieren: im Hero und beim Runterscrollen taucht die Leiste ab, beim
+   Hochscrollen kommt sie zurueck — gesteuert in navState() ueber ein
+   Attribut am <html>. Bei reduzierter Bewegung bleibt sie einfach stehen. */
+@media (max-width:767px) and (prefers-reduced-motion:no-preference){
+  .sticky-cta{transition:transform var(--dur-base) var(--ease-out)}
+  html[data-cta-away] .sticky-cta{transform:translateY(102%)}
+}
 
 /* ============================================================
    9. REVEAL
@@ -1673,6 +1765,7 @@ html.is-vt *{transition:none !important}
 
 </main>
 
+<div class="footer-stage">
 <footer class="footer">
   <div class="wrap">
     <div class="footer-grid">
@@ -1699,6 +1792,7 @@ html.is-vt *{transition:none !important}
     </div>
   </div>
 </footer>
+</div>
 
 <div class="sticky-cta">
   <a href="tel:+4962513091" class="primary">
@@ -1911,11 +2005,20 @@ function navSpy(){
   });
 }
 
+/* Sticky-CTA: Richtung des letzten Scrolls, mit kleiner Schwelle gegen
+   Zittern. Im Hero ist die Leiste immer weg — dort wirbt schon der Hero. */
+let ctaY = 0;
+
 function navState(){
   const trigger = reduced ? 80 : Math.max(heroEl.offsetHeight - innerHeight * 0.6, 80);
   nav.dataset.scrolled = scrollY > trigger;
   const max = document.documentElement.scrollHeight - innerHeight;
   bar.style.transform = 'scaleX(' + (max > 0 ? scrollY / max : 0) + ')';
+  if (!reduced) {
+    const dy = scrollY - ctaY;
+    if (scrollY < innerHeight * 0.6)   { root.toggleAttribute('data-cta-away', true);  ctaY = scrollY; }
+    else if (Math.abs(dy) > 2)         { root.toggleAttribute('data-cta-away', dy > 0); ctaY = scrollY; }
+  }
   navSpy();
 }
 navState();
@@ -2051,6 +2154,21 @@ if (reduced || !hasGSAP) {
     opacity: 0, ease: 'none',
     scrollTrigger: { trigger: '#heroScroll', start: 'top top', end: '+=300', scrub: true }
   });
+
+  /* Vorschau-Wisch: der Hero verraet seine Pointe einmal von selbst. Wer
+     nach dem Prelude noch nicht gescrollt hat, sieht am linken Rand kurz
+     den fertigen Garten aufblitzen und wieder verschwinden — die Einladung,
+     selbst zu scrollen. Beim ersten Scroll uebernimmt sofort der Scrub. */
+  const teaser = gsap.timeline({ paused: true });
+  teaser.to(heroAfter, { clipPath: 'inset(0 82% 0 0)', duration: 0.9, ease: 'power2.inOut' })
+        .to(heroAfter, { clipPath: 'inset(0 100% 0 0)', duration: 0.8, ease: 'power2.inOut' }, '+=0.25');
+  gsap.delayedCall(2.8, () => { if ((lenis ? lenis.scroll : scrollY) < 8) teaser.play(); });
+  addEventListener('scroll', () => {
+    if (teaser.isActive()) {
+      teaser.kill();
+      gsap.set(heroAfter, { clipPath: 'inset(0 100% 0 0)' });
+    }
+  }, { passive: true });
 }
 
 /* ---------- Hero-Einstieg ---------- */
@@ -2209,6 +2327,91 @@ if (fillEl && !reduced && hasGSAP && CSS.supports('color', 'color-mix(in srgb, r
   });
 }
 
+/* ---------- Statement: Blaetterschatten ---------- */
+/* Ein einmal weichgezeichnetes Blatt-Cluster als Sprite, pro Frame nur
+   drawImage mit sehr langsamer Sinus-Drift — als fiele Licht durch eine
+   Krone der Baumschule. Im Hellmodus ein Schatten, im Dunkelmodus warme
+   Lichtflecken. Deckkraft bleibt unter acht Prozent: bemerken soll man es
+   erst, wenn es fehlt. Der Takt laeuft nur, solange die Sektion im Bild
+   ist; bei reduzierter Bewegung steht ein einzelnes, stilles Frame. */
+const stmtEl = document.querySelector('.statement');
+if (stmtEl && typeof IntersectionObserver !== 'undefined' && typeof ResizeObserver !== 'undefined') {
+  const shade = document.createElement('canvas');
+  shade.className = 'leaf-shade';
+  shade.setAttribute('aria-hidden', 'true');
+  stmtEl.prepend(shade);
+  const sctx = shade.getContext('2d');
+  const sprites = {};
+
+  /* Weiche Kanten ueber Radial-Verlaeufe statt ctx.filter='blur(...)' —
+     den Canvas-Filter kann aelteres Safari nicht, harte Kanten saehen
+     nach Fehler aus. */
+  function leafSprite(dark){
+    const c = document.createElement('canvas');
+    c.width = c.height = 260;
+    const g = c.getContext('2d');
+    const tone = dark ? '245,240,216' : '11,12,11';
+    [[95,120,62,-0.5],[152,96,55,0.7],[124,166,52,0.2]].forEach(([x,y,r,rot]) => {
+      g.save(); g.translate(x, y); g.rotate(rot); g.scale(1, .58);
+      const rg = g.createRadialGradient(0, 0, r * .15, 0, 0, r);
+      rg.addColorStop(0,   'rgba(' + tone + ',1)');
+      rg.addColorStop(.55, 'rgba(' + tone + ',.55)');
+      rg.addColorStop(1,   'rgba(' + tone + ',0)');
+      g.fillStyle = rg;
+      g.beginPath(); g.arc(0, 0, r, 0, Math.PI * 2); g.fill();
+      g.restore();
+    });
+    return c;
+  }
+
+  // Perioden zwischen 50 und 90 Sekunden, jede Krone mit eigener Phase —
+  // die Bewegung faellt nie sichtbar in einen Takt.
+  const leaves = Array.from({ length: 7 }, (_, i) => ({
+    x: .04 + i * .15, y: (i % 2 ? .16 : .55) + (i % 3) * .09,
+    ax: 36 + i * 7, ay: 20 + (i % 3) * 10,
+    sx: (2 * Math.PI) / (52000 + i * 9000),
+    sy: (2 * Math.PI) / (63000 + (i % 2) * 17000),
+    sc: .85 + (i % 3) * .55, ph: i * 1.7
+  }));
+
+  let shadeW = 0, shadeH = 0, shadeRun = false, shadeRaf = null;
+
+  function sizeShade(){
+    const box = stmtEl.getBoundingClientRect();
+    const dpr = Math.min(devicePixelRatio || 1, 2);
+    shadeW = box.width; shadeH = box.height;
+    shade.width = Math.round(shadeW * dpr);
+    shade.height = Math.round(shadeH * dpr);
+    sctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+  function drawShade(now){
+    shadeRaf = null;
+    const dark = root.dataset.theme === 'dark';
+    const img = sprites[dark ? 'd' : 'l'] || (sprites[dark ? 'd' : 'l'] = leafSprite(dark));
+    sctx.clearRect(0, 0, shadeW, shadeH);
+    sctx.globalAlpha = dark ? .05 : .065;
+    const t = reduced ? 0 : now;
+    for (const l of leaves){
+      const px = l.x * shadeW + Math.sin(t * l.sx + l.ph) * l.ax;
+      const py = l.y * shadeH + Math.cos(t * l.sy + l.ph * 1.3) * l.ay;
+      const s = 260 * l.sc * Math.max(shadeW / 1100, .5);
+      sctx.drawImage(img, px - s / 2, py - s / 2, s, s);
+    }
+    if (shadeRun && !reduced) shadeRaf = requestAnimationFrame(drawShade);
+  }
+  const kickShade = () => { if (!shadeRaf) shadeRaf = requestAnimationFrame(drawShade); };
+
+  sizeShade();
+  new ResizeObserver(() => { sizeShade(); kickShade(); }).observe(stmtEl);
+  new IntersectionObserver(es => {
+    shadeRun = es[0].isIntersecting;
+    if (shadeRun) kickShade();
+  }, { rootMargin: '60px' }).observe(stmtEl);
+  // Nach dem Theme-Wechsel einmal neu zeichnen — sonst staende im
+  // Dunkelmodus noch der Schatten des Hellmodus.
+  new MutationObserver(kickShade).observe(root, { attributes: true, attributeFilter: ['data-theme'] });
+}
+
 /* ---------- Parallax ---------- */
 if (!reduced && hasGSAP) {
   gsap.utils.toArray('[data-parallax]').forEach(img => {
@@ -2218,6 +2421,81 @@ if (!reduced && hasGSAP) {
   const bg = document.querySelector('[data-parallax-bg]');
   if (bg) gsap.fromTo(bg, { yPercent: -8 }, { yPercent: 8, ease: 'none',
     scrollTrigger: { trigger: bg.closest('.figures'), start: 'top bottom', end: 'bottom top', scrub: true } });
+}
+
+/* ============================================================
+   BILDER: Eck-Striche im Plan-Vokabular + Maehstreifen
+   ============================================================ */
+/* Vier Winkel wie Passermarken auf einer Werkzeichnung — dasselbe
+   Strich-Vokabular wie die Planlinien im Hero. Die Marken kommen per JS in
+   die grossen Einzelbilder; ohne GSAP oder bei reduzierter Bewegung stehen
+   sie einfach da, gezeichnet wird nur im Animationspfad. */
+const CM_PATH = 'M1.5 28.5 L1.5 10 Q1.5 1.5 10 1.5 L28.5 1.5';
+const cmHosts = [...document.querySelectorAll('#leistungen .svc-media:not(.is-pending), .about-media')];
+cmHosts.forEach(host => {
+  const wrapEl = document.createElement('div');
+  wrapEl.className = 'corner-marks';
+  wrapEl.setAttribute('aria-hidden', 'true');
+  ['tl','tr','bl','br'].forEach(pos => {
+    const s = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    s.setAttribute('class', 'cm-' + pos);
+    s.setAttribute('viewBox', '0 0 30 30');
+    const p = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    p.setAttribute('d', CM_PATH);
+    p.setAttribute('pathLength', '1');
+    s.append(p);
+    wrapEl.append(s);
+  });
+  host.append(wrapEl);
+});
+
+if (!reduced && hasGSAP) {
+  document.querySelectorAll('.corner-marks').forEach(w => w.classList.add('is-armed'));
+
+  /* Maehstreifen: die Leistungs-Bilder werden in acht Bahnen freigelegt,
+     abwechselnd nach unten und oben — wie frisch gemaeht. Ein Durchlauf pro
+     Bild, danach raeumt sich das Overlay weg und die Eckmarken zeichnen
+     sich als Schlussakkord. */
+  document.querySelectorAll('#leistungen .svc-media:not(.is-pending)').forEach(media => {
+    const ov = document.createElement('div');
+    ov.className = 'svc-stripes';
+    ov.setAttribute('aria-hidden', 'true');
+    for (let i = 0; i < 8; i++) ov.append(document.createElement('span'));
+    media.append(ov);
+    gsap.to(ov.children, {
+      yPercent: i => i % 2 ? -102 : 102,
+      duration: .65, ease: 'power2.inOut', stagger: .08,
+      scrollTrigger: { trigger: media, start: 'top 72%', once: true },
+      onComplete: () => { ov.remove(); media.classList.add('is-marked'); }
+    });
+  });
+
+  // Das Betriebsbild hat keine Streifen — dort zeichnen die Marken allein.
+  const aboutMedia = document.querySelector('.about-media');
+  if (aboutMedia) ScrollTrigger.create({ trigger: aboutMedia, start: 'top 78%', once: true,
+    onEnter: () => aboutMedia.classList.add('is-marked') });
+} else {
+  cmHosts.forEach(h => h.classList.add('is-marked'));
+}
+
+/* ============================================================
+   ABLAUF: eine Wurzel waechst durch die fuenf Schritte
+   ============================================================ */
+/* Die Verbindungslinie zeichnet sich in Akzentfarbe von Schritt zu Schritt,
+   jeder erreichte Schritt weckt sein Icon per Strichzug. In der Reihe
+   (Desktop) stehen alle fuenf gleichzeitig im Bild, dort staffelt eine
+   kleine Verzoegerung von links nach rechts; in der Liste (Mobil) taktet
+   der Scroll jeden Schritt selbst. */
+const ablaufFlow = document.querySelector('.ablauf-flow');
+if (ablaufFlow && !reduced && hasGSAP) {
+  ablaufFlow.classList.add('is-armed');
+  ablaufFlow.querySelectorAll('.ablauf-ico :is(path,circle)').forEach(p => p.setAttribute('pathLength', '1'));
+  const ablaufRow = matchMedia('(min-width: 901px)');
+  ablaufFlow.querySelectorAll('.ablauf-step').forEach((stepEl, i) => {
+    ScrollTrigger.create({ trigger: stepEl, start: 'top 80%', once: true,
+      onEnter: () => gsap.delayedCall(ablaufRow.matches ? i * .5 : 0,
+        () => stepEl.classList.add('is-on')) });
+  });
 }
 
 /* ---------- Scrolltempo als Material ---------- */
@@ -2410,6 +2688,27 @@ if (lb && cards.length) {
     lbCount.textContent = (lbIndex + 1) + ' / ' + shots.length;
   }
 
+  /* FLIP von Hand statt Flip-Plugin: einmal Karte messen, einmal Buehne
+     messen, ein Tween dazwischen. Das Bild waechst so aus der Karte heraus
+     statt aus dem Nichts einzublenden — gleiches Objekt, nur naeher dran. */
+  function morphIn(){
+    if (reduced || !hasGSAP) return;
+    const from = shots[lbIndex].card.querySelector('.project-img img').getBoundingClientRect();
+    const img = lbStage.querySelector('img');
+    if (!img || !from.width) return;
+    // Erst nach dem Layout der geoeffneten Lightbox messen
+    requestAnimationFrame(() => {
+      const to = img.getBoundingClientRect();
+      if (!to.width) return;
+      gsap.fromTo(img,
+        { x: from.left - to.left, y: from.top - to.top,
+          scaleX: from.width / to.width, scaleY: from.height / to.height,
+          transformOrigin: '0 0' },
+        { x: 0, y: 0, scaleX: 1, scaleY: 1, duration: .55, ease: 'power3.inOut',
+          clearProps: 'transform,transformOrigin' });
+    });
+  }
+
   function openLb(i){
     lbIndex = (i + shots.length) % shots.length;
     renderLb();
@@ -2417,17 +2716,43 @@ if (lb && cards.length) {
     lb.dataset.open = 'true';
     root.toggleAttribute('data-lb-open', true);   // sperrt das Scrollen dahinter
     if (lenis) lenis.stop();
+    morphIn();
     requestAnimationFrame(() => lbClose.focus());
   }
   function closeLb(){
     if (lb.dataset.open !== 'true') return;
+    /* Rueckflug zur Karte, waehrend die Buehne ausblendet. Wurde inzwischen
+       geblaettert, kann die Zielkarte ausserhalb des Bilds liegen — dann
+       reicht das Ausblenden allein. */
+    if (!reduced && hasGSAP) {
+      const img = lbStage.querySelector('img');
+      const dest = shots[lbIndex].card.querySelector('.project-img img');
+      const target = dest ? dest.getBoundingClientRect() : null;
+      if (img && target && target.width && target.bottom > 0 && target.top < innerHeight) {
+        gsap.killTweensOf(img);
+        gsap.set(img, { clearProps: 'transform,transformOrigin,opacity' });
+        const box = img.getBoundingClientRect();
+        gsap.to(img, { x: target.left - box.left, y: target.top - box.top,
+          scaleX: target.width / box.width, scaleY: target.height / box.height,
+          transformOrigin: '0 0', duration: .45, ease: 'power3.inOut' });
+      }
+    }
     lb.dataset.open = 'false';
     root.toggleAttribute('data-lb-open', false);
     if (lenis) lenis.start();
     if (lbBefore && lbBefore.isConnected) lbBefore.focus();
     lbBefore = null;
   }
-  const stepLb = d => { lbIndex = (lbIndex + d + shots.length) % shots.length; renderLb(); };
+  const stepLb = d => {
+    lbIndex = (lbIndex + d + shots.length) % shots.length;
+    renderLb();
+    // Kleiner Versatz in Laufrichtung — Wechsel statt Sprung.
+    if (!reduced && hasGSAP) {
+      const img = lbStage.querySelector('img');
+      if (img) gsap.fromTo(img, { opacity: 0, x: d * 36 },
+        { opacity: 1, x: 0, duration: .35, ease: 'power2.out', clearProps: 'opacity,x' });
+    }
+  };
 
   cards.forEach((card, i) => {
     card.querySelector('.project-open').addEventListener('click', () => openLb(i));
@@ -2855,6 +3180,23 @@ mapLoad.addEventListener('click', () => {
   frame.focus({ preventScroll: true });   // Fokus nicht verlieren, wenn der Button verschwindet
   if (hasGSAP) ScrollTrigger.refresh();
 });
+
+/* ---------- Footer als Vorhang ---------- */
+/* Der Footer steht fest hinter der Seite; am Ende hebt sich der Inhalt von
+   ihm ab. Der Rahmen (.footer-stage) haelt im Fluss die Hoehe frei, die der
+   fixierte Footer nicht mehr einnimmt — nachgemessen wird bei jeder
+   Groessenaenderung, denn Umbrueche aendern die Footerhoehe. */
+const footStage = document.querySelector('.footer-stage');
+if (footStage && !reduced && typeof ResizeObserver !== 'undefined') {
+  const foot = footStage.querySelector('.footer');
+  root.toggleAttribute('data-curtain', true);
+  const fitFooter = () => { footStage.style.height = foot.offsetHeight + 'px'; };
+  fitFooter();
+  new ResizeObserver(() => {
+    fitFooter();
+    if (hasGSAP) ScrollTrigger.refresh();   // Seitenhoehe hat sich geaendert
+  }).observe(foot);
+}
 
 /* ---------- Nach Font-Load neu vermessen ---------- */
 if (hasGSAP && document.fonts) document.fonts.ready.then(() => ScrollTrigger.refresh());
