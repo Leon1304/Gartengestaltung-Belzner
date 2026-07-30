@@ -129,12 +129,30 @@ export default async (request) => {
     .join('\n');
 
   /* ---------- Versand ---------- */
+  /* Fehlt die Konfiguration, liegt es nicht am Mailserver — dann sind die
+     Umgebungsvariablen gar nicht angekommen. Eigene Meldung, sonst sucht
+     man den Fehler bei Strato statt in den Netlify-Einstellungen. */
+  const fehlt = ['SMTP_HOST', 'SMTP_USER', 'SMTP_PASS'].filter(n => !process.env[n]);
+  if (fehlt.length) {
+    console.error('SMTP-Konfiguration unvollstaendig, es fehlen:', fehlt.join(', '));
+    return antwort(502, 'Die Nachricht ließ sich gerade nicht zustellen. '
+                      + 'Bitte rufen Sie uns an: 06251 3091'
+                      + (process.env.MAIL_DEBUG ? ` [Konfiguration fehlt: ${fehlt.join(', ')}]` : ''));
+  }
+
   const port = Number(process.env.SMTP_PORT || 465);
   const post = nodemailer.createTransport({
     host: process.env.SMTP_HOST,
     port,
     secure: port === 465,          // 465 spricht direkt TLS, 587 startet mit STARTTLS
     auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS },
+    /* Ohne diese Grenzen haengt ein gesperrter Port, bis die Funktion
+       selbst abbricht — dann steht im Protokoll ein Timeout der Plattform
+       statt der eigentlichen Ursache. So kommt nach zehn Sekunden ein
+       sauberes ETIMEDOUT zurueck. */
+    connectionTimeout: 10000,
+    greetingTimeout: 10000,
+    socketTimeout: 20000,
   });
 
   try {
@@ -155,10 +173,16 @@ export default async (request) => {
       attachments: anhaenge,
     });
   } catch (fehler) {
-    // Landet im Funktionsprotokoll der Netlify-Seite, nicht beim Besucher.
-    console.error('Mailversand fehlgeschlagen:', fehler);
+    /* Der Code sagt, wo es klemmt: EAUTH am Passwort, ETIMEDOUT am
+       gesperrten Port, ESOCKET an der Verschluesselung, EENVELOPE am
+       abgelehnten Absender. Ausfuehrlich ins Funktionsprotokoll; an den
+       Besucher nur, solange MAIL_DEBUG gesetzt ist. */
+    const code = fehler.code || fehler.responseCode || 'unbekannt';
+    console.error(`Mailversand fehlgeschlagen [${code}]`,
+      fehler.response || fehler.message, fehler);
     return antwort(502, 'Die Nachricht ließ sich gerade nicht zustellen. '
-                      + 'Bitte rufen Sie uns an: 06251 3091');
+                      + 'Bitte rufen Sie uns an: 06251 3091'
+                      + (process.env.MAIL_DEBUG ? ` [${code}]` : ''));
   }
 
   return antwort(200, art === 'bewerbung'
