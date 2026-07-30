@@ -328,6 +328,18 @@ html[data-nav-open],html[data-lb-open]{overflow:hidden}
   font-family:'IBM Plex Mono',monospace;font-size:var(--step--2);letter-spacing:.08em;
   pointer-events:none}
 .project-count svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.8}
+/* Vorher/Nachher-Projekte: das <picture> traegt ein data-stand. Auf der Karte
+   ersetzt die Aufzaehlung dieser Staende die Bildzahl — "Vorher / Nachher"
+   sagt mehr als "3 Bilder". Die Lightbox zeigt den Stand des offenen Bildes. */
+.lb-stand{display:inline-block;margin-bottom:var(--space-2xs);
+  padding:var(--space-3xs) var(--space-xs);border-radius:var(--radius-full);
+  /* Fester Wert statt --color-accent-text: die Lightbox ist immer dunkel,
+     im Dunkelmodus wuerde das Token auf das hellere Gruen springen und der
+     Kontrast zur weissen Schrift auf 3,3:1 fallen. accent-600 haelt 4,8:1. */
+  background:var(--accent-600);color:var(--paper-000);
+  font-family:'IBM Plex Mono',monospace;font-size:var(--step--2);
+  letter-spacing:.1em;text-transform:uppercase}
+.lb-stand[hidden]{display:none}
 .project-body{padding:var(--space-m) var(--space-m) var(--space-l)}
 .project-body h3{font-size:var(--step-2);margin-block:var(--space-2xs) var(--space-2xs)}
 .project-body p{color:var(--color-fg-muted);font-size:var(--step--1)}
@@ -629,6 +641,22 @@ html.is-vt *{transition:none !important}
 
       <article class="project reveal">
         <span class="project-zoom" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.6-3.6M11 8v6M8 11h6" stroke-linecap="round"/></svg></span>
+        <div class="project-img"><picture data-stand="Nachher">
+          <source type="image/avif" sizes="(min-width:1151px) 420px, (min-width:641px) 46vw, 92vw" srcset="Bilder/opt/24-640.avif 640w, Bilder/opt/24-1024.avif 1024w, Bilder/opt/24-1600.avif 1600w">
+          <img sizes="(min-width:1151px) 420px, (min-width:641px) 46vw, 92vw" srcset="Bilder/opt/24-640.jpg 640w, Bilder/opt/24-1024.jpg 1024w, Bilder/opt/24-1600.jpg 1600w" src="Bilder/opt/24-1024.jpg" width="1600" height="1200" loading="lazy" decoding="async" alt="Geschwungener Weg aus Polygonalplatten mit Granit-Kleinpflaster als Kante, dahinter Kirschlorbeerhecke, Gartenhaus und Bank">
+        </picture>
+        <picture data-stand="Nachher">
+          <source type="image/avif" sizes="(min-width:1151px) 420px, (min-width:641px) 46vw, 92vw" srcset="Bilder/opt/25-640.avif 640w, Bilder/opt/25-1024.avif 1024w, Bilder/opt/25-1600.avif 1600w">
+          <img sizes="(min-width:1151px) 420px, (min-width:641px) 46vw, 92vw" srcset="Bilder/opt/25-640.jpg 640w, Bilder/opt/25-1024.jpg 1024w, Bilder/opt/25-1600.jpg 1600w" src="Bilder/opt/25-1024.jpg" width="1600" height="1200" loading="lazy" decoding="async" alt="Rasenfläche mit Wasserbecken, ringsum Mulchbeete und ein Plattenweg zur überdachten Terrasse">
+        </picture>
+        <picture data-stand="Vorher">
+          <source type="image/avif" sizes="(min-width:1151px) 420px, (min-width:641px) 46vw, 92vw" srcset="Bilder/opt/26-640.avif 640w, Bilder/opt/26-1024.avif 1024w, Bilder/opt/26-1600.avif 1600w">
+          <img sizes="(min-width:1151px) 420px, (min-width:641px) 46vw, 92vw" srcset="Bilder/opt/26-640.jpg 640w, Bilder/opt/26-1024.jpg 1024w, Bilder/opt/26-1600.jpg 1600w" src="Bilder/opt/26-1024.jpg" width="1600" height="1200" loading="lazy" decoding="async" alt="Derselbe Garten vor dem Umbau: offener Boden entlang des Zauns neben dem Gartenhaus"></picture></div>
+        <div class="project-body"><p class="mono">Umgestaltung</p><h3 class="display"><button type="button" class="project-open" data-lb="13">Hausgarten von Grund auf</button></h3><p>Polygonalplatten für Weg und Sitzplatz, Granit-Kleinpflaster als Kante, dahinter Kirschlorbeerhecke, Rasen und ein Wasserbecken. Mit den Pfeilen geht es vom fertigen Garten zurück zum Ausgangszustand.</p></div>
+      </article>
+
+      <article class="project reveal">
+        <span class="project-zoom" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.6-3.6M11 8v6M8 11h6" stroke-linecap="round"/></svg></span>
         <div class="project-img"><picture>
           <source type="image/avif" sizes="(min-width:1151px) 420px, (min-width:641px) 46vw, 92vw" srcset="Bilder/opt/IMG_0070-3-640.avif 640w, Bilder/opt/IMG_0070-3-1024.avif 1024w">
           <img sizes="(min-width:1151px) 420px, (min-width:641px) 46vw, 92vw" srcset="Bilder/opt/IMG_0070-3-640.jpg 640w, Bilder/opt/IMG_0070-3-1024.jpg 1024w" src="Bilder/opt/IMG_0070-3-1024.jpg" width="1800" height="1200" loading="lazy" decoding="async" alt="Weg durch die Quartiere der Baumschule Belzner, gesäumt von Ahorn, Hortensien und Formgehölzen"></picture>
@@ -638,7 +666,7 @@ html.is-vt *{transition:none !important}
         <picture>
           <source type="image/avif" sizes="(min-width:1151px) 420px, (min-width:641px) 46vw, 92vw" srcset="Bilder/opt/IMG_0070-2-640.avif 640w, Bilder/opt/IMG_0070-2-1024.avif 1024w, Bilder/opt/IMG_0070-2-1600.avif 1600w">
           <img sizes="(min-width:1151px) 420px, (min-width:641px) 46vw, 92vw" srcset="Bilder/opt/IMG_0070-2-640.jpg 640w, Bilder/opt/IMG_0070-2-1024.jpg 1024w, Bilder/opt/IMG_0070-2-1600.jpg 1600w" src="Bilder/opt/IMG_0070-2-1024.jpg" width="2400" height="1600" loading="lazy" decoding="async" alt="Schmaler Plattenweg zwischen dicht gewachsenen Gehölzen und Buchskugeln in der Baumschule"></picture></div>
-        <div class="project-body"><p class="mono">Eigener Betrieb</p><h3 class="display"><button type="button" class="project-open" data-lb="13">Schaugarten der Baumschule</button></h3><p>Unsere Quartiere an der Dammstraße. Hier suchen Sie Ihre Pflanzen im gewachsenen Zustand aus, nicht im Katalog.</p></div>
+        <div class="project-body"><p class="mono">Eigener Betrieb</p><h3 class="display"><button type="button" class="project-open" data-lb="14">Schaugarten der Baumschule</button></h3><p>Unsere Quartiere an der Dammstraße. Hier suchen Sie Ihre Pflanzen im gewachsenen Zustand aus, nicht im Katalog.</p></div>
       </article>
 
     </div>
@@ -715,6 +743,7 @@ html.is-vt *{transition:none !important}
   </button>
   <div class="lb-stage" id="lbStage"></div>
   <div class="lb-cap">
+    <p class="lb-stand" id="lbStand" hidden></p>
     <p class="mono" id="lbKind"></p>
     <h3 class="display" id="lbTitle"></h3>
     <p id="lbText"></p>
@@ -837,6 +866,7 @@ if (lb && cards.length) {
   const lbStage = document.getElementById('lbStage');
   const lbKind  = document.getElementById('lbKind');
   const lbTitle = document.getElementById('lbTitle');
+  const lbStand = document.getElementById('lbStand');
   const lbText  = document.getElementById('lbText');
   const lbCount = document.getElementById('lbCount');
   const lbClose = document.getElementById('lbClose');
@@ -854,18 +884,26 @@ if (lb && cards.length) {
     firstShot[ci] = shots.length;
     pics.forEach((pic, pi) => shots.push({
       kind, title, text, card, pic,
+      stand: pic.dataset.stand || '',
       num: ci, imgNo: pi, imgCount: pics.length
     }));
   });
 
   /* Mehrbild-Karten bekommen eine kleine Anzeige aufs Foto — sonst ahnt
-     niemand, dass die Lightbox noch mehr zu zeigen hat. */
+     niemand, dass die Lightbox noch mehr zu zeigen hat. Bei Vorher/Nachher-
+     Projekten nennt der Chip die Staende statt der Bildzahl; das erklaert,
+     wohin die Pfeile fuehren. */
+  const STAND_FOLGE = ['Vorher', 'Nachher'];
+  const standRang = s => { const i = STAND_FOLGE.indexOf(s); return i < 0 ? STAND_FOLGE.length : i; };
   cards.forEach(card => {
-    const n = card.querySelectorAll('.project-img picture').length;
-    if (n < 2) return;
+    const pics = [...card.querySelectorAll('.project-img picture')];
+    if (pics.length < 2) return;
+    const stands = [...new Set(pics.map(p => p.dataset.stand).filter(Boolean))]
+      .sort((a, b) => standRang(a) - standRang(b));
     const chip = document.createElement('span');
     chip.className = 'project-count';
-    chip.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="7" width="14" height="14" rx="2"/><path d="M8.5 3.5H19a1.5 1.5 0 0 1 1.5 1.5V15.5"/></svg>' + n + ' Bilder';
+    chip.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="7" width="14" height="14" rx="2"/><path d="M8.5 3.5H19a1.5 1.5 0 0 1 1.5 1.5V15.5"/></svg>' +
+      (stands.length ? stands.join(' / ') : pics.length + ' Bilder');
     card.querySelector('.project-img').appendChild(chip);
   });
 
@@ -883,6 +921,8 @@ if (lb && cards.length) {
   function renderLb(){
     const s = shots[lbIndex];
     lbStage.replaceChildren(stageOf(s));
+    lbStand.textContent = s.stand;
+    lbStand.hidden      = !s.stand;
     lbKind.textContent  = s.kind;
     lbTitle.textContent = s.title;
     lbText.textContent  = s.text;
