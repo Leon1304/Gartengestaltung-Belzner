@@ -1,0 +1,10 @@
+{
+  "name": "gartengestaltung-belzner",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Website Gartengestaltung & Baumschule Belzner, Bensheim",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "nodemailer": "^9.0.3"
+  }
+}

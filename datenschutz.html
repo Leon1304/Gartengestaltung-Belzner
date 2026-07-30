@@ -65,9 +65,10 @@
           <strong>EU-US Data Privacy Framework</strong> am aktuellen Netlify-Vertrag
           beziehungsweise auf der Liste des US-Handelsministeriums gegenprüfen —
           beides stammt hier aus einer Vorlage.</li>
-        <li>Die <strong>Empfängeradresse der Formulare</strong> in
-          <code>index.html</code> steht noch auf einer privaten Adresse und muss auf
-          die Betriebsadresse umgestellt werden.</li>
+        <li>Die Formulare verschicken über das <strong>E-Mail-Postfach des
+          Betriebs</strong>. Dessen Anbieter verarbeitet die Nachrichten mit —
+          auch mit ihm ist ein Auftragsverarbeitungsvertrag nötig, und er sollte
+          im Abschnitt Hosting oder in einem eigenen Absatz benannt werden.</li>
         <li>Speicherfristen für Bewerbungsunterlagen ergänzen, falls vom unten
           genannten Regelfall abgewichen wird.</li>
       </ul>
@@ -132,15 +133,18 @@
       damit außer an den Hoster keine Daten an fremde Server.</p>
 
     <h2 class="display">5. Kontaktformular</h2>
-    <p>Das Kontaktformular auf der Startseite überträgt Ihre Eingaben
-      <strong>nicht an einen Server</strong>. Beim Absenden öffnet sich stattdessen
-      das auf Ihrem Gerät eingerichtete E-Mail-Programm mit einem fertigen Entwurf,
-      den Sie selbst prüfen und verschicken. Die Daten verlassen Ihr Gerät also erst
-      in dem Moment, in dem Sie die Nachricht selbst absenden — und dann auf dem
-      normalen Weg einer E-Mail über Ihren eigenen E-Mail-Anbieter.</p>
+    <p>Wenn Sie das Kontaktformular auf der Startseite absenden, werden Ihre
+      Eingaben verschlüsselt an unseren Server übertragen und dort unmittelbar in
+      eine E-Mail an unser Postfach umgewandelt. Die verarbeitende Funktion läuft
+      nur für die Dauer dieses Vorgangs und <strong>speichert nichts</strong>:
+      weder eine Datenbank noch ein Formulararchiv. Ihre Angaben liegen danach
+      ausschließlich in unserem E-Mail-Postfach.</p>
     <p>Verarbeitet werden dabei die von Ihnen eingetragenen Angaben: Vorname,
       Nachname, E-Mail-Adresse, Telefonnummer, Anliegen und Ihre Nachricht.
-      Wir nutzen diese Angaben ausschließlich, um Ihre Anfrage zu beantworten.</p>
+      Zusätzlich vermerken wir in der E-Mail den Zeitpunkt des Eingangs und die
+      Tatsache, dass Sie die Einwilligung erteilt haben — dazu sind wir nach
+      Art. 7 Abs. 1 DSGVO verpflichtet. Wir nutzen diese Angaben ausschließlich,
+      um Ihre Anfrage zu beantworten.</p>
     <p><strong>Rechtsgrundlage</strong> ist Art. 6 Abs. 1 lit. b DSGVO, soweit Ihre
       Anfrage auf den Abschluss eines Vertrags gerichtet ist, im Übrigen
       Art. 6 Abs. 1 lit. f DSGVO (Beantwortung von Anfragen) sowie Ihre Einwilligung
@@ -152,19 +156,23 @@
       beziehungsweise zehn Jahren.</p>
     <h3>Sicherheitsabfrage</h3>
     <p>Zum Schutz vor automatisierten Einsendungen enthält das Formular eine kleine
-      Rechenaufgabe sowie ein für Menschen unsichtbares Zusatzfeld. Beides läuft
-      vollständig in Ihrem Browser ab; es wird kein Drittanbieter-Dienst geladen und
-      es werden keine Daten dafür übertragen.</p>
+      Rechenaufgabe, ein für Menschen unsichtbares Zusatzfeld sowie den Zeitpunkt,
+      zu dem Sie die Seite geöffnet haben. Diese drei Angaben werden beim Absenden
+      mit übertragen und nur dazu verwendet, maschinelle Einsendungen abzuweisen.
+      Es wird <strong>kein Dienst eines Drittanbieters</strong> geladen — weder ein
+      Captcha-Anbieter noch ein Spamfilter-Dienst.</p>
 
     <h2 class="display">6. Bewerbungsformular</h2>
-    <p>Auch das Bewerbungsformular arbeitet nach demselben Prinzip: Es öffnet einen
-      E-Mail-Entwurf auf Ihrem Gerät. Die von Ihnen ausgewählten PDF-Dateien werden
-      dabei <strong>nicht hochgeladen</strong>; sie werden im Entwurf lediglich
-      namentlich aufgeführt, damit Sie sie in Ihrem E-Mail-Programm selbst anhängen
-      können. Ihre Unterlagen erreichen uns also ausschließlich als normale E-Mail.</p>
+    <p>Das Bewerbungsformular arbeitet nach demselben Prinzip wie das
+      Kontaktformular: Ihre Angaben und die angehängten PDF-Dateien werden
+      verschlüsselt übertragen und unmittelbar als E-Mail mit Anhang an unser
+      Postfach weitergereicht. Auch hier <strong>speichert die verarbeitende
+      Funktion nichts</strong> — Ihre Unterlagen liegen ausschließlich in unserem
+      E-Mail-Postfach und werden nicht auf dem Webserver abgelegt.</p>
     <p>Verarbeitet werden die Angaben, die Sie machen: Vorname, Nachname,
       E-Mail-Adresse, Telefonnummer, die gewünschte Stelle, Ihre Nachricht sowie die
-      Unterlagen, die Sie anhängen.</p>
+      Unterlagen, die Sie anhängen. Auch hier vermerken wir Eingangszeitpunkt und
+      erteilte Einwilligung in der E-Mail.</p>
     <p><strong>Rechtsgrundlage</strong> ist § 26 Abs. 1 BDSG in Verbindung mit
       Art. 88 DSGVO (Verarbeitung zur Entscheidung über die Begründung eines
       Beschäftigungsverhältnisses) sowie Art. 6 Abs. 1 lit. b DSGVO.</p>

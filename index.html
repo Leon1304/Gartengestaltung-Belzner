@@ -829,9 +829,6 @@ html[data-nav-open],html[data-lb-open]{overflow:hidden}
 /* Hinweiszeile im Formularfluss (ausserhalb der Dropzone) */
 .form-note{font-size:var(--step--1);color:var(--color-fg-muted);margin-top:var(--space-2xs)}
 
-/* Ersatzlink in der Statuszeile, falls sich kein Mailprogramm oeffnet */
-.status-link{color:var(--color-accent-text);text-decoration:underline;text-underline-offset:2px}
-
 /* --- Dropzone für PDF-Anhänge --- */
 /* Flacher und einzeilig: der Kasten war mit --space-xl Innenabstand der
    groesste Block im ganzen Formular, obwohl er nur eine Sache tut. */
@@ -1634,14 +1631,15 @@ html.is-vt *{transition:none !important}
             <div class="dropzone" id="dropzone" data-drag="false">
               <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4M7 9l5-5 5 5" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 15v3a3 3 0 0 0 3 3h12a3 3 0 0 0 3-3v-3" stroke-linecap="round"/></svg>
               <p><strong>PDF hierher ziehen</strong> oder klicken</p>
-              <p class="hint">max. 10 MB je Datei · bis zu 5</p>
+              <p class="hint">bis zu 3 PDF · zusammen höchstens 4 MB</p>
               <input type="file" id="b-files" name="unterlagen" accept="application/pdf,.pdf" multiple
                      aria-labelledby="lbl-files" aria-describedby="err-b-files">
             </div>
             <span class="error" id="err-b-files" data-for="unterlagen" role="status" aria-live="polite"></span>
             <ul class="filelist" id="fileList"></ul>
-            <p class="form-note">Die Dateien werden hier nur erfasst, nicht hochgeladen — anhängen
-              müssen Sie sie gleich selbst im Mailprogramm. Der Entwurf listet sie namentlich auf.</p>
+            <p class="form-note">Die Dateien werden mit dem Formular übertragen — Sie müssen nichts
+              nachreichen. Größere Unterlagen gerne an
+              <a href="mailto:info@gartengestaltung-belzner.de">info@gartengestaltung-belzner.de</a>.</p>
           </div>
 
           <!-- Honigtopf gegen Bots: unsichtbar, darf nie ausgefüllt sein -->
@@ -2955,59 +2953,50 @@ function setupCaptcha(form){
 const isBot = form => [...form.querySelectorAll('[data-hp]')].some(f => f.value.trim() !== '');
 
 /* ============================================================
-   VERSAND ueber MAILTO
-   Die Seite ist statisch, es gibt keinen Server, der eine Mail
-   verschicken koennte. Wir oeffnen darum das Mailprogramm des
-   Besuchers mit fertigem Entwurf — abschicken muss er selbst.
-   Dateianhaenge kennt mailto: nicht, die PDFs werden im Text
-   nur namentlich aufgefuehrt.
+   VERSAND ueber die eigene Netlify-Funktion
+   Das Formular geht an /api/formular; von dort reicht die Funktion
+   es per SMTP an das Postfach des Betriebs weiter und behaelt nichts.
+   Frueher oeffnete die Seite stattdessen einen mailto-Entwurf — wer
+   Webmail im Browser nutzt, sah beim Absenden schlicht nichts
+   passieren, und Bewerber mussten ihre PDFs von Hand nachreichen.
    ============================================================ */
-const EMPFAENGER = 'leon-kolb@live.de';
+const ENDPUNKT = '/api/formular';
 
-// Outlook und einige Android-Clients kappen lange mailto-Links
-// stillschweigend. 1800 Zeichen fuer den fertigen Link sind ueberall
-// unkritisch; laengere Nachrichten werden sichtbar gekuerzt.
-const MAILTO_MAX = 1800;
+/* Zeitpunkt des Seitenaufrufs. Die Funktion weist alles ab, was in
+   unter drei Sekunden zurueckkommt oder den Wert gar nicht mitbringt —
+   ein Bot, der stumpf auf die Adresse postet, faellt damit raus. */
+const GELADEN = Date.now();
 
-// "Label: Wert" — leere Felder liefern null und fallen unten raus.
-// Leerstrings bleiben erhalten, sie erzeugen die Absaetze im Text.
-const zeile = (label, wert) => (wert && wert.trim()) ? label + ': ' + wert.trim() : null;
+async function sende(form, art, statusEl, knopf){
+  const daten = new FormData(form);   // enthaelt die PDFs: fileInput.files
+  daten.set('art', art);              // wird in render() ueber DataTransfer gepflegt
+  daten.set('geladen', GELADEN);
 
-function mailtoUrl(betreff, zeilen){
-  const kopf = 'mailto:' + EMPFAENGER + '?subject=' + encodeURIComponent(betreff) + '&body=';
-  let body = zeilen.filter(z => z !== null).join('\r\n');
-  if ((kopf + encodeURIComponent(body)).length > MAILTO_MAX) {
-    const rest = '\r\n\r\n[Text gekürzt — bitte im Mailprogramm ergänzen]';
-    // Kodierte Laenge ist nicht linear zur Zeichenzahl (Umlaute, Zeilenumbrueche),
-    // darum in Schritten kuerzen und jedes Mal neu messen.
-    while (body && (kopf + encodeURIComponent(body + rest)).length > MAILTO_MAX) {
-      body = body.slice(0, -32);
-    }
-    body += rest;
+  // Nur sperren, nicht beschriften: im Knopf steckt der Pfeil als SVG,
+  // ein Schreiben auf textContent wuerde ihn entfernen.
+  knopf.disabled = true;
+  statusEl.textContent = 'Wird gesendet …';
+
+  try {
+    const ruecklauf = await fetch(ENDPUNKT, { method: 'POST', body: daten });
+    // Bei einem Serverfehler kann statt JSON auch eine HTML-Seite kommen.
+    const ergebnis = await ruecklauf.json()
+      .catch(() => ({ ok: false, text: 'Unerwartete Antwort vom Server. Bitte rufen Sie uns an: 06251 3091' }));
+    statusEl.textContent = ergebnis.text;
+    return ergebnis.ok === true;
+  } catch {
+    statusEl.textContent = 'Keine Verbindung zum Server. Bitte später erneut '
+                         + 'versuchen oder anrufen: 06251 3091';
+    return false;
+  } finally {
+    knopf.disabled = false;
+    newTask(form);                    // fuer den naechsten Versuch eine frische Aufgabe
   }
-  return kopf + encodeURIComponent(body);
 }
-
-// Mailprogramm oeffnen und einen Ersatzlink in der Statuszeile hinterlassen:
-// Ist kein Mailclient eingerichtet — Webmail im Browser, frisches Windows —
-// passiert beim Klick sonst sichtbar gar nichts.
-function oeffneEntwurf(url, statusEl, text){
-  statusEl.textContent = text + ' ';
-  const a = document.createElement('a');
-  a.className = 'status-link';
-  a.href = url;
-  a.textContent = 'Entwurf erneut öffnen';
-  statusEl.append(a);
-  window.location.href = url;
-}
-
-// Vor- und Nachname zu einem Namen, ohne doppelte Leerzeichen
-const ganzerName = form => [form.elements.vorname.value, form.elements.nachname.value]
-  .map(s => s.trim()).filter(Boolean).join(' ');
 
 const contactForm = document.getElementById('contactForm');
 wire(contactForm);
-contactForm.addEventListener('submit', e => {
+contactForm.addEventListener('submit', async e => {
   e.preventDefault();
   const status = document.getElementById('formStatus');
   if (isBot(contactForm)) return;
@@ -3019,23 +3008,8 @@ contactForm.addEventListener('submit', e => {
     if (bad) bad.focus();
     return;
   }
-  const el   = contactForm.elements;
-  const name = ganzerName(contactForm);
-  oeffneEntwurf(mailtoUrl(
-    'Anfrage: ' + el.anliegen.value + (name ? ' — ' + name : ''),
-    [
-      zeile('Name',     name),
-      zeile('E-Mail',   el.email.value),
-      zeile('Telefon',  el.telefon.value),
-      zeile('Anliegen', el.anliegen.value),
-      '',
-      'Nachricht:',
-      el.nachricht.value.trim(),
-      '',
-      '— gesendet über das Kontaktformular von gartengestaltung-belzner.de'
-    ]
-  ), status, 'Ihr Mailprogramm öffnet sich mit der fertigen Anfrage — bitte dort noch auf „Senden" klicken.');
-  newTask(contactForm);   // fuer den naechsten Versuch eine frische Aufgabe
+  const knopf = contactForm.querySelector('[type="submit"]');
+  if (await sende(contactForm, 'anfrage', status, knopf)) contactForm.reset();
 });
 
 /* ============================================================
@@ -3047,9 +3021,14 @@ const fileInput= document.getElementById('b-files');
 const fileList = document.getElementById('fileList');
 const jobStatus= document.getElementById('jobStatus');
 
-const MAX_FILE  = 10 * 1024 * 1024;   // 10 MB pro Datei
-const MAX_TOTAL = 25 * 1024 * 1024;   // 25 MB gesamt
-const MAX_COUNT = 5;
+/* Die Grenzen kommen von der Funktion, die den Versand uebernimmt:
+   Netlify puffert eine Anfrage bei 6 MB, binaer bleiben nach der
+   Base64-Kodierung gut 4,5 MB. Drei PDF mit zusammen 4 MB decken
+   Lebenslauf und Zeugnisse ab und liegen sicher darunter.
+   Wird hier gelockert, muss netlify/functions/formular.mjs mit. */
+const MAX_FILE  = 4 * 1024 * 1024;    // 4 MB pro Datei
+const MAX_TOTAL = 4 * 1024 * 1024;    // 4 MB gesamt
+const MAX_COUNT = 3;
 let picked = [];
 
 const fmt = b => b < 1024*1024 ? Math.max(1, Math.round(b/1024)) + ' KB'
@@ -3101,11 +3080,11 @@ function addFiles(list){
   const errs = [];
   [...list].forEach(f => {
     if (!isPdf(f))                       { errs.push('„' + f.name + '" ist kein PDF.'); return; }
-    if (f.size > MAX_FILE)               { errs.push('„' + f.name + '" ist ' + fmt(f.size) + ' groß (max. 10 MB).'); return; }
+    if (f.size > MAX_FILE)               { errs.push('„' + f.name + '" ist ' + fmt(f.size) + ' groß (max. ' + fmt(MAX_FILE) + ').'); return; }
     if (picked.length >= MAX_COUNT)      { errs.push('Maximal ' + MAX_COUNT + ' Dateien.'); return; }
     if (picked.some(p => p.name === f.name && p.size === f.size)) { errs.push('„' + f.name + '" ist bereits angehängt.'); return; }
     const total = picked.reduce((s, p) => s + p.size, 0) + f.size;
-    if (total > MAX_TOTAL)               { errs.push('Zusammen über 25 MB — bitte weniger anhängen.'); return; }
+    if (total > MAX_TOTAL)               { errs.push('Zusammen über ' + fmt(MAX_TOTAL) + ' — bitte weniger anhängen.'); return; }
     picked.push(f);
   });
   render();
@@ -3191,7 +3170,7 @@ btnPrev.addEventListener('click', () => {
   showStep(step - 1, true);
 });
 
-jobForm.addEventListener('submit', e => {
+jobForm.addEventListener('submit', async e => {
   e.preventDefault();
   if (isBot(jobForm)) return;
   // Enter im Textfeld loest sonst schon aus Schritt 1 den Versand aus
@@ -3216,28 +3195,15 @@ jobForm.addEventListener('submit', e => {
     jobStatus.textContent = 'Bitte prüfen Sie die markierten Felder.';
     return;
   }
-  const el        = jobForm.elements;
-  const name      = ganzerName(jobForm);
-  const nachricht = el.nachricht.value.trim();
-  const total     = picked.reduce((s, f) => s + f.size, 0);
-  oeffneEntwurf(mailtoUrl(
-    'Bewerbung: ' + el.stelle.value + (name ? ' — ' + name : ''),
-    [
-      zeile('Name',    name),
-      zeile('E-Mail',  el.email.value),
-      zeile('Telefon', el.telefon.value),
-      zeile('Stelle',  el.stelle.value),
-      '',
-      ...(nachricht ? ['Nachricht:', nachricht, ''] : []),
-      'Bitte noch anhängen — ' + picked.length + ' Datei' + (picked.length === 1 ? '' : 'en') +
-        ', zusammen ' + fmt(total) + ':',
-      ...picked.map(p => '- ' + p.name + ' (' + fmt(p.size) + ')'),
-      '',
-      '— gesendet über das Bewerbungsformular von gartengestaltung-belzner.de'
-    ]
-  ), jobStatus, 'Ihr Mailprogramm öffnet sich. Wichtig: die ' + picked.length + ' PDF-Datei' +
-     (picked.length === 1 ? '' : 'en') + ' dort noch von Hand anhängen.');
-  newTask(jobForm);       // fuer den naechsten Versuch eine frische Aufgabe
+  if (await sende(jobForm, 'bewerbung', jobStatus, btnSend)) {
+    // Nach dem Versand alles zuruecksetzen: sonst stehen Name und
+    // Unterlagen des Bewerbers noch im Formular, wenn er weiterliest.
+    jobForm.reset();
+    picked = [];
+    render();
+    fileError('');
+    showStep(0, false);
+  }
 });
 
 /* ============================================================
