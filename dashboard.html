@@ -68,6 +68,20 @@
   --gitter:#DEDED6;
   --achse:#C3C2B7;
 
+  /* Rangfolge in einem Ton: fuer Dinge, die eine Reihenfolge haben —
+     Handy vor Tablet vor Rechner (nach Bildschirmgroesse), angefangen
+     vor abgeschickt. Die Farbe traegt die Ordnung mit, statt drei
+     fremde Farbtoene aufzumachen. Geprueft auf gleichmaessige
+     Helligkeitsstufen und darauf, dass die hellste Stufe sich noch
+     vom Untergrund der Karte abhebt. */
+  --stufe-1:#65BA61; --stufe-2:#3F943C; --stufe-3:#117014;
+
+  /* Menge in einem Ton, hell nach dunkel — fuer die Kreuztabelle aus
+     Wochentag und Uhrzeit. Fuenf Stufen; ein Feld ohne Besuch bleibt
+     grau und faellt damit aus der Reihe heraus. */
+  --menge-1:#C3EDC0; --menge-2:#9AD496; --menge-3:#6DB869;
+  --menge-4:#40963E; --menge-5:#147116;
+
   --radius-sm:8px; --radius-md:12px; --radius-lg:16px; --radius-full:999px;
 
   --step--2:clamp(0.69rem,0.67rem + 0.12vw,0.76rem);
@@ -102,6 +116,11 @@
     --serie-2:#3987E5;  --serie-2-aus:#26384C;
     --gitter:#2C2C2A;
     --achse:#383835;
+    /* Auf dunklem Grund kehrt sich die Rangfolge um: die unterste
+       Stufe liegt jetzt am Untergrund, die oberste leuchtet. */
+    --stufe-1:#017209; --stufe-2:#369434; --stufe-3:#5AB757;
+    --menge-1:#183F17; --menge-2:#215F20; --menge-3:#2C802B;
+    --menge-4:#4BA149; --menge-5:#6FC26B;
   }
 }
 :root[data-theme="dark"]{
@@ -124,6 +143,9 @@
   --serie-2:#3987E5;  --serie-2-aus:#26384C;
   --gitter:#2C2C2A;
   --achse:#383835;
+  --stufe-1:#017209; --stufe-2:#369434; --stufe-3:#5AB757;
+  --menge-1:#183F17; --menge-2:#215F20; --menge-3:#2C802B;
+  --menge-4:#4BA149; --menge-5:#6FC26B;
 }
 
 *,*::before,*::after{box-sizing:border-box}
@@ -230,21 +252,44 @@ input[type=date]{min-height:44px;font-size:var(--step--1)}
 .hinweis{margin-bottom:var(--space-m);padding:var(--space-2xs) var(--space-s);
   font-size:var(--step--2);color:var(--color-fg-muted);
   border-left:2px solid var(--color-line-strong)}
-.kachel{padding:var(--space-s);background:var(--color-bg-alt);
+.kachel{display:flex;flex-direction:column;padding:var(--space-s);
+  background:var(--color-bg-alt);
   border:1px solid var(--color-line);border-radius:var(--radius-lg)}
 .kachel .wert{display:block;font-family:'Fraunces',Georgia,serif;
   font-variation-settings:'SOFT' 40,'WONK' 1,'opsz' 100;font-weight:500;
   font-size:var(--step-5);line-height:1.05;letter-spacing:-.03em;
   margin-block:var(--space-3xs) .2rem}
-.kachel .dazu{font-size:var(--step--2);color:var(--color-fg-muted)}
+.kachel .dazu{display:block;font-size:var(--step--2);color:var(--color-fg-muted)}
 .kachel .dazu.hoch{color:var(--color-accent-text)}
 .kachel .dazu.runter{color:var(--color-danger)}
+/* Der Pfeil vor der Veraenderung: die Richtung darf nicht allein an
+   der Farbe haengen. */
+.kachel .dazu.hoch::before{content:'▲ ';font-size:.75em}
+.kachel .dazu.runter::before{content:'▼ ';font-size:.75em}
+
+/* Verlaufslinie in der Kachel. Sie traegt keine Zahl — die steht
+   darueber, und der genaue Verlauf steht im grossen Diagramm.
+   »margin-top:auto« setzt sie auf den Boden der Kachel, damit die
+   Linien einer Reihe auf einer Hoehe liegen, auch wenn der Text
+   darueber unterschiedlich lang umbricht. */
+.kachel .funke{display:block;width:100%;height:30px;
+  margin-top:auto;padding-top:var(--space-2xs);overflow:visible}
+/* Anteilsbalken statt Linie: fuer die beiden Quoten, die sich gegen
+   eine Obergrenze lesen und keinen Verlauf haben. */
+.kachel .quotebalken{display:block;height:6px;margin-top:auto;
+  background:var(--stufe-1);border-radius:var(--radius-full);overflow:hidden}
+.kachel .quotebalken i{display:block;height:100%;background:var(--stufe-3);
+  border-radius:var(--radius-full)}
 
 /* --- Diagrammkarten --- */
 /* align-items:start — sonst zieht die hoechste Karte einer Reihe
    alle anderen auf ihre Hoehe und unter kurzen Listen klafft Leere. */
 .raster{display:grid;gap:var(--space-2xs);grid-template-columns:repeat(12,1fr);
   align-items:start}
+/* Beim Nachladen bleibt das alte Bild stehen und tritt nur zurueck.
+   Ein leeres Geruest an seiner Stelle wuerde die Seite bei jedem
+   Zeitraumwechsel springen lassen. */
+.laedt{opacity:.5;transition:opacity .15s ease}
 .karte{grid-column:span 12;padding:var(--space-s);background:var(--color-bg-alt);
   border:1px solid var(--color-line);border-radius:var(--radius-lg);min-width:0}
 .karte.halb{grid-column:span 6}
@@ -258,11 +303,14 @@ input[type=date]{min-height:44px;font-size:var(--step--1)}
 .leer{padding-block:var(--space-m);text-align:center;color:var(--color-fg-muted);
   font-size:var(--step--1)}
 
-/* Legende — bei zwei Reihen immer da, nie nur die Farbe. */
+/* Legende — bei zwei Reihen immer da, nie nur die Farbe. Das
+   Zeichen davor sieht aus wie die Sache im Diagramm: ein Klotz fuer
+   Balken, ein Strich fuer Linien. */
 .legende{display:flex;flex-wrap:wrap;gap:var(--space-s);margin-bottom:var(--space-2xs);
   font-size:var(--step--1);color:var(--color-fg-muted)}
 .legende span{display:inline-flex;align-items:center;gap:.4rem}
 .legende i{width:11px;height:11px;border-radius:3px;flex:none}
+.legende i.linie{width:16px;height:2px;border-radius:2px}
 
 /* Liegende Balken: echte Knoepfe, damit sie mit der Tastatur
    erreichbar sind und ein Bildschirmleser sie ansagt. */
@@ -281,6 +329,11 @@ input[type=date]{min-height:44px;font-size:var(--step--1)}
 .zeile .zahl{font-variant-numeric:tabular-nums;color:var(--color-fg-muted);
   white-space:nowrap}
 .zeile[aria-pressed=true] .zahl{color:var(--color-fg)}
+/* Der Anteil steht direkt daneben und nicht nur im Schwebezettel:
+   »38 von 152« beantwortet die Frage nach dem Anteil nicht, und
+   niemand soll dafuer die Maus bemuehen muessen. */
+.zeile .zahl small{margin-left:.45rem;font-size:.85em;color:var(--color-fg-muted);
+  font-weight:400}
 /* Ist in dieser Gruppe etwas ausgewaehlt, treten die uebrigen zurueck. */
 .balken.gewaehlt .zeile[aria-pressed=false] .name,
 .balken.gewaehlt .zeile[aria-pressed=false] .zahl{opacity:.55}
@@ -292,6 +345,48 @@ input[type=date]{min-height:44px;font-size:var(--step--1)}
   font-size:10px;fill:var(--color-fg-muted)}
 .svgbox .band{cursor:pointer}
 .svgbox .band:focus-visible{outline:2px solid var(--color-accent-text);outline-offset:-2px}
+
+/* --- Kreisdiagramm ---
+   Nur dort, wo drei Teile ein Ganzes ergeben und der Anteil die
+   Frage ist. Die Zahlen stehen zusaetzlich in der Liste darunter,
+   damit niemand Winkel schaetzen muss. */
+.kreis{display:flex;flex-direction:column;align-items:center;gap:var(--space-xs)}
+.kreis svg{display:block;width:min(100%,190px);height:auto}
+.kreis .mitte{font-family:'Fraunces',Georgia,serif;
+  font-variation-settings:'SOFT' 40,'WONK' 1,'opsz' 100;font-weight:500;
+  fill:var(--color-fg)}
+.kreis .mitteklein{font-family:'IBM Plex Mono',ui-monospace,monospace;
+  font-size:9px;letter-spacing:.12em;fill:var(--color-fg-muted)}
+.kreis .stueck{cursor:pointer}
+.kreis .stueck:focus-visible{outline:2px solid var(--color-accent-text);outline-offset:2px}
+.kreisliste{display:flex;flex-direction:column;gap:2px;width:100%}
+.kreisliste .zeile{grid-template-columns:14px 1fr auto}
+.kreisliste .punkt{width:11px;height:11px;border-radius:3px}
+
+/* --- Kreuztabelle Wochentag x Uhrzeit ---
+   Eine Zelle je Stunde und Wochentag. Die Farbe traegt die Menge,
+   die Zahl steht im Schwebezettel und in der Tabelle darunter. */
+/* Vierundzwanzig Felder nebeneinander brauchen Platz. Ist er nicht
+   da, schiebt das Gitter in seinem eigenen Kasten zur Seite — die
+   Seite selbst darf nie waagerecht wandern. */
+.hitzerollen{overflow-x:auto;padding-bottom:2px}
+.hitze{display:grid;grid-template-columns:2.4rem repeat(24,1fr);gap:2px;
+  align-items:center;min-width:25rem}
+.hitze .wt{font-size:var(--step--2);color:var(--color-fg-muted);
+  font-family:'IBM Plex Mono',ui-monospace,monospace}
+.hitze .zelle{width:100%;aspect-ratio:1;min-height:12px;padding:0;
+  background:var(--color-bg-sunk);border:0;border-radius:3px;cursor:pointer}
+.hitze .zelle:hover{outline:2px solid var(--color-fg);outline-offset:1px}
+.hitze .zelle:focus-visible{outline:2px solid var(--color-accent-text);outline-offset:1px}
+.hitze .zelle[aria-pressed=true]{outline:2px solid var(--color-fg);outline-offset:1px}
+.hitze .std{font-size:9px;text-align:center;color:var(--color-fg-muted);
+  font-family:'IBM Plex Mono',ui-monospace,monospace}
+/* Auf schmalen Geraeten wird jede dritte Stunde beschriftet — mehr
+   Marken als Platz ergibt nur uebereinanderliegende Ziffern. */
+@media (max-width:700px){ .hitze .std.selten{visibility:hidden} }
+.hitzeskala{display:flex;align-items:center;gap:.4rem;margin-top:var(--space-2xs);
+  font-size:var(--step--2);color:var(--color-fg-muted)}
+.hitzeskala i{width:20px;height:11px;border-radius:3px;flex:none}
 
 /* Trichter */
 .trichter{display:flex;flex-direction:column;gap:var(--space-s)}
@@ -490,7 +585,12 @@ let SAETZE = [];          // flache Liste aller Strichlisteneintraege
 let HEUTE  = '';
 let VON = '', BIS = '';                 // angezeigter Zeitraum
 let VOR_VON = '', VOR_BIS = '';         // Vorzeitraum gleicher Laenge, fuer die Veraenderung
+let VERGLEICH = true;                   // passt der Vorzeitraum noch in eine Abfrage?
 let VORWAHL = 30;                       // gewaehlte Voreinstellung in Tagen, 0 = eigener
+
+/* So viele Tage gibt der Server hoechstens auf einmal heraus —
+   derselbe Wert wie MAX_TAGE in netlify/functions/statistik.mjs. */
+const MAX_TAGE = 400;
 
 /* Die Filter. Leere Menge heisst: keine Einschraenkung. */
 const F = {
@@ -549,13 +649,22 @@ function flach(tage){
 async function laden(){
   const stand = $('#ladeStand');
   stand.textContent = 'lädt …';
+  $('#raster').classList.add('laedt');
+  $('#kacheln').classList.add('laedt');
   try {
     /* Mitgeladen wird auch der gleich lange Zeitraum davor — daraus
-       entsteht die Veraenderung auf den Kacheln, ohne zweite Anfrage. */
+       entsteht die Veraenderung auf den Kacheln, ohne zweite Anfrage.
+
+       Beides zusammen ist doppelt so lang wie der gezeigte Zeitraum.
+       Passt das nicht mehr in eine Abfrage, wird der Vorzeitraum gar
+       nicht erst geholt: eine Veraenderung gegen einen angeschnittenen
+       Vorzeitraum waere schlimmer als keine. Auf den Kacheln steht
+       dann nur die Zahl. */
     const laenge = tagAbstand(VON, BIS) + 1;
-    VOR_BIS = tagPlus(VON, -1);
-    VOR_VON = tagPlus(VOR_BIS, -(laenge - 1));
-    const d = await frage(VOR_VON, BIS);
+    VERGLEICH = laenge * 2 <= MAX_TAGE;
+    VOR_BIS = VERGLEICH ? tagPlus(VON, -1) : '';
+    VOR_VON = VERGLEICH ? tagPlus(VOR_BIS, -(laenge - 1)) : '';
+    const d = await frage(VERGLEICH ? VOR_VON : VON, BIS);
     META = d;
     HEUTE = d.heute;
     SAETZE = flach(d.tage);
@@ -565,6 +674,9 @@ async function laden(){
   } catch (fehler) {
     stand.textContent = '';
     $('#raster').replaceChildren(el('p', { class:'leer', text: fehler.message }));
+  } finally {
+    $('#raster').classList.remove('laedt');
+    $('#kacheln').classList.remove('laedt');
   }
 }
 
@@ -581,12 +693,17 @@ async function laden(){
    Zurueck mehr.
    ============================================================ */
 function passt(s, ausser, von = VON, bis = BIS){
+  /* »ausser« darf auch mehrere Merkmale nennen: die Kreuztabelle
+     setzt Wochentag und Stunde zugleich und muss beide von der
+     eigenen Pruefung ausnehmen, sonst bliebe nach dem ersten Klick
+     genau ein Feld uebrig. */
+  const aus = (d) => ausser === d || (Array.isArray(ausser) && ausser.includes(d));
   if (s.tag < von || s.tag > bis) return false;
-  if (ausser !== 'tag'      && F.tag.size      && !F.tag.has(s.tag)) return false;
-  if (ausser !== 'stunde'   && F.stunde.size   && !F.stunde.has(s.stunde)) return false;
-  if (ausser !== 'wochentag'&& F.wochentag.size&& !F.wochentag.has(s.wochentag)) return false;
+  if (!aus('tag')       && F.tag.size       && !F.tag.has(s.tag)) return false;
+  if (!aus('stunde')    && F.stunde.size    && !F.stunde.has(s.stunde)) return false;
+  if (!aus('wochentag') && F.wochentag.size && !F.wochentag.has(s.wochentag)) return false;
   for (const dim of ['seite','quelle','geraet','formular','thema','ziel']){
-    if (dim === ausser || !F[dim].size) continue;
+    if (aus(dim) || !F[dim].size) continue;
     if (!META.arten[s.art].includes(dim)) continue;   // Merkmal gibt es hier nicht
     if (!F[dim].has(s[dim])) return false;
   }
@@ -615,11 +732,43 @@ function summe(art, { ausser = null, dim = null, wo = null, von = VON, bis = BIS
 
 const seitigGefiltert = () => NUR_AUFRUF.some(d => F[d].size > 0);
 
+/* Zwei Merkmale auf einmal: Wochentag mal Stunde. Das laesst sich
+   mit »summe« nicht ausdruecken, die kennt nur eine Gruppierung. */
+function hitzeTafel(){
+  const tafel = Array.from({ length: 7 }, () => new Array(24).fill(0));
+  for (const s of SAETZE){
+    if (s.art !== 'aufruf' || !passt(s, ['wochentag','stunde'])) continue;
+    tafel[s.wochentag][s.stunde] += s.n;
+  }
+  return tafel;
+}
+
+/* Gleitendes Mittel ueber ein Fenster von Tagen. Am Anfang der
+   Reihe wird ueber das gemittelt, was da ist — sonst begaenne die
+   Linie erst eine Woche nach dem ersten Balken. */
+function gleitend(werte, fenster){
+  return werte.map((_, i) => {
+    const von = Math.max(0, i - fenster + 1);
+    const teil = werte.slice(von, i + 1);
+    return teil.reduce((s, v) => s + v, 0) / teil.length;
+  });
+}
+
 /* ============================================================
    SCHWEBEZETTEL
    ============================================================ */
 const zettel = $('#zettel');
 let zettelAn = false;
+
+/* Die Beschriftungen kommen vom Server. Sie stehen dort fest im
+   Quelltext — trotzdem wird nichts in den Zettel gesetzt, ohne die
+   spitzen Klammern zu entschaerfen. Sonst haengt die Sicherheit
+   dieser Seite an einer Zeile in einer anderen Datei. */
+const sicher = (s) => String(s).replace(/[&<>"]/g,
+  (c) => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;' }[c]));
+const zettelText = (titel, wert, klein) =>
+  `<b>${sicher(titel)}</b><br>${sicher(wert)}`
+  + (klein ? `<br><span class="klein">${sicher(klein)}</span>` : '');
 function zeigeZettel(e, html){
   zettel.innerHTML = html;
   zettel.classList.add('an');
@@ -665,6 +814,26 @@ function schalte(dim, wert){
 }
 function setzeMenge(dim, werte){
   F[dim] = new Set(werte);
+  versteckeZettel();
+  zeichne();
+}
+/* Ein ganzes Buendel auf einmal: hinter einem Wochen- oder
+   Monatsbalken stehen mehrere Tage. Ist das Buendel schon
+   vollstaendig gewaehlt, faellt es wieder heraus. */
+function schalteViele(dim, werte){
+  const menge = F[dim];
+  const drin = werte.every(w => menge.has(w));
+  for (const w of werte) { if (drin) menge.delete(w); else menge.add(w); }
+  versteckeZettel();
+  zeichne();
+}
+/* Ein Feld der Kreuztabelle setzt zwei Filter zugleich — Wochentag
+   und Stunde. Noch einmal auf dasselbe Feld hebt beide wieder auf. */
+function schalteFeld(wt, st){
+  const schonDa = F.wochentag.size === 1 && F.wochentag.has(wt)
+               && F.stunde.size === 1 && F.stunde.has(st);
+  F.wochentag = new Set(schonDa ? [] : [wt]);
+  F.stunde    = new Set(schonDa ? [] : [st]);
   versteckeZettel();
   zeichne();
 }
@@ -733,11 +902,14 @@ function balkenListe({ leib, dim, werte, ordnung, gesamtHinweis }){
     fuell.style.width = (hoechst ? Math.max(2, e.v / hoechst * 100) : 0) + '%';
     spur.append(fuell);
     zeile.append(spur);
-    zeile.append(el('span', { class:'zahl', text: nf.format(e.v) }));
-    mitZettel(zeile, () =>
-      `<b>${e.label}</b><br>${nf.format(e.v)} ${gesamtHinweis || ''}` +
-      `<br><span class="klein">${pf(gesamt ? e.v / gesamt * 100 : 0)} % · ` +
-      `${F[dim].has(e.k) ? 'Filter entfernen' : 'zum Filtern klicken'}</span>`);
+    const zahl = el('span', { class:'zahl', text: nf.format(e.v) });
+    if (gesamt && eintraege.length > 1)
+      zahl.append(el('small', { text: pf(e.v / gesamt * 100, 0) + ' %' }));
+    zeile.append(zahl);
+    mitZettel(zeile, () => zettelText(e.label,
+      `${nf.format(e.v)} ${gesamtHinweis || ''}`,
+      `${pf(gesamt ? e.v / gesamt * 100 : 0)} % · `
+      + `${F[dim].has(e.k) ? 'Filter entfernen' : 'zum Filtern klicken'}`));
     zeile.addEventListener('click', () => schalte(dim, e.k));
     kasten.append(zeile);
   }
@@ -748,7 +920,7 @@ function balkenListe({ leib, dim, werte, ordnung, gesamtHinweis }){
 /* ---------- Stehende Balken (SVG) ----------
    Ein Diagramm fuer Verlauf, Tageszeit und Wochentag. Ziehen
    waehlt einen Bereich, ein Klick einen einzelnen Wert. */
-function balkenSaeulen({ leib, dim, punkte, hoehe = 190, reihen, achse }){
+function balkenSaeulen({ leib, dim, punkte, hoehe = 190, reihen, achse, mittel }){
   const box = el('div', { class:'svgbox' });
   leib.append(box);
   /* Neu aufgebaut wird nur, wenn sich die Breite wirklich geaendert
@@ -760,7 +932,7 @@ function balkenSaeulen({ leib, dim, punkte, hoehe = 190, reihen, achse }){
     const breite = Math.round(Math.max(280, box.clientWidth || 600));
     if (breite === letzteBreite) return;
     letzteBreite = breite;
-    box.replaceChildren(saeulenSvg({ breite, hoehe, dim, punkte, reihen, achse }));
+    box.replaceChildren(saeulenSvg({ breite, hoehe, dim, punkte, reihen, achse, mittel }));
   };
   zeichnen();
   new ResizeObserver(zeichnen).observe(box);
@@ -778,7 +950,16 @@ function netteSkala(hoechst, stufen = 4){
   return { ober: Math.ceil(hoechst / schritt) * schritt, schritt };
 }
 
-function saeulenSvg({ breite, hoehe, dim, punkte, reihen, achse }){
+/* Ein Balken mit runder Kappe und geradem Fuss: oben zwei Radien,
+   unten sitzt er auf der Grundlinie auf. Ein durchgehend rundes
+   Rechteck wuerde die Flaeche unten wegnehmen, wo der Wert anfaengt. */
+function saeulenPfad(x, y, w, h){
+  const r = Math.min(4, w / 2, h);
+  return `M${x} ${y + h}V${y + r}A${r} ${r} 0 0 1 ${x + r} ${y}`
+       + `H${x + w - r}A${r} ${r} 0 0 1 ${x + w} ${y + r}V${y + h}Z`;
+}
+
+function saeulenSvg({ breite, hoehe, dim, punkte, reihen, achse, mittel }){
   const L = 42, R = 8, O = 12, U = 26;                 // Raender
   const bw = breite - L - R, bh = hoehe - O - U;
   const svg = svgEl('svg', {
@@ -806,11 +987,16 @@ function saeulenSvg({ breite, hoehe, dim, punkte, reihen, achse }){
 
   const spalte = bw / punkte.length;
   const lueckeAussen = Math.min(6, spalte * 0.22);
-  const innen = spalte - lueckeAussen;
+  /* Ein Balken wird nie breiter als 24 Pixel. Ohne die Grenze zieht
+     sich der einzige Balken des Tagesberichts ueber die ganze Karte
+     und sieht aus wie eine Wand, nicht wie ein Wert. */
+  const innen = Math.min(spalte - lueckeAussen, 24 * reihen.length + (reihen.length - 1) * 2);
+  const rand = (spalte - innen) / 2;
 
   punkte.forEach((p, i) => {
-    const x0 = L + i * spalte + lueckeAussen / 2;
-    const aktiv = F[dim].size === 0 || F[dim].has(p.wert);
+    const x0 = L + i * spalte + rand;
+    const werte = p.werte || [p.wert];
+    const aktiv = F[dim].size === 0 || werte.some(w => F[dim].has(w));
 
     /* Unsichtbares Band ueber die volle Hoehe: der Zielbereich fuer
        Maus und Finger ist die ganze Spalte, nicht nur der Balken —
@@ -832,25 +1018,41 @@ function saeulenSvg({ breite, hoehe, dim, punkte, reihen, achse }){
       const v = p[r.feld] || 0;
       const h = v > 0 ? Math.max(2, O + bh - y(v)) : 0;
       if (!h) return;
-      svg.append(svgEl('rect', {
-        x: x0 + j * (teil + 2), y: O + bh - h, width: teil, height: h,
-        rx: Math.min(4, teil / 2),
+      svg.append(svgEl('path', {
+        d: saeulenPfad(x0 + j * (teil + 2), O + bh - h, teil, h),
         style: 'fill:' + (aktiv ? r.farbe : r.farbeAus),
       }));
     });
 
+    const gewaehlt = werte.every(w => F[dim].has(w));
     mitZettel(band, () =>
-      `<b>${p.lang}</b><br>` +
-      reihen.map(r => `${r.name}: ${nf.format(p[r.feld] || 0)}`).join('<br>') +
-      `<br><span class="klein">${F[dim].has(p.wert)
+      `<b>${sicher(p.lang)}</b><br>`
+      + reihen.map(r => sicher(`${r.name}: ${nf.format(p[r.feld] || 0)}`)).join('<br>')
+      + (mittel && p.mittel !== undefined
+        ? `<br><span class="klein">7-Tage-Mittel: ${pf(p.mittel)}</span>` : '')
+      + (p.zusatz ? `<br><span class="klein">${sicher(p.zusatz)}</span>` : '')
+      + `<br><span class="klein">${gewaehlt
         ? 'Auswahl aufheben' : 'klicken · ziehen für einen Bereich'}</span>`);
 
     band.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); schalte(dim, p.wert); }
+      if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); schalteViele(dim, werte); }
     });
     band.dataset.i = String(i);
     svg.append(band);
   });
+
+  /* Das gleitende Mittel der letzten sieben Tage, als Linie ueber
+     den Balken. Es nimmt den Wochenrhythmus heraus — ohne es sieht
+     jeder Sonntag nach Einbruch aus. Bewusst keine zweite Reihenfarbe:
+     die Linie zeigt nichts Eigenes, sondern dieselbe Zahl ruhiger,
+     und traegt darum den Ton der Schrift. */
+  if (mittel && punkte.length > 1){
+    const d = punkte
+      .map((p, i) => (i ? 'L' : 'M') + (L + i * spalte + spalte / 2) + ' ' + y(p.mittel || 0))
+      .join(' ');
+    svg.append(svgEl('path', { d, style:'fill:none;stroke:var(--color-fg-muted);'
+      + 'stroke-width:2;stroke-linejoin:round;stroke-linecap:round;pointer-events:none' }));
+  }
 
   /* Beschriftung der Achse: nur so viele Marken, wie Platz haben. */
   const jede = Math.max(1, Math.ceil(punkte.length / Math.floor(bw / 46)));
@@ -898,8 +1100,9 @@ function ziehenAnhaengen(svg, dim, punkte, L, spalte, O, bh){
     const a = Math.min(start, jetzt), b = Math.max(start, jetzt);
     start = null;
     if (marke){ marke.remove(); marke = null; }
-    if (a === b) schalte(dim, punkte[a].wert);
-    else setzeMenge(dim, punkte.slice(a, b + 1).map(p => p.wert));
+    const werteVon = (p) => p.werte || [p.wert];
+    if (a === b) schalteViele(dim, werteVon(punkte[a]));
+    else setzeMenge(dim, punkte.slice(a, b + 1).flatMap(werteVon));
   };
   svg.addEventListener('pointerup', ende);
   svg.addEventListener('pointercancel', () => { start = null; if (marke){ marke.remove(); marke = null; } });
@@ -909,12 +1112,191 @@ function legende(reihen){
   const l = el('div', { class:'legende' });
   for (const r of reihen){
     const s = el('span');
-    const i = el('i');
+    const i = el('i', { class: r.form === 'linie' ? 'linie' : null });
     i.style.background = r.farbe;
     s.append(i, document.createTextNode(r.name));
     l.append(s);
   }
   return l;
+}
+
+/* ---------- Kreisdiagramm ----------
+   Fuer die eine Frage, bei der es wirklich um Anteile am Ganzen
+   geht und nicht um den Vergleich einzelner Werte: drei Geraete-
+   klassen, die zusammen alle Aufrufe ergeben. Mehr als eine Handvoll
+   Stuecke bekaeme hier niemand mehr auseinander — dafuer stehen
+   ueberall sonst liegende Balken.
+
+   Die Farben sind eine Rangfolge in einem Ton, nicht drei bunte:
+   Handy, Tablet, Rechner stehen nach Bildschirmgroesse geordnet, und
+   das soll man sehen. Die Zahlen stehen zusaetzlich als Liste
+   darunter — der Winkel muss nichts allein tragen. */
+function kreisDiagramm({ leib, dim, werte, ordnung, einheit }){
+  const eintraege = ordnung
+    .map(k => ({ k, v: werte.get(k) || 0, label: beschriftung(dim, k) }))
+    .filter(e => e.v > 0);
+  const gesamt = eintraege.reduce((s, e) => s + e.v, 0);
+  if (!gesamt){
+    leib.append(el('p', { class:'leer', text:'Keine Daten in diesem Zeitraum.' }));
+    return [];
+  }
+
+  const kasten = el('div', { class:'kreis' });
+  const G = 100, r = 42, dick = 15;                     // Ringmasse
+  const svg = svgEl('svg', { viewBox:`0 0 ${G} ${G}`, role:'img',
+    'aria-label': `Anteile: ` + eintraege
+      .map(e => `${e.label} ${pf(e.v / gesamt * 100, 0)} Prozent`).join(', ') });
+
+  /* Zwei Grad Luft zwischen den Stuecken, in der Farbe des
+     Untergrunds — getrennt wird durch Zwischenraum, nicht durch
+     einen Strich um jedes Stueck. */
+  const luft = eintraege.length > 1 ? 2 : 0;
+  let winkel = -90;
+  eintraege.forEach((e, i) => {
+    const anteil = e.v / gesamt;
+    const spanne = Math.max(anteil * 360 - luft, 0.5);
+    const farbe = `var(--stufe-${Math.min(i + 1, 3)})`;
+    const aktiv = F[dim].size === 0 || F[dim].has(e.k);
+    const bogen = svgEl('path', {
+      d: ringPfad(G / 2, G / 2, r, winkel, winkel + spanne),
+      style: `fill:none;stroke:${farbe};stroke-width:${dick}`
+           + (aktiv ? '' : ';opacity:.3'),
+      class:'stueck', tabindex:'0', role:'button',
+      'aria-pressed': String(F[dim].has(e.k)),
+      'aria-label': `${e.label}: ${nf.format(e.v)} ${einheit || ''}, `
+                  + `${pf(anteil * 100, 0)} Prozent`,
+    });
+    mitZettel(bogen, () => zettelText(e.label,
+      `${nf.format(e.v)} ${einheit || ''}`,
+      `${pf(anteil * 100)} % · ${F[dim].has(e.k) ? 'Filter entfernen' : 'zum Filtern klicken'}`));
+    bogen.addEventListener('click', () => schalte(dim, e.k));
+    bogen.addEventListener('keydown', (ev) => {
+      if (ev.key === 'Enter' || ev.key === ' '){ ev.preventDefault(); schalte(dim, e.k); }
+    });
+    svg.append(bogen);
+    winkel += anteil * 360;
+  });
+
+  /* In der Mitte steht die Summe — der Ring zeigt die Aufteilung,
+     die Zahl das Ganze. */
+  svg.append(svgEl('text', { x:G/2, y:G/2 + 1, 'text-anchor':'middle',
+    class:'mitte', style:'font-size:17px', text: nf.format(gesamt) }));
+  svg.append(svgEl('text', { x:G/2, y:G/2 + 13, 'text-anchor':'middle',
+    class:'mitteklein', text:(einheit || '').toUpperCase() }));
+  kasten.append(svg);
+
+  /* Die Liste unter dem Ring ist zugleich Legende und Bedienung. */
+  const liste = el('div', { class:'kreisliste' + (F[dim].size ? ' gewaehlt' : '') });
+  eintraege.forEach((e, i) => {
+    const aktiv = F[dim].size === 0 || F[dim].has(e.k);
+    const zeile = el('button', { type:'button', class:'zeile',
+      'aria-pressed': String(aktiv) });
+    const punkt = el('span', { class:'punkt' });
+    punkt.style.background = `var(--stufe-${Math.min(i + 1, 3)})`;
+    if (!aktiv) punkt.style.opacity = '.3';
+    zeile.append(punkt, el('span', { class:'name', text: e.label }));
+    const zahl = el('span', { class:'zahl', text: nf.format(e.v) });
+    zahl.append(el('small', { text: pf(e.v / gesamt * 100, 0) + ' %' }));
+    zeile.append(zahl);
+    mitZettel(zeile, () => zettelText(e.label, `${nf.format(e.v)} ${einheit || ''}`,
+      `${pf(e.v / gesamt * 100)} % · ${F[dim].has(e.k) ? 'Filter entfernen' : 'zum Filtern klicken'}`));
+    zeile.addEventListener('click', () => schalte(dim, e.k));
+    liste.append(zeile);
+  });
+  kasten.append(liste);
+  leib.append(kasten);
+  return eintraege;
+}
+
+/* Ein Kreisbogen von Grad a bis Grad b, im Uhrzeigersinn. */
+function ringPfad(mx, my, r, a, b){
+  const punkt = (g) => [mx + r * Math.cos(g * Math.PI / 180),
+                        my + r * Math.sin(g * Math.PI / 180)];
+  if (b - a >= 359.9){                      // Vollkreis aus zwei Halben
+    const [x1, y1] = punkt(a), [x2, y2] = punkt(a + 180);
+    return `M${x1} ${y1}A${r} ${r} 0 1 1 ${x2} ${y2}A${r} ${r} 0 1 1 ${x1} ${y1}`;
+  }
+  const [x1, y1] = punkt(a), [x2, y2] = punkt(b);
+  return `M${x1} ${y1}A${r} ${r} 0 ${b - a > 180 ? 1 : 0} 1 ${x2} ${y2}`;
+}
+
+/* ---------- Kreuztabelle Wochentag x Uhrzeit ----------
+   Die beiden Einzeldiagramme darueber beantworten »welcher Tag« und
+   »welche Stunde«. Diese Tafel beantwortet die Frage, die aus beiden
+   zusammen entsteht und in keinem von beiden steht: wann genau. Ein
+   Feld ist eine Stunde an einem Wochentag; je dunkler, desto mehr
+   Aufrufe. Ohne Aufruf bleibt es grau — sonst waere »ganz wenig«
+   nicht von »gar nichts« zu unterscheiden. */
+const HITZE_STUFEN = 5;
+
+function hitzeKarte({ leib, tafel, hoechst }){
+  const gitter = el('div', { class:'hitze' });
+  const stufeVon = (v) => v <= 0 ? 0
+    : Math.min(HITZE_STUFEN, Math.ceil(v / hoechst * HITZE_STUFEN));
+
+  WT_KURZ.forEach((kurz, wt) => {
+    gitter.append(el('span', { class:'wt', text: kurz }));
+    for (let st = 0; st < 24; st++){
+      const v = tafel[wt][st];
+      const stufe = stufeVon(v);
+      const gewaehlt = F.wochentag.has(wt) && F.stunde.has(st);
+      const zelle = el('button', {
+        type:'button', class:'zelle', 'aria-pressed': String(gewaehlt),
+        'aria-label': `${WOCHENTAG[wt]}, ${String(st).padStart(2,'0')} Uhr: `
+                    + `${nf.format(v)} Aufrufe`,
+      });
+      if (stufe) zelle.style.background = `var(--menge-${stufe})`;
+      mitZettel(zelle, () => zettelText(
+        `${WOCHENTAG[wt]}, ${String(st).padStart(2,'0')}–${String(st).padStart(2,'0')}:59 Uhr`,
+        `${nf.format(v)} Aufrufe`,
+        gewaehlt ? 'Auswahl aufheben' : 'klicken filtert Tag und Stunde'));
+      zelle.addEventListener('click', () => schalteFeld(wt, st));
+      gitter.append(zelle);
+    }
+  });
+
+  /* Stundenleiste unter dem Gitter. Auf schmalen Geraeten bleibt
+     nur jede dritte Marke stehen. */
+  gitter.append(el('span'));
+  for (let st = 0; st < 24; st++)
+    gitter.append(el('span', { class:'std' + (st % 3 ? ' selten' : ''),
+      text: String(st).padStart(2,'0') }));
+  leib.append(el('div', { class:'hitzerollen' }, gitter));
+
+  /* Skala: ohne sie ist die Farbe eine Behauptung. */
+  const skala = el('div', { class:'hitzeskala' });
+  skala.append(el('span', { text:'0' }));
+  const grau = el('i');
+  grau.style.background = 'var(--color-bg-sunk)';
+  skala.append(grau);
+  for (let s = 1; s <= HITZE_STUFEN; s++){
+    const i = el('i');
+    i.style.background = `var(--menge-${s})`;
+    skala.append(i);
+  }
+  skala.append(el('span', { text: nf.format(hoechst) + ' Aufrufe' }));
+  leib.append(skala);
+}
+
+/* ---------- Funkenlinie ----------
+   Der Verlauf in Daumennagelgroesse: eine Flaeche mit Linie darauf,
+   ohne Achsen und ohne Zahlen. Sie soll nicht abgelesen, sondern
+   erkannt werden — steigt, faellt, zackt. Die Zahlen dazu stehen
+   ueber ihr in der Kachel und im grossen Diagramm darunter. */
+function funke(werte){
+  if (werte.length < 2) return null;
+  const B = 100, H = 30, gipfel = Math.max(1, ...werte);
+  const x = (i) => i / (werte.length - 1) * B;
+  const y = (v) => H - 2 - (v / gipfel) * (H - 4);
+  const linie = werte.map((v, i) => (i ? 'L' : 'M') + x(i).toFixed(2) + ' ' + y(v).toFixed(2)).join(' ');
+  const svg = svgEl('svg', { class:'funke', viewBox:`0 0 ${B} ${H}`,
+    preserveAspectRatio:'none', 'aria-hidden':'true', focusable:'false' });
+  svg.append(svgEl('path', { d: `${linie} L${B} ${H} L0 ${H} Z`,
+    style:'fill:var(--serie-1);fill-opacity:.12;stroke:none' }));
+  svg.append(svgEl('path', { d: linie, 'vector-effect':'non-scaling-stroke',
+    style:'fill:none;stroke:var(--serie-1);stroke-width:2;'
+        + 'stroke-linejoin:round;stroke-linecap:round' }));
+  return svg;
 }
 
 /* ============================================================
@@ -964,12 +1346,24 @@ function merkerZeichnen(){
 }
 
 /* ---------- Kacheln ---------- */
-function kachel(name, wert, dazu, klasse){
+function kachel(name, wert, dazu, klasse, anhang){
   const k = el('div', { class:'kachel' });
   k.append(el('span', { class:'mono', text: name }));
   k.append(el('span', { class:'wert', text: wert }));
   k.append(el('span', { class:'dazu ' + (klasse || ''), text: dazu || '' }));
+  if (anhang) k.append(anhang);
   return k;
+}
+
+/* Ein Anteil an einem Ganzen, als schmaler Balken unter der Zahl.
+   Zwei Stufen desselben Tons: die hellere ist das Ganze, die
+   dunklere der erreichte Teil. */
+function quoteBalken(anteil){
+  const b = el('span', { class:'quotebalken' });
+  const i = el('i');
+  i.style.width = Math.max(0, Math.min(100, anteil)) + '%';
+  b.append(i);
+  return b;
 }
 
 /* »+12 %« gegenueber dem gleich langen Zeitraum davor.
@@ -981,6 +1375,7 @@ function kachel(name, wert, dazu, klasse){
 const KLEINE_BASIS = 5;
 
 function veraenderung(jetzt, vorher){
+  if (!VERGLEICH) return { text:'', klasse:'' };
   if (vorher >= KLEINE_BASIS){
     const d = (jetzt - vorher) / vorher * 100;
     return {
@@ -1004,6 +1399,8 @@ function kachelnZeichnen(){
   const bewerbV   = summe('senden', { ...vor, wo: s => s.formular === 'bewerbung' });
   const begonnen  = summe('start');
   const gesendet  = anfragen + bewerb;
+  const klicks    = summe('klick');
+  const klicksV   = summe('klick', vor);
 
   const quote  = aufrufe ? (anfragen + bewerb) / aufrufe * 100 : 0;
   const quoteV = aufrufeV ? (anfragenV + bewerbV) / aufrufeV * 100 : 0;
@@ -1011,25 +1408,54 @@ function kachelnZeichnen(){
   const a = veraenderung(aufrufe, aufrufeV);
   const b = veraenderung(anfragen, anfragenV);
   const c = veraenderung(bewerb, bewerbV);
+  const d = veraenderung(klicks, klicksV);
+
+  /* Fuer die Funkenlinien: der Verlauf im gezeigten Zeitraum, Tag
+     fuer Tag. Dieselbe Filterung wie die Zahl darueber, damit Zahl
+     und Linie nie verschiedene Dinge erzaehlen. */
+  const tage = tageReihe();
+  const reihe = (m) => tage.map(t => m.get(t) || 0);
+  const proTag = {
+    aufruf:   summe('aufruf', { dim:'tag' }),
+    anfrage:  summe('senden', { dim:'tag', wo: s => s.formular === 'anfrage' }),
+    bewerbung:summe('senden', { dim:'tag', wo: s => s.formular === 'bewerbung' }),
+    klick:    summe('klick',  { dim:'tag' }),
+  };
 
   kk.replaceChildren(
-    kachel('Seitenaufrufe', nf.format(aufrufe), a.text, a.klasse),
-    kachel('Kontaktanfragen', nf.format(anfragen), b.text, b.klasse),
-    kachel('Bewerbungen', nf.format(bewerb), c.text, c.klasse),
+    kachel('Seitenaufrufe', nf.format(aufrufe), a.text, a.klasse,
+      funke(reihe(proTag.aufruf))),
+    kachel('Kontaktanfragen', nf.format(anfragen), b.text, b.klasse,
+      funke(reihe(proTag.anfrage))),
+    kachel('Bewerbungen', nf.format(bewerb), c.text, c.klasse,
+      funke(reihe(proTag.bewerbung))),
+    kachel('Klicks auf Kontaktwege', nf.format(klicks), d.text, d.klasse,
+      funke(reihe(proTag.klick))),
+    /* Ohne Balken: »Anfragen je 100 Aufrufe« hat keine natuerliche
+       Obergrenze, gegen die sich ein Anteil zeichnen liesse. Ein
+       Balken bis zu einer frei gewaehlten Marke wuerde eine
+       Zielvorgabe behaupten, die es nicht gibt. */
     kachel('Anfragen je 100 Aufrufe', aufrufe ? pf(quote) : '—',
-      aufrufeV ? `davor ${pf(quoteV)}` : ''),
+      VERGLEICH && aufrufeV ? `davor ${pf(quoteV)}` : ''),
     kachel('Formular abgeschickt', begonnen ? pf(gesendet / begonnen * 100, 0) + ' %' : '—',
-      begonnen ? `${nf.format(gesendet)} von ${nf.format(begonnen)} angefangenen` : 'niemand angefangen'),
+      begonnen ? `${nf.format(gesendet)} von ${nf.format(begonnen)} angefangenen` : 'niemand angefangen',
+      '', begonnen ? quoteBalken(gesendet / begonnen * 100) : null),
   );
-  /* Der Hinweis steht bewusst unter den Kacheln und nicht als
-     sechste zwischen ihnen: er ist keine Kennzahl, und als Kachel
-     draengt er die uebrigen fuenf in den Umbruch. */
+  /* Die Hinweise stehen bewusst unter den Kacheln und nicht als
+     weitere Kachel zwischen ihnen: sie sind keine Kennzahl, und als
+     Kachel draengten sie die uebrigen in den Umbruch. */
+  const hinweise = [];
+  if (seitigGefiltert())
+    hinweise.push('Seite, Herkunft und Gerät sind beim Aufruf bekannt, beim '
+      + 'abgeschickten Formular nicht. Die Zahlen zu Anfragen und Bewerbungen '
+      + 'bleiben deshalb ungefiltert.');
+  if (!VERGLEICH)
+    hinweise.push('Für diesen Zeitraum steht keine Veränderung dabei: der gleich '
+      + 'lange Zeitraum davor passt nicht mehr mit in eine Abfrage. Bis 200 Tage '
+      + 'wird verglichen.');
   const h = $('#hinweis');
-  h.hidden = !seitigGefiltert();
-  h.textContent = seitigGefiltert()
-    ? 'Seite, Herkunft und Gerät sind beim Aufruf bekannt, beim abgeschickten '
-    + 'Formular nicht. Die Zahlen zu Anfragen und Bewerbungen bleiben deshalb ungefiltert.'
-    : '';
+  h.hidden = !hinweise.length;
+  h.textContent = hinweise.join(' ');
 }
 
 /* ---------- Diagrammraster ---------- */
@@ -1040,44 +1466,34 @@ function rasterZeichnen(){
   const S1 = { farbe:'var(--serie-1)', farbeAus:'var(--serie-1-aus)' };
   const S2 = { farbe:'var(--serie-2)', farbeAus:'var(--serie-2-aus)' };
 
+  const buendel = zeitBuendel();
+  const jeTag   = buendel.stufe === 'tag';
+  /* Das gleitende Mittel lohnt erst ab zwei Wochen und nur, solange
+     ein Balken ein Tag ist — ueber Wochenbalken gelegt glaettete es
+     eine Schwankung, die dort schon nicht mehr steht. */
+  const mitMittel = jeTag && buendel.punkte.length >= 14;
+
   /* --- Verlauf: Aufrufe --- */
   {
-    const { k, leib } = karte('Seitenaufrufe im Verlauf',
-      'Ein Balken je Tag. Klicken wählt einen Tag, Ziehen einen Zeitraum.', 'ganz');
-    const werte = summe('aufruf', { ausser:'tag', dim:'tag' });
-    const punkte = tageReihe().map(t => ({
-      wert: t, kurz: tagKurz(t), lang: tagLang(t), a: werte.get(t) || 0,
+    const { k, leib } = karte('Seitenaufrufe im Verlauf', buendel.hinweis
+      + ' Klicken wählt einen Balken, Ziehen einen Zeitraum.', 'ganz');
+    const werte  = summe('aufruf', { ausser:'tag', dim:'tag' });
+    const punkte = buendel.punkte.map(p => ({
+      ...p, a: p.werte.reduce((s, t) => s + (werte.get(t) || 0), 0),
     }));
-    balkenSaeulen({ leib, dim:'tag', punkte, hoehe: 210,
+    if (mitMittel){
+      const mittelwerte = gleitend(punkte.map(p => p.a), 7);
+      punkte.forEach((p, i) => { p.mittel = mittelwerte[i]; });
+      leib.append(legende([
+        { name:'Aufrufe je Tag', farbe:'var(--serie-1)' },
+        { name:'7-Tage-Mittel', farbe:'var(--color-fg-muted)', form:'linie' },
+      ]));
+    }
+    balkenSaeulen({ leib, dim:'tag', punkte, hoehe: 210, mittel: mitMittel,
       reihen: [{ feld:'a', name:'Aufrufe', ...S1 }],
-      achse: { titel:'Seitenaufrufe je Tag' } });
-    const tab = tabelle(['Tag','Aufrufe'], punkte.map(p => [tagLang(p.wert), nf.format(p.a)]));
-    if (tab) k.append(tab);
-    r.append(k);
-  }
-
-  /* --- Verlauf: Formulare ---
-     Bewusst ein zweites Diagramm und keine zweite Achse im ersten:
-     zwei Groessenordnungen auf einer Flaeche sind keine zwei
-     Reihen, sondern eine optische Taeuschung. */
-  {
-    const { k, leib } = karte('Anfragen und Bewerbungen im Verlauf',
-      'Gezählt wird, was wirklich im Postfach angekommen ist.', 'ganz');
-    const anf = summe('senden', { ausser:'tag', dim:'tag', wo: s => s.formular === 'anfrage' });
-    const bew = summe('senden', { ausser:'tag', dim:'tag', wo: s => s.formular === 'bewerbung' });
-    const punkte = tageReihe().map(t => ({
-      wert: t, kurz: tagKurz(t), lang: tagLang(t),
-      a: anf.get(t) || 0, b: bew.get(t) || 0,
-    }));
-    const reihen = [
-      { feld:'a', name:'Kontaktanfragen', ...S1 },
-      { feld:'b', name:'Bewerbungen', ...S2 },
-    ];
-    leib.append(legende(reihen));
-    balkenSaeulen({ leib, dim:'tag', punkte, hoehe: 170, reihen,
-      achse:{ titel:'Anfragen und Bewerbungen je Tag' } });
-    const tab = tabelle(['Tag','Anfragen','Bewerbungen'],
-      punkte.map(p => [tagLang(p.wert), nf.format(p.a), nf.format(p.b)]));
+      achse: { titel:'Seitenaufrufe im Verlauf' } });
+    const tab = tabelle([buendel.spalte, 'Aufrufe'],
+      punkte.map(p => [p.lang, nf.format(p.a)]));
     if (tab) k.append(tab);
     r.append(k);
   }
@@ -1103,12 +1519,20 @@ function rasterZeichnen(){
     r.append(k);
   }
 
-  /* --- Geraete --- */
+  /* --- Geraete ---
+     Die einzige Stelle mit einem Ring: drei Klassen, die zusammen
+     alle Aufrufe ergeben, und die Frage lautet »wie verteilt«, nicht
+     »welche ist groesser«. Ueberall sonst waeren es zu viele oder zu
+     aehnliche Werte — dafuer stehen liegende Balken bereit. */
   {
-    const { k, leib } = karte('Geräte', 'Grob nach Bauart, nicht nach Modell.', 'drittel');
+    const { k, leib } = karte('Geräte', 'Grob nach Bauart, nicht nach Modell. '
+      + 'Nach Bildschirmgröße geordnet.', 'drittel');
     const werte = summe('aufruf', { ausser:'geraet', dim:'geraet' });
-    const e = balkenListe({ leib, dim:'geraet', werte, gesamtHinweis:'Aufrufe' });
-    const tab = tabelle(['Gerät','Aufrufe'], e.map(x => [x.label, nf.format(x.v)]));
+    const e = kreisDiagramm({ leib, dim:'geraet', werte,
+      ordnung: ['handy','tablet','rechner'], einheit:'Aufrufe' });
+    const gesamt = e.reduce((s, x) => s + x.v, 0);
+    const tab = tabelle(['Gerät','Aufrufe','Anteil'],
+      e.map(x => [x.label, nf.format(x.v), pf(x.v / gesamt * 100, 0) + ' %']));
     if (tab) k.append(tab);
     r.append(k);
   }
@@ -1148,6 +1572,55 @@ function rasterZeichnen(){
     r.append(k);
   }
 
+  /* --- Kreuztabelle Wochentag x Uhrzeit ---
+     Die beiden Diagramme darueber sagen, welcher Tag und welche
+     Stunde. Erst zusammen sagen sie, wann: »dienstags gegen zwanzig
+     Uhr« steht in keinem von beiden. */
+  {
+    const { k, leib } = karte('Wann wird die Seite besucht?',
+      'Ein Feld je Stunde und Wochentag. Je dunkler, desto mehr Aufrufe. '
+      + 'Klicken filtert beides zugleich.', 'ganz');
+    const tafel = hitzeTafel();
+    const hoechst = Math.max(0, ...tafel.flat());
+    if (!hoechst){
+      leib.append(el('p', { class:'leer', text:'Keine Daten in diesem Zeitraum.' }));
+    } else {
+      hitzeKarte({ leib, tafel, hoechst });
+      const tab = tabelle(['Wochentag', ...Array.from({ length:24 },
+        (_, h) => String(h).padStart(2,'0'))],
+        WOCHENTAG.map((name, wt) => [name, ...tafel[wt].map(v => nf.format(v))]));
+      if (tab) k.append(tab);
+    }
+    r.append(k);
+  }
+
+  /* --- Verlauf: Formulare ---
+     Bewusst ein zweites Diagramm und keine zweite Achse im ersten:
+     zwei Groessenordnungen auf einer Flaeche sind keine zwei
+     Reihen, sondern eine optische Taeuschung. */
+  {
+    const { k, leib } = karte('Anfragen und Bewerbungen im Verlauf',
+      'Gezählt wird, was wirklich im Postfach angekommen ist. ' + buendel.hinweis, 'ganz');
+    const anf = summe('senden', { ausser:'tag', dim:'tag', wo: s => s.formular === 'anfrage' });
+    const bew = summe('senden', { ausser:'tag', dim:'tag', wo: s => s.formular === 'bewerbung' });
+    const punkte = buendel.punkte.map(p => ({
+      ...p,
+      a: p.werte.reduce((s, t) => s + (anf.get(t) || 0), 0),
+      b: p.werte.reduce((s, t) => s + (bew.get(t) || 0), 0),
+    }));
+    const reihen = [
+      { feld:'a', name:'Kontaktanfragen', ...S1 },
+      { feld:'b', name:'Bewerbungen', ...S2 },
+    ];
+    leib.append(legende(reihen));
+    balkenSaeulen({ leib, dim:'tag', punkte, hoehe: 170, reihen,
+      achse:{ titel:'Anfragen und Bewerbungen im Verlauf' } });
+    const tab = tabelle([buendel.spalte,'Anfragen','Bewerbungen'],
+      punkte.map(p => [p.lang, nf.format(p.a), nf.format(p.b)]));
+    if (tab) k.append(tab);
+    r.append(k);
+  }
+
   /* --- Trichter --- */
   {
     const { k, leib } = karte('Vom Anfangen zum Abschicken',
@@ -1162,7 +1635,12 @@ function rasterZeichnen(){
       if (!an && !ab) continue;
       hat = true;
       const name = beschriftung('formular', art);
-      const farbe = art === 'anfrage' ? 'var(--serie-1)' : 'var(--serie-2)';
+      /* Zwei Stufen einer Farbe statt zweier Farben: es ist
+         dieselbe Sache in zwei Zustaenden. Welche Farbe, sagt das
+         Formular — Anfragen sind auf dieser Seite ueberall gruen,
+         Bewerbungen ueberall blau, auch hier. */
+      const farbe    = art === 'anfrage' ? 'var(--serie-1)' : 'var(--serie-2)';
+      const farbeAus = art === 'anfrage' ? 'var(--serie-1-aus)' : 'var(--serie-2-aus)';
       const stufe = el('div', { class:'stufe' });
       stufe.append(el('div', { class:'kopf' }, [
         el('span', { text: name }),
@@ -1175,7 +1653,7 @@ function rasterZeichnen(){
         const spur = el('span', { class:'spur' });
         const fuell = el('span', { class:'fuell' });
         fuell.style.width = (grund ? Math.max(2, wert / grund * 100) : 0) + '%';
-        fuell.style.background = beschr === 'angefangen' ? 'var(--serie-1-aus)' : farbe;
+        fuell.style.background = beschr === 'angefangen' ? farbeAus : farbe;
         spur.append(fuell);
         zeile.append(el('span', { class:'quote',
           style:'display:block;font-size:var(--step--2)',
@@ -1189,17 +1667,6 @@ function rasterZeichnen(){
     r.append(k);
   }
 
-  /* --- Themen --- */
-  {
-    const { k, leib } = karte('Worum ging es?',
-      'Auswahl aus Kontakt- und Bewerbungsformular.', 'halb');
-    const werte = summe('senden', { ausser:'thema', dim:'thema' });
-    const e = balkenListe({ leib, dim:'thema', werte, gesamtHinweis:'Nachrichten' });
-    const tab = tabelle(['Thema','Nachrichten'], e.map(x => [x.label, nf.format(x.v)]));
-    if (tab) k.append(tab);
-    r.append(k);
-  }
-
   /* --- Klicks --- */
   {
     const { k, leib } = karte('Klicks auf Kontaktwege',
@@ -1210,6 +1677,89 @@ function rasterZeichnen(){
     if (tab) k.append(tab);
     r.append(k);
   }
+
+  /* --- Themen ---
+     Frueher stand beides in einer Liste: »Fertigrasen« neben
+     »Initiativbewerbung«. Das sind zwei verschiedene Fragen und
+     zwei verschiedene Groessenordnungen — in einer gemeinsamen
+     Liste verschwinden die Bewerbungen unter den Anfragen. */
+  {
+    const { k, leib } = karte('Anliegen der Kontaktanfragen',
+      'Auswahl im Kontaktformular.', 'halb');
+    const werte = summe('senden',
+      { ausser:'thema', dim:'thema', wo: s => s.formular === 'anfrage' });
+    const e = balkenListe({ leib, dim:'thema', werte, gesamtHinweis:'Anfragen' });
+    const tab = tabelle(['Anliegen','Anfragen'], e.map(x => [x.label, nf.format(x.v)]));
+    if (tab) k.append(tab);
+    r.append(k);
+  }
+
+  {
+    const { k, leib } = karte('Beworben auf',
+      'Auswahl im Bewerbungsformular.', 'halb');
+    const werte = summe('senden',
+      { ausser:'thema', dim:'thema', wo: s => s.formular === 'bewerbung' });
+    const e = balkenListe({ leib, dim:'thema', werte, gesamtHinweis:'Bewerbungen' });
+    const tab = tabelle(['Stelle','Bewerbungen'], e.map(x => [x.label, nf.format(x.v)]));
+    if (tab) k.append(tab);
+    r.append(k);
+  }
+}
+
+/* Wie fein der Verlauf aufgeloest wird.
+
+   Ein Jahr als Tagesbalken ergibt bei tausend Pixeln Breite knapp
+   drei Pixel je Tag — daraus liest niemand mehr etwas, und die
+   Beschriftung der Achse zeigt ohnehin nur noch jeden zwoelften Tag.
+   Ab neun Wochen steht darum eine Woche hinter einem Balken, ab
+   einem halben Jahr ein Monat. Gefiltert wird weiterhin nach Tagen:
+   hinter einem Balken haengt die Liste seiner Tage. */
+function zeitBuendel(){
+  const tage = tageReihe();
+  const n = tage.length;
+
+  if (n <= 62) return {
+    stufe:'tag', spalte:'Tag',
+    hinweis: n === 1 ? 'Ein Balken für den gewählten Tag.' : 'Ein Balken je Tag.',
+    punkte: tage.map(t => ({ wert:t, werte:[t], kurz: tagKurz(t), lang: tagLang(t) })),
+  };
+
+  const proWoche = n <= 210;
+  const eimer = new Map();
+  for (const t of tage){
+    // Montag der Woche als Schluessel, sonst der Monat.
+    const schluessel = proWoche ? tagPlus(t, -wochentagVon(t)) : t.slice(0, 7);
+    if (!eimer.has(schluessel)) eimer.set(schluessel, []);
+    eimer.get(schluessel).push(t);
+  }
+  const monatKurz = (t) => new Intl.DateTimeFormat('de-DE',
+    { month:'short', year:'2-digit' }).format(new Date(t + 'T12:00:00Z'));
+  const monatLang = (t) => new Intl.DateTimeFormat('de-DE',
+    { month:'long', year:'numeric' }).format(new Date(t + 'T12:00:00Z'));
+
+  return {
+    stufe: proWoche ? 'woche' : 'monat',
+    spalte: proWoche ? 'Woche ab' : 'Monat',
+    hinweis: proWoche
+      ? 'Ein Balken je Woche — bei diesem Zeitraum wäre ein Tag nur noch ein Strich.'
+      : 'Ein Balken je Monat — bei diesem Zeitraum wäre ein Tag nur noch ein Strich.',
+    punkte: [...eimer.entries()].map(([schluessel, ts]) => {
+      /* Die erste und die letzte Saeule reichen fast immer ueber den
+         Rand des Zeitraums hinaus. Ungesagt sieht so eine halbe
+         Woche wie ein Einbruch aus — darum steht es im Zettel. */
+      const voll = proWoche ? 7 : new Date(Date.UTC(
+        Number(schluessel.slice(0, 4)), Number(schluessel.slice(5, 7)), 0)).getUTCDate();
+      return {
+        wert: schluessel, werte: ts,
+        kurz: proWoche ? tagKurz(ts[0]) : monatKurz(ts[0]),
+        lang: proWoche
+          ? `Woche ${tagKurz(ts[0])} – ${tagLang(ts[ts.length - 1])}`
+          : monatLang(ts[0]),
+        zusatz: ts.length < voll
+          ? `angeschnitten: ${ts.length} von ${voll} Tagen` : null,
+      };
+    }),
+  };
 }
 
 /* Alle Tage des Zeitraums, auch die ohne Daten — sonst ruecken
