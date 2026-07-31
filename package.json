@@ -4,6 +4,10 @@
   "private": true,
   "description": "Website Gartengestaltung & Baumschule Belzner, Bensheim",
   "license": "UNLICENSED",
+  "scripts": {
+    "test": "node scripts/test-formular.mjs && node scripts/test-zaehler.mjs",
+    "vorschau": "node scripts/vorschau.mjs"
+  },
   "dependencies": {
     "@netlify/blobs": "^8.1.1",
     "nodemailer": "^9.0.3"

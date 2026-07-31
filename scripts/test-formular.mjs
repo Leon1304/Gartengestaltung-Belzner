@@ -193,6 +193,43 @@ await pruefe('vierte Nachricht wird abgewiesen', bauen(basis(), dieselbe), 429,
 await pruefe('andere Adresse kommt weiterhin durch', bauen(basis(), '203.0.113.8'), 200,
   (j) => j.ok);
 
+/* Die Strichliste des Dashboards haengt am Versand: gezaehlt wird
+   erst, wenn die Mail wirklich draussen ist. Geprueft wird darum
+   hier, wo echte Nachrichten durchgelaufen sind — und nicht in
+   test-zaehler.mjs, wo gar kein Mailserver steht. */
+console.log('\n--- Zaehlung fuers Dashboard ---');
+{
+  const zaehler = await import(new URL('../netlify/lib/zaehler.mjs', import.meta.url));
+  const heute = zaehler.berliner().tag;
+  const tage = await zaehler.lese(heute, heute);
+  const gesamt = {};
+  for (const stunde of Object.values(tage[heute] || {})) {
+    for (const [komb, n] of Object.entries(stunde.senden || {})) {
+      gesamt[komb] = (gesamt[komb] || 0) + n;
+    }
+  }
+  const summe = (praefix) => Object.entries(gesamt)
+    .filter(([k]) => k.startsWith(praefix)).reduce((s, [, n]) => s + n, 0);
+
+  const anfragen = summe('anfrage_');
+  const bewerbungen = summe('bewerbung_');
+  const zeig = JSON.stringify(gesamt);
+
+  if (anfragen >= 5) console.log(`  ok   ${anfragen} Anfragen gezaehlt`);
+  else { fehler++; console.log(` FEHL  Anfragen nicht gezaehlt  → ${zeig}`); }
+
+  if (bewerbungen >= 2) console.log(`  ok   ${bewerbungen} Bewerbungen gezaehlt`);
+  else { fehler++; console.log(` FEHL  Bewerbungen nicht gezaehlt  → ${zeig}`); }
+
+  // Das Thema kommt aus der Auswahlliste und muss als Kuerzel ankommen.
+  if (gesamt['bewerbung_gartenpfleger'] >= 1) console.log('  ok   Stelle als Kuerzel abgelegt');
+  else { fehler++; console.log(` FEHL  Stelle fehlt oder heisst anders  → ${zeig}`); }
+
+  // Die Anfragen oben tragen alle »Wassersysteme & Bewässerung«.
+  if (gesamt['anfrage_wasser'] >= 1) console.log('  ok   Anliegen als Kuerzel abgelegt');
+  else { fehler++; console.log(` FEHL  Anliegen fehlt oder heisst anders  → ${zeig}`); }
+}
+
 smtp.close();
 console.log(fehler ? `\n${fehler} Test(s) fehlgeschlagen\n` : '\nAlle Tests bestanden\n');
 process.exit(fehler ? 1 : 0);

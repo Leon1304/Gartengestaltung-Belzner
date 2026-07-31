@@ -1,0 +1,1309 @@
+<!DOCTYPE html>
+<html lang="de" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Auswertung — Gartengestaltung &amp; Baumschule Belzner</title>
+
+<!-- Diese Seite gehoert nicht in den Index einer Suchmaschine. Der Riegel
+     steht zusaetzlich in robots.txt und als Kopfzeile in netlify.toml —
+     robots.txt haelt nur brave Besucher fern, das Passwort haelt alle. -->
+<meta name="robots" content="noindex, nofollow, noarchive">
+
+<!-- Farbschema setzen, bevor das erste Pixel steht. Dieselbe Wahl wie auf
+     der Startseite, sie liegt in localStorage. -->
+<script>
+(function(){
+  try{
+    var w = localStorage.getItem('theme');
+    document.documentElement.dataset.theme =
+      (w === 'dark' || w === 'light') ? w
+      : (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  }catch(e){}
+})();
+</script>
+
+<link rel="icon" href="assets/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="assets/favicon-180.png">
+<meta name="theme-color" content="#FAFAF8" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0B0C0B" media="(prefers-color-scheme: dark)">
+<link rel="stylesheet" href="fonts.css">
+
+<style>
+/* ============================================================
+   MARKEN
+   Dieselben Farben, Schriftstufen und Radien wie die Startseite.
+   Dazu zwei Reihenfarben fuer die Diagramme: das Gruen der Seite
+   und ein Blau. Das Paar ist gegen Rot-Gruen- und Blau-Gelb-Schwaeche
+   geprueft — auf beiden Untergruenden liegt der Abstand weit ueber
+   dem Schwellwert, und zusaetzlich traegt jede Reihe eine
+   Beschriftung, damit die Farbe nie allein unterscheiden muss.
+   ============================================================ */
+:root{
+  color-scheme:light;
+  --ink-900:#0B0C0B; --ink-800:#101210; --ink-700:#161815;
+  --paper-000:#FAFAF8; --paper-100:#F0F0EC; --paper-200:#E4E5DF;
+  --stone-400:#A8ACA2; --stone-600:#55584F;
+  --accent-400:#5BAE57; --accent-500:#4C9A4A; --accent-600:#3D7C3B; --accent-700:#2E5E2D;
+
+  --color-bg:var(--paper-000);
+  --color-bg-alt:var(--paper-100);
+  --color-bg-sunk:var(--paper-200);
+  --color-fg:var(--ink-900);
+  --color-fg-muted:var(--stone-600);
+  --color-line:rgba(11,12,11,.14);
+  --color-line-strong:rgba(11,12,11,.28);
+  --color-accent-text:var(--accent-600);
+  --color-accent-surface:var(--accent-600);
+  --color-on-accent:var(--paper-000);
+  --color-danger:#B3301F;
+  --color-field:#F1F1ED;
+  --color-field-line:rgba(11,12,11,.10);
+  --shadow-card:0 1px 2px rgba(11,12,11,.04),0 8px 24px -12px rgba(11,12,11,.12);
+
+  /* Diagrammfarben. »-aus« ist der abgewaehlte Zustand: sichtbar
+     bleiben, aber zurueckweichen. */
+  --serie-1:#3D7C3B;  --serie-1-aus:#BCCCBB;
+  --serie-2:#2A78D6;  --serie-2-aus:#B7CBE8;
+  --gitter:#DEDED6;
+  --achse:#C3C2B7;
+
+  --radius-sm:8px; --radius-md:12px; --radius-lg:16px; --radius-full:999px;
+
+  --step--2:clamp(0.69rem,0.67rem + 0.12vw,0.76rem);
+  --step--1:clamp(0.83rem,0.79rem + 0.20vw,0.92rem);
+  --step-0:clamp(1.00rem,0.95rem + 0.25vw,1.10rem);
+  --step-1:clamp(1.20rem,1.12rem + 0.35vw,1.38rem);
+  --step-3:clamp(1.73rem,1.50rem + 1.00vw,2.20rem);
+  --step-5:clamp(2.10rem,1.70rem + 1.90vw,3.00rem);
+
+  --space-3xs:.3rem; --space-2xs:.55rem; --space-xs:.85rem;
+  --space-s:1.1rem; --space-m:1.7rem; --space-l:2.3rem;
+  --space-xl:3.2rem;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --color-bg:var(--ink-900);
+    --color-bg-alt:var(--ink-700);
+    --color-bg-sunk:var(--ink-800);
+    --color-fg:var(--paper-000);
+    --color-fg-muted:var(--stone-400);
+    --color-line:rgba(250,250,248,.14);
+    --color-line-strong:rgba(250,250,248,.30);
+    --color-accent-text:var(--accent-500);
+    --color-accent-surface:var(--accent-500);
+    --color-on-accent:var(--ink-900);
+    --color-danger:#FF8F7E;
+    --color-field:rgba(250,250,248,.055);
+    --color-field-line:rgba(250,250,248,.11);
+    --shadow-card:0 1px 2px rgba(0,0,0,.4),0 8px 24px -12px rgba(0,0,0,.6);
+    --serie-1:#4C9A4A;  --serie-1-aus:#2C3A2B;
+    --serie-2:#3987E5;  --serie-2-aus:#26384C;
+    --gitter:#2C2C2A;
+    --achse:#383835;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --color-bg:var(--ink-900);
+  --color-bg-alt:var(--ink-700);
+  --color-bg-sunk:var(--ink-800);
+  --color-fg:var(--paper-000);
+  --color-fg-muted:var(--stone-400);
+  --color-line:rgba(250,250,248,.14);
+  --color-line-strong:rgba(250,250,248,.30);
+  --color-accent-text:var(--accent-500);
+  --color-accent-surface:var(--accent-500);
+  --color-on-accent:var(--ink-900);
+  --color-danger:#FF8F7E;
+  --color-field:rgba(250,250,248,.055);
+  --color-field-line:rgba(250,250,248,.11);
+  --shadow-card:0 1px 2px rgba(0,0,0,.4),0 8px 24px -12px rgba(0,0,0,.6);
+  --serie-1:#4C9A4A;  --serie-1-aus:#2C3A2B;
+  --serie-2:#3987E5;  --serie-2-aus:#26384C;
+  --gitter:#2C2C2A;
+  --achse:#383835;
+}
+
+*,*::before,*::after{box-sizing:border-box}
+*{margin:0}
+html{-webkit-text-size-adjust:100%}
+body{
+  font-family:'Instrument Sans',system-ui,sans-serif;
+  font-size:var(--step-0);line-height:1.6;
+  color:var(--color-fg);background:var(--color-bg);
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{width:min(100% - var(--space-m) * 2,1240px);margin-inline:auto}
+.display{font-family:'Fraunces',Georgia,serif;
+  font-variation-settings:'SOFT' 40,'WONK' 1,'opsz' 100;
+  font-weight:500;letter-spacing:-.025em;line-height:1.05}
+.mono{font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:.72rem;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--color-fg-muted)}
+:where(a,button,input,select,summary):focus-visible{
+  outline:3px solid var(--color-accent-text);outline-offset:2px;border-radius:6px}
+[hidden]{display:none !important}
+
+/* --- Kopf --- */
+.top{border-bottom:1px solid var(--color-line);padding-block:var(--space-s)}
+.top .wrap{display:flex;align-items:center;gap:var(--space-s)}
+.back{display:inline-flex;align-items:center;gap:var(--space-3xs);min-height:44px;
+  color:var(--color-fg);text-decoration:none;font-size:var(--step--1)}
+.back svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.8}
+.back:hover{color:var(--color-accent-text)}
+.top .brand{margin-left:auto;font-family:'IBM Plex Mono',monospace;
+  font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:var(--color-fg-muted)}
+.theme-toggle{display:grid;place-items:center;width:44px;height:44px;flex:none;
+  background:none;border:1px solid currentColor;border-radius:var(--radius-full);
+  cursor:pointer;color:inherit;opacity:.7}
+.theme-toggle:hover{opacity:1}
+.theme-toggle svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.6}
+.theme-toggle .icon-moon{display:none}
+:root[data-theme="dark"] .theme-toggle .icon-sun{display:none}
+:root[data-theme="dark"] .theme-toggle .icon-moon{display:block}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]) .theme-toggle .icon-sun{display:none}
+  :root:not([data-theme="light"]) .theme-toggle .icon-moon{display:block}
+}
+
+main{padding-block:var(--space-l) var(--space-xl)}
+
+/* --- Anmeldung --- */
+.anmeldung{max-width:26rem;margin-inline:auto;padding-block:var(--space-xl)}
+.anmeldung h1{font-size:var(--step-3);margin-block:var(--space-2xs) var(--space-xs)}
+.anmeldung p{color:var(--color-fg-muted);font-size:var(--step--1);margin-bottom:var(--space-m)}
+.feld{display:block;margin-bottom:var(--space-xs)}
+.feld > span{display:block;font-size:var(--step--1);margin-bottom:var(--space-3xs)}
+input[type=password],input[type=date]{
+  width:100%;min-height:48px;padding:.6rem .8rem;font:inherit;font-size:var(--step-0);
+  color:var(--color-fg);background:var(--color-field);
+  border:1px solid var(--color-field-line);border-radius:var(--radius-sm)}
+input[type=date]{min-height:44px;font-size:var(--step--1)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;
+  min-height:48px;padding:.6rem 1.3rem;font:inherit;font-weight:500;
+  color:var(--color-on-accent);background:var(--color-accent-surface);
+  border:1px solid transparent;border-radius:var(--radius-full);cursor:pointer}
+.btn:hover{filter:brightness(1.08)}
+.btn[disabled]{opacity:.55;cursor:default;filter:none}
+.meldung{margin-top:var(--space-xs);font-size:var(--step--1);color:var(--color-danger);
+  min-height:1.5em}
+
+/* --- Steuerung --- */
+.steuerung{display:flex;flex-wrap:wrap;align-items:center;gap:var(--space-2xs);
+  margin-bottom:var(--space-s)}
+.knopfleiste{display:flex;flex-wrap:wrap;gap:var(--space-3xs);
+  padding:4px;background:var(--color-bg-alt);border-radius:var(--radius-full)}
+.zeitknopf{min-height:38px;padding:.3rem .85rem;font:inherit;font-size:var(--step--1);
+  color:var(--color-fg-muted);background:none;border:0;border-radius:var(--radius-full);
+  cursor:pointer;white-space:nowrap}
+.zeitknopf:hover{color:var(--color-fg)}
+.zeitknopf[aria-pressed=true]{color:var(--color-on-accent);background:var(--color-accent-surface)}
+.eigen{display:flex;align-items:center;gap:var(--space-3xs);font-size:var(--step--1);
+  color:var(--color-fg-muted)}
+.eigen input{width:auto;min-width:9.5rem}
+.nebenknopf{min-height:38px;padding:.3rem .9rem;font:inherit;font-size:var(--step--1);
+  color:var(--color-fg);background:none;border:1px solid var(--color-line-strong);
+  border-radius:var(--radius-full);cursor:pointer}
+.nebenknopf:hover{border-color:var(--color-fg)}
+
+/* --- Merker der gesetzten Filter --- */
+.merker{display:flex;flex-wrap:wrap;align-items:center;gap:var(--space-3xs);
+  margin-bottom:var(--space-s);min-height:38px}
+.merker:empty{display:none}
+.chip{display:inline-flex;align-items:center;gap:.45rem;min-height:34px;
+  padding:.2rem .4rem .2rem .8rem;font-size:var(--step--1);
+  background:var(--color-bg-alt);border:1px solid var(--color-line);
+  border-radius:var(--radius-full)}
+.chip b{font-weight:500}
+.chip .weg{display:grid;place-items:center;width:24px;height:24px;padding:0;
+  font-size:1rem;line-height:1;color:var(--color-fg-muted);background:none;
+  border:0;border-radius:var(--radius-full);cursor:pointer}
+.chip .weg:hover{color:var(--color-fg);background:var(--color-bg-sunk)}
+
+/* --- Kacheln --- */
+.kacheln{display:grid;gap:var(--space-2xs);margin-bottom:var(--space-2xs);
+  /* 9rem, damit auf einem Handy zwei Kacheln nebeneinander passen —
+     bei 11rem stapeln sich fuenf davon zu einer halben Bildschirmhoehe,
+     bevor das erste Diagramm anfaengt. */
+  grid-template-columns:repeat(auto-fit,minmax(9rem,1fr))}
+.hinweis{margin-bottom:var(--space-m);padding:var(--space-2xs) var(--space-s);
+  font-size:var(--step--2);color:var(--color-fg-muted);
+  border-left:2px solid var(--color-line-strong)}
+.kachel{padding:var(--space-s);background:var(--color-bg-alt);
+  border:1px solid var(--color-line);border-radius:var(--radius-lg)}
+.kachel .wert{display:block;font-family:'Fraunces',Georgia,serif;
+  font-variation-settings:'SOFT' 40,'WONK' 1,'opsz' 100;font-weight:500;
+  font-size:var(--step-5);line-height:1.05;letter-spacing:-.03em;
+  margin-block:var(--space-3xs) .2rem}
+.kachel .dazu{font-size:var(--step--2);color:var(--color-fg-muted)}
+.kachel .dazu.hoch{color:var(--color-accent-text)}
+.kachel .dazu.runter{color:var(--color-danger)}
+
+/* --- Diagrammkarten --- */
+/* align-items:start — sonst zieht die hoechste Karte einer Reihe
+   alle anderen auf ihre Hoehe und unter kurzen Listen klafft Leere. */
+.raster{display:grid;gap:var(--space-2xs);grid-template-columns:repeat(12,1fr);
+  align-items:start}
+.karte{grid-column:span 12;padding:var(--space-s);background:var(--color-bg-alt);
+  border:1px solid var(--color-line);border-radius:var(--radius-lg);min-width:0}
+.karte.halb{grid-column:span 6}
+.karte.drittel{grid-column:span 4}
+@media (max-width:900px){
+  .karte.halb,.karte.drittel{grid-column:span 12}
+}
+.karte > h2{font-size:var(--step-1);font-weight:500;margin-bottom:.15rem}
+.karte .unter{display:block;font-size:var(--step--2);color:var(--color-fg-muted);
+  margin-bottom:var(--space-xs)}
+.leer{padding-block:var(--space-m);text-align:center;color:var(--color-fg-muted);
+  font-size:var(--step--1)}
+
+/* Legende — bei zwei Reihen immer da, nie nur die Farbe. */
+.legende{display:flex;flex-wrap:wrap;gap:var(--space-s);margin-bottom:var(--space-2xs);
+  font-size:var(--step--1);color:var(--color-fg-muted)}
+.legende span{display:inline-flex;align-items:center;gap:.4rem}
+.legende i{width:11px;height:11px;border-radius:3px;flex:none}
+
+/* Liegende Balken: echte Knoepfe, damit sie mit der Tastatur
+   erreichbar sind und ein Bildschirmleser sie ansagt. */
+.balken{display:flex;flex-direction:column;gap:2px}
+.zeile{display:grid;grid-template-columns:minmax(6rem,11rem) 1fr auto;align-items:center;
+  gap:var(--space-2xs);width:100%;padding:.35rem .4rem;font:inherit;
+  font-size:var(--step--1);color:var(--color-fg);text-align:left;background:none;
+  border:0;border-radius:var(--radius-sm);cursor:pointer}
+.zeile:hover{background:var(--color-bg-sunk)}
+.zeile .name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.zeile .spur{position:relative;height:16px;background:var(--color-bg-sunk);
+  border-radius:4px;overflow:hidden}
+.zeile .fuell{position:absolute;inset-block:0;left:0;background:var(--serie-1);
+  border-radius:4px;min-width:2px}
+.zeile[aria-pressed=false] .fuell{background:var(--serie-1-aus)}
+.zeile .zahl{font-variant-numeric:tabular-nums;color:var(--color-fg-muted);
+  white-space:nowrap}
+.zeile[aria-pressed=true] .zahl{color:var(--color-fg)}
+/* Ist in dieser Gruppe etwas ausgewaehlt, treten die uebrigen zurueck. */
+.balken.gewaehlt .zeile[aria-pressed=false] .name,
+.balken.gewaehlt .zeile[aria-pressed=false] .zahl{opacity:.55}
+
+/* Stehende Balken als SVG */
+.svgbox{position:relative;width:100%}
+.svgbox svg{display:block;width:100%;touch-action:pan-y}
+.svgbox svg text{font-family:'IBM Plex Mono',ui-monospace,monospace;
+  font-size:10px;fill:var(--color-fg-muted)}
+.svgbox .band{cursor:pointer}
+.svgbox .band:focus-visible{outline:2px solid var(--color-accent-text);outline-offset:-2px}
+
+/* Trichter */
+.trichter{display:flex;flex-direction:column;gap:var(--space-s)}
+.stufe{font-size:var(--step--1)}
+.stufe .kopf{display:flex;justify-content:space-between;gap:var(--space-s);
+  margin-bottom:.3rem}
+.stufe .spur{position:relative;height:14px;background:var(--color-bg-sunk);
+  border-radius:4px;overflow:hidden}
+.stufe .fuell{position:absolute;inset-block:0;left:0;border-radius:4px}
+.stufe .quote{color:var(--color-fg-muted);font-variant-numeric:tabular-nums}
+
+/* Tabellenansicht — jede Karte kann ihre Zahlen auch als Text zeigen. */
+details.tabelle{margin-top:var(--space-xs);border-top:1px solid var(--color-line);
+  padding-top:var(--space-2xs)}
+details.tabelle summary{font-size:var(--step--2);color:var(--color-fg-muted);
+  cursor:pointer;list-style:none}
+details.tabelle summary::-webkit-details-marker{display:none}
+details.tabelle summary::before{content:'▸ ';display:inline-block;
+  transition:transform .15s ease}
+details.tabelle[open] summary::before{content:'▾ '}
+details.tabelle .rollen{overflow-x:auto;margin-top:var(--space-2xs)}
+table{border-collapse:collapse;width:100%;font-size:var(--step--2)}
+th,td{padding:.3rem .6rem;text-align:left;border-bottom:1px solid var(--color-line);
+  white-space:nowrap}
+td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
+
+/* Schwebezettel. Einer fuer alles, wandert an die Maus. */
+.zettel{position:fixed;z-index:20;pointer-events:none;opacity:0;
+  padding:.5rem .7rem;font-size:var(--step--2);line-height:1.45;
+  color:var(--color-fg);background:var(--color-bg);
+  border:1px solid var(--color-line-strong);border-radius:var(--radius-sm);
+  box-shadow:var(--shadow-card);max-width:16rem;
+  transition:opacity .12s ease}
+.zettel.an{opacity:1}
+.zettel b{font-weight:500}
+.zettel .klein{color:var(--color-fg-muted)}
+
+.fuss{margin-top:var(--space-xl);padding-top:var(--space-s);
+  border-top:1px solid var(--color-line);font-size:var(--step--2);
+  color:var(--color-fg-muted)}
+.fuss a{color:inherit}
+
+@media (prefers-reduced-motion:reduce){
+  *{transition:none !important}
+}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="back" href="index.html">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Homepage
+    </a>
+    <span class="brand">Belzner · Auswertung</span>
+    <button class="theme-toggle" id="themeToggle" aria-label="Farbschema wechseln" hidden>
+      <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+    </button>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+
+    <!-- ---------- Anmeldung ---------- -->
+    <section class="anmeldung" id="anmeldung">
+      <p class="mono">Intern</p>
+      <h1 class="display">Auswertung</h1>
+      <p>Seitenaufrufe, Kontaktanfragen und Bewerbungen. Das Passwort steht in den
+        Netlify-Einstellungen unter <code>DASHBOARD_PASSWORT</code>.</p>
+      <form id="anmeldeForm" novalidate>
+        <label class="feld" for="passwort">
+          <span>Passwort</span>
+          <input type="password" id="passwort" name="passwort" autocomplete="current-password"
+                 required aria-describedby="anmeldeFehler">
+        </label>
+        <button class="btn" type="submit" id="anmeldeKnopf">Anmelden</button>
+        <p class="meldung" id="anmeldeFehler" role="status" aria-live="polite"></p>
+      </form>
+    </section>
+
+    <!-- ---------- Tafel ---------- -->
+    <section id="tafel" hidden>
+      <p class="mono">Intern</p>
+      <h1 class="display" style="font-size:var(--step-3);margin-bottom:var(--space-s)">Auswertung</h1>
+
+      <div class="steuerung">
+        <div class="knopfleiste" id="zeitraeume" role="group" aria-label="Zeitraum"></div>
+        <div class="eigen">
+          <label for="von">von</label>
+          <input type="date" id="von">
+          <label for="bis">bis</label>
+          <input type="date" id="bis">
+        </div>
+        <button class="nebenknopf" type="button" id="neuLaden">Aktualisieren</button>
+        <span class="mono" id="ladeStand" role="status" aria-live="polite"
+              style="margin-left:auto"></span>
+      </div>
+
+      <div class="merker" id="merker" aria-label="Gesetzte Filter"></div>
+
+      <div class="kacheln" id="kacheln"></div>
+      <p class="hinweis" id="hinweis" role="status" aria-live="polite" hidden></p>
+      <div class="raster" id="raster"></div>
+
+      <p class="fuss">
+        Gezählt wird ohne Cookies und ohne Wiedererkennung — deshalb stehen hier
+        <strong>Aufrufe</strong> und nicht »eindeutige Besucher«. Wer die Seite zweimal
+        öffnet, zählt zweimal. Aufrufe erfassen nur Besucher mit aktiviertem JavaScript;
+        Kontaktanfragen und Bewerbungen zählt der Server selbst und damit vollständig.
+        Näheres in <a href="datenschutz.html">Abschnitt 3 der Datenschutzerklärung</a>.
+      </p>
+    </section>
+
+  </div>
+</main>
+
+<div class="zettel" id="zettel" role="tooltip" aria-hidden="true"></div>
+
+<script>
+(() => {
+'use strict';
+
+/* ============================================================
+   FARBSCHEMA-SCHALTER
+   ============================================================ */
+const knopf = document.getElementById('themeToggle');
+knopf.hidden = false;
+const metas = document.querySelectorAll('meta[name="theme-color"]');
+function farbeAngleichen(){
+  const dunkel = document.documentElement.dataset.theme === 'dark';
+  metas.forEach(m => m.setAttribute('content', dunkel ? '#0B0C0B' : '#FAFAF8'));
+}
+farbeAngleichen();
+knopf.addEventListener('click', () => {
+  const w = document.documentElement;
+  w.dataset.theme = w.dataset.theme === 'dark' ? 'light' : 'dark';
+  try { localStorage.setItem('theme', w.dataset.theme); } catch(e){}
+  farbeAngleichen();
+  zeichne();          // die SVG-Diagramme tragen ihre Farben fest im Markup
+});
+
+/* ============================================================
+   HILFSMITTEL
+   ============================================================ */
+const $  = (s, w = document) => w.querySelector(s);
+const nf = new Intl.NumberFormat('de-DE');
+const pf = (x, n = 1) => new Intl.NumberFormat('de-DE',
+  { minimumFractionDigits:n, maximumFractionDigits:n }).format(x);
+const WOCHENTAG = ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'];
+const WT_KURZ   = ['Mo','Di','Mi','Do','Fr','Sa','So'];
+
+const el = (tag, eig = {}, kinder = []) => {
+  const n = document.createElement(tag);
+  for (const [k, v] of Object.entries(eig)) {
+    if (k === 'text') n.textContent = v;
+    else if (k === 'html') n.innerHTML = v;
+    else if (v !== null && v !== undefined && v !== false) n.setAttribute(k, v);
+  }
+  for (const kind of [].concat(kinder)) if (kind) n.append(kind);
+  return n;
+};
+const svgEl = (tag, eig = {}) => {
+  const n = document.createElementNS('http://www.w3.org/2000/svg', tag);
+  for (const [k, v] of Object.entries(eig)) {
+    if (k === 'text') n.textContent = v;
+    else if (v !== null && v !== undefined && v !== false) n.setAttribute(k, v);
+  }
+  return n;
+};
+
+/* Tag als 'YYYY-MM-DD' rechnen. Mittags in UTC, damit die
+   Sommerzeitumstellung nicht einen Tag verschiebt. */
+const tagPlus = (tag, n) => {
+  const d = new Date(tag + 'T12:00:00Z');
+  d.setUTCDate(d.getUTCDate() + n);
+  return d.toISOString().slice(0, 10);
+};
+const tagAbstand = (a, b) =>
+  Math.round((new Date(b + 'T12:00:00Z') - new Date(a + 'T12:00:00Z')) / 86400000);
+const wochentagVon = (tag) => (new Date(tag + 'T12:00:00Z').getUTCDay() + 6) % 7;  // 0 = Montag
+const tagKurz = (tag) => new Intl.DateTimeFormat('de-DE',
+  { day:'2-digit', month:'2-digit' }).format(new Date(tag + 'T12:00:00Z'));
+const tagLang = (tag) => new Intl.DateTimeFormat('de-DE',
+  { weekday:'short', day:'2-digit', month:'2-digit', year:'numeric' })
+  .format(new Date(tag + 'T12:00:00Z'));
+
+/* ============================================================
+   ZUSTAND
+   ============================================================ */
+let PASSWORT = '';        // nur hier, im Arbeitsspeicher. Kein Cookie, kein Speicher.
+let META  = null;         // Arten, Beschriftungen — kommt vom Server
+let SAETZE = [];          // flache Liste aller Strichlisteneintraege
+let HEUTE  = '';
+let VON = '', BIS = '';                 // angezeigter Zeitraum
+let VOR_VON = '', VOR_BIS = '';         // Vorzeitraum gleicher Laenge, fuer die Veraenderung
+let VORWAHL = 30;                       // gewaehlte Voreinstellung in Tagen, 0 = eigener
+
+/* Die Filter. Leere Menge heisst: keine Einschraenkung. */
+const F = {
+  tag: new Set(), stunde: new Set(), wochentag: new Set(),
+  seite: new Set(), quelle: new Set(), geraet: new Set(),
+  formular: new Set(), thema: new Set(), ziel: new Set(),
+};
+/* Merkmale, die es nur beim Seitenaufruf gibt. Ist eines davon
+   gesetzt, laesst sich daraus nichts ueber Formulare ableiten —
+   darauf weisen die betroffenen Karten dann hin. */
+const NUR_AUFRUF = ['seite', 'quelle', 'geraet'];
+
+const beschriftung = (dim, wert) => META?.beschriftung?.[dim]?.[wert] || wert;
+
+/* ============================================================
+   LADEN
+   ============================================================ */
+async function frage(von, bis){
+  const r = await fetch('/api/statistik', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ passwort: PASSWORT, von, bis }),
+  });
+  let d;
+  try { d = await r.json(); }
+  catch { throw new Error('Unerwartete Antwort vom Server.'); }
+  if (!r.ok) throw new Error(d.text || 'Die Zahlen ließen sich nicht laden.');
+  return d;
+}
+
+/* Aus den verschachtelten Wuerfeln wird eine flache Liste. Jeder
+   Eintrag traegt Tag, Stunde, Wochentag, Art, seine Merkmale und
+   die Anzahl — darauf laesst sich beliebig filtern und summieren,
+   ohne noch einmal beim Server nachzufragen. */
+function flach(tage){
+  const liste = [];
+  for (const [tag, stunden] of Object.entries(tage)){
+    const wt = wochentagVon(tag);
+    for (const [stunde, wuerfel] of Object.entries(stunden)){
+      const st = Number(stunde);
+      for (const [art, zweig] of Object.entries(wuerfel)){
+        const felder = META.arten[art];
+        if (!felder) continue;
+        for (const [komb, n] of Object.entries(zweig)){
+          const teile = String(komb).split('_');
+          const satz = { tag, stunde: st, wochentag: wt, art, n: Number(n) || 0 };
+          felder.forEach((f, i) => { satz[f] = teile[i] ?? 'ohne'; });
+          liste.push(satz);
+        }
+      }
+    }
+  }
+  return liste;
+}
+
+async function laden(){
+  const stand = $('#ladeStand');
+  stand.textContent = 'lädt …';
+  try {
+    /* Mitgeladen wird auch der gleich lange Zeitraum davor — daraus
+       entsteht die Veraenderung auf den Kacheln, ohne zweite Anfrage. */
+    const laenge = tagAbstand(VON, BIS) + 1;
+    VOR_BIS = tagPlus(VON, -1);
+    VOR_VON = tagPlus(VOR_BIS, -(laenge - 1));
+    const d = await frage(VOR_VON, BIS);
+    META = d;
+    HEUTE = d.heute;
+    SAETZE = flach(d.tage);
+    stand.textContent = 'Stand ' + new Intl.DateTimeFormat('de-DE',
+      { hour:'2-digit', minute:'2-digit' }).format(new Date()) + ' Uhr';
+    zeichne();
+  } catch (fehler) {
+    stand.textContent = '';
+    $('#raster').replaceChildren(el('p', { class:'leer', text: fehler.message }));
+  }
+}
+
+/* ============================================================
+   FILTERN UND SUMMIEREN
+   Ein Merkmal filtert nur die Ereignisse, die es ueberhaupt
+   tragen: eine abgeschickte Anfrage weiss nicht, ueber welche
+   Seite sie kam, und soll durch einen Seitenfilter darum nicht
+   verschwinden.
+
+   »ausser« nimmt ein Merkmal von der Pruefung aus. Das braucht
+   jedes Diagramm fuer sich selbst — sonst blieben nach dem ersten
+   Klick nur noch die angeklickten Balken stehen und es gaebe kein
+   Zurueck mehr.
+   ============================================================ */
+function passt(s, ausser, von = VON, bis = BIS){
+  if (s.tag < von || s.tag > bis) return false;
+  if (ausser !== 'tag'      && F.tag.size      && !F.tag.has(s.tag)) return false;
+  if (ausser !== 'stunde'   && F.stunde.size   && !F.stunde.has(s.stunde)) return false;
+  if (ausser !== 'wochentag'&& F.wochentag.size&& !F.wochentag.has(s.wochentag)) return false;
+  for (const dim of ['seite','quelle','geraet','formular','thema','ziel']){
+    if (dim === ausser || !F[dim].size) continue;
+    if (!META.arten[s.art].includes(dim)) continue;   // Merkmal gibt es hier nicht
+    if (!F[dim].has(s[dim])) return false;
+  }
+  return true;
+}
+
+/* Summiert eine Ereignisart, wahlweise nach einem Merkmal gruppiert. */
+function summe(art, { ausser = null, dim = null, wo = null, von = VON, bis = BIS } = {}){
+  if (dim){
+    const m = new Map();
+    for (const s of SAETZE){
+      if (s.art !== art || !passt(s, ausser, von, bis)) continue;
+      if (wo && !wo(s)) continue;
+      m.set(s[dim], (m.get(s[dim]) || 0) + s.n);
+    }
+    return m;
+  }
+  let n = 0;
+  for (const s of SAETZE){
+    if (s.art !== art || !passt(s, ausser, von, bis)) continue;
+    if (wo && !wo(s)) continue;
+    n += s.n;
+  }
+  return n;
+}
+
+const seitigGefiltert = () => NUR_AUFRUF.some(d => F[d].size > 0);
+
+/* ============================================================
+   SCHWEBEZETTEL
+   ============================================================ */
+const zettel = $('#zettel');
+let zettelAn = false;
+function zeigeZettel(e, html){
+  zettel.innerHTML = html;
+  zettel.classList.add('an');
+  zettelAn = true;
+  bewegeZettel(e);
+}
+function bewegeZettel(e){
+  if (!zettelAn) return;
+  const r = zettel.getBoundingClientRect();
+  let x = e.clientX + 14, y = e.clientY + 16;
+  if (x + r.width  > innerWidth  - 8) x = e.clientX - r.width - 14;
+  if (y + r.height > innerHeight - 8) y = e.clientY - r.height - 16;
+  zettel.style.left = Math.max(8, x) + 'px';
+  zettel.style.top  = Math.max(8, y) + 'px';
+}
+function versteckeZettel(){
+  zettel.classList.remove('an');
+  zettelAn = false;
+}
+addEventListener('scroll', versteckeZettel, { passive:true });
+
+/* Haengt Zettel-Verhalten an ein Element. */
+function mitZettel(node, inhalt){
+  node.addEventListener('pointerenter', e => zeigeZettel(e, inhalt()));
+  node.addEventListener('pointermove', bewegeZettel);
+  node.addEventListener('pointerleave', versteckeZettel);
+  // Tastatur: derselbe Zettel, ohne Maus.
+  node.addEventListener('focus', () => {
+    const r = node.getBoundingClientRect();
+    zeigeZettel({ clientX: r.left + r.width / 2, clientY: r.top }, inhalt());
+  });
+  node.addEventListener('blur', versteckeZettel);
+}
+
+/* ============================================================
+   FILTER SETZEN
+   ============================================================ */
+function schalte(dim, wert){
+  const menge = F[dim];
+  if (menge.has(wert)) menge.delete(wert); else menge.add(wert);
+  versteckeZettel();
+  zeichne();
+}
+function setzeMenge(dim, werte){
+  F[dim] = new Set(werte);
+  versteckeZettel();
+  zeichne();
+}
+function allesFrei(){
+  for (const k of Object.keys(F)) F[k].clear();
+  zeichne();
+}
+
+/* ============================================================
+   BAUSTEINE
+   ============================================================ */
+function karte(titel, unter, breite = 'halb'){
+  const k = el('section', { class: 'karte ' + breite });
+  k.append(el('h2', { text: titel }));
+  if (unter) k.append(el('span', { class:'unter', text: unter }));
+  const leib = el('div');
+  k.append(leib);
+  return { k, leib };
+}
+
+/* Jede Karte kann ihre Zahlen auch als Tabelle zeigen — fuer
+   Bildschirmleser, zum Nachrechnen und zum Herauskopieren. */
+function tabelle(kopf, zeilen){
+  if (!zeilen.length) return null;
+  const t = el('table');
+  const kz = el('tr');
+  kopf.forEach((h, i) => kz.append(el('th', { text: h, class: i ? 'n' : '', scope:'col' })));
+  t.append(el('thead', {}, kz));
+  const leib = el('tbody');
+  for (const z of zeilen){
+    const tr = el('tr');
+    z.forEach((c, i) => tr.append(el(i ? 'td' : 'th',
+      { text: c, class: i ? 'n' : '', scope: i ? null : 'row' })));
+    leib.append(tr);
+  }
+  t.append(leib);
+  const d = el('details', { class:'tabelle' });
+  d.append(el('summary', { text:'Als Tabelle' }));
+  d.append(el('div', { class:'rollen' }, t));
+  return d;
+}
+
+/* ---------- Liegende Balken ---------- */
+function balkenListe({ leib, dim, werte, ordnung, gesamtHinweis }){
+  const eintraege = [...werte.entries()]
+    .map(([k, v]) => ({ k, v, label: beschriftung(dim, k) }))
+    .sort((a, b) => ordnung ? ordnung(a, b) : b.v - a.v);
+
+  if (!eintraege.length || eintraege.every(e => !e.v)){
+    leib.append(el('p', { class:'leer', text:'Keine Daten in diesem Zeitraum.' }));
+    return [];
+  }
+  const hoechst = Math.max(...eintraege.map(e => e.v));
+  const gesamt  = eintraege.reduce((s, e) => s + e.v, 0);
+  const kasten = el('div', { class: 'balken' + (F[dim].size ? ' gewaehlt' : '') });
+
+  for (const e of eintraege){
+    const aktiv = F[dim].size === 0 || F[dim].has(e.k);
+    const zeile = el('button', {
+      type:'button', class:'zeile', 'aria-pressed': String(aktiv),
+      title: 'Klicken, um zu filtern',
+    });
+    zeile.append(el('span', { class:'name', text: e.label }));
+    const spur = el('span', { class:'spur' });
+    const fuell = el('span', { class:'fuell' });
+    fuell.style.width = (hoechst ? Math.max(2, e.v / hoechst * 100) : 0) + '%';
+    spur.append(fuell);
+    zeile.append(spur);
+    zeile.append(el('span', { class:'zahl', text: nf.format(e.v) }));
+    mitZettel(zeile, () =>
+      `<b>${e.label}</b><br>${nf.format(e.v)} ${gesamtHinweis || ''}` +
+      `<br><span class="klein">${pf(gesamt ? e.v / gesamt * 100 : 0)} % · ` +
+      `${F[dim].has(e.k) ? 'Filter entfernen' : 'zum Filtern klicken'}</span>`);
+    zeile.addEventListener('click', () => schalte(dim, e.k));
+    kasten.append(zeile);
+  }
+  leib.append(kasten);
+  return eintraege;
+}
+
+/* ---------- Stehende Balken (SVG) ----------
+   Ein Diagramm fuer Verlauf, Tageszeit und Wochentag. Ziehen
+   waehlt einen Bereich, ein Klick einen einzelnen Wert. */
+function balkenSaeulen({ leib, dim, punkte, hoehe = 190, reihen, achse }){
+  const box = el('div', { class:'svgbox' });
+  leib.append(box);
+  /* Neu aufgebaut wird nur, wenn sich die Breite wirklich geaendert
+     hat. Der Beobachter meldet sich auch, wenn das eingesetzte SVG
+     die Hoehe des Kastens veraendert — daraus wuerde sonst ein
+     zweiter, ueberfluessiger Durchgang. */
+  let letzteBreite = -1;
+  const zeichnen = () => {
+    const breite = Math.round(Math.max(280, box.clientWidth || 600));
+    if (breite === letzteBreite) return;
+    letzteBreite = breite;
+    box.replaceChildren(saeulenSvg({ breite, hoehe, dim, punkte, reihen, achse }));
+  };
+  zeichnen();
+  new ResizeObserver(zeichnen).observe(box);
+}
+
+/* Sucht eine runde Schrittweite (1, 2, 2,5, 5, 10 … mal Zehnerpotenz),
+   mit der etwa vier Stufen ueber den Hoechstwert reichen. Gezaehlt
+   werden ganze Ereignisse, darum nie feiner als eins. */
+function netteSkala(hoechst, stufen = 4){
+  const roh = Math.max(hoechst, 1) / stufen;
+  const groesse = Math.pow(10, Math.floor(Math.log10(roh)));
+  const rest = roh / groesse;
+  let schritt = (rest <= 1 ? 1 : rest <= 2 ? 2 : rest <= 2.5 ? 2.5 : rest <= 5 ? 5 : 10) * groesse;
+  schritt = Math.max(1, Math.round(schritt));
+  return { ober: Math.ceil(hoechst / schritt) * schritt, schritt };
+}
+
+function saeulenSvg({ breite, hoehe, dim, punkte, reihen, achse }){
+  const L = 42, R = 8, O = 12, U = 26;                 // Raender
+  const bw = breite - L - R, bh = hoehe - O - U;
+  const svg = svgEl('svg', {
+    width:'100%', height: hoehe, viewBox: `0 0 ${breite} ${hoehe}`,
+    role:'img', 'aria-label': achse?.titel || 'Diagramm',
+  });
+  const gipfel = Math.max(1, ...punkte.map(p => reihen.reduce((m, r) => Math.max(m, p[r.feld] || 0), 0)));
+  const { ober, schritt } = netteSkala(gipfel);
+  const y = (v) => O + bh - (v / ober) * bh;
+
+  /* Gitter: zurueckhaltend, mit Beschriftung links. Die Stufen sind
+     runde Zahlen — »0 13 25 38 50« liest niemand gern. */
+  for (let v = 0; v <= ober + 1e-9; v += schritt){
+    /* Farben stehen im style-Attribut, nicht als Praesentations-
+       attribut: nur dort ist var() in allen Browsern verlaesslich,
+       und nur so wechseln die Diagramme beim Umschalten des
+       Farbschemas ohne Neuaufbau mit. */
+    svg.append(svgEl('line', { x1:L, x2:L + bw, y1:y(v), y2:y(v),
+      style:'stroke:var(--gitter);stroke-width:1' }));
+    svg.append(svgEl('text', { x:L - 6, y:y(v) + 3, 'text-anchor':'end',
+      text: nf.format(Math.round(v)) }));
+  }
+  svg.append(svgEl('line', { x1:L, x2:L + bw, y1:O + bh, y2:O + bh,
+    style:'stroke:var(--achse);stroke-width:1' }));
+
+  const spalte = bw / punkte.length;
+  const lueckeAussen = Math.min(6, spalte * 0.22);
+  const innen = spalte - lueckeAussen;
+
+  punkte.forEach((p, i) => {
+    const x0 = L + i * spalte + lueckeAussen / 2;
+    const aktiv = F[dim].size === 0 || F[dim].has(p.wert);
+
+    /* Unsichtbares Band ueber die volle Hoehe: der Zielbereich fuer
+       Maus und Finger ist die ganze Spalte, nicht nur der Balken —
+       an einem Tag mit zwei Aufrufen traefe man den sonst nie. */
+    const band = svgEl('rect', {
+      x: L + i * spalte, y: O, width: spalte, height: bh,
+      style:'fill:transparent', class:'band', tabindex:'0', role:'button',
+      'aria-label': p.lang + ': ' + reihen.map(r =>
+        `${r.name} ${nf.format(p[r.feld] || 0)}`).join(', '),
+      'aria-pressed': String(aktiv),
+    });
+
+    /* Die Balken. Bei zwei Reihen stehen sie nebeneinander, mit
+       zwei Pixeln Luft dazwischen, damit die Flaechen sich nicht
+       beruehren. */
+    const n = reihen.length;
+    const teil = (innen - (n - 1) * 2) / n;
+    reihen.forEach((r, j) => {
+      const v = p[r.feld] || 0;
+      const h = v > 0 ? Math.max(2, O + bh - y(v)) : 0;
+      if (!h) return;
+      svg.append(svgEl('rect', {
+        x: x0 + j * (teil + 2), y: O + bh - h, width: teil, height: h,
+        rx: Math.min(4, teil / 2),
+        style: 'fill:' + (aktiv ? r.farbe : r.farbeAus),
+      }));
+    });
+
+    mitZettel(band, () =>
+      `<b>${p.lang}</b><br>` +
+      reihen.map(r => `${r.name}: ${nf.format(p[r.feld] || 0)}`).join('<br>') +
+      `<br><span class="klein">${F[dim].has(p.wert)
+        ? 'Auswahl aufheben' : 'klicken · ziehen für einen Bereich'}</span>`);
+
+    band.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); schalte(dim, p.wert); }
+    });
+    band.dataset.i = String(i);
+    svg.append(band);
+  });
+
+  /* Beschriftung der Achse: nur so viele Marken, wie Platz haben. */
+  const jede = Math.max(1, Math.ceil(punkte.length / Math.floor(bw / 46)));
+  punkte.forEach((p, i) => {
+    if (i % jede) return;
+    svg.append(svgEl('text', {
+      x: L + i * spalte + spalte / 2, y: hoehe - 8, 'text-anchor':'middle', text: p.kurz,
+    }));
+  });
+
+  ziehenAnhaengen(svg, dim, punkte, L, spalte, O, bh);
+  return svg;
+}
+
+/* Ziehen ueber mehrere Spalten waehlt den Bereich dazwischen. Ein
+   Klick ohne Bewegung schaltet einen einzelnen Wert um. */
+function ziehenAnhaengen(svg, dim, punkte, L, spalte, O, bh){
+  let start = null, marke = null;
+  const indexAus = (e) => {
+    const r = svg.getBoundingClientRect();
+    const x = (e.clientX - r.left) * (svg.viewBox.baseVal.width / r.width);
+    return Math.max(0, Math.min(punkte.length - 1, Math.floor((x - L) / spalte)));
+  };
+  svg.addEventListener('pointerdown', (e) => {
+    if (e.button !== undefined && e.button !== 0) return;
+    start = indexAus(e);
+    svg.setPointerCapture(e.pointerId);
+  });
+  svg.addEventListener('pointermove', (e) => {
+    if (start === null) return;
+    const jetzt = indexAus(e);
+    if (jetzt === start && !marke) return;
+    const a = Math.min(start, jetzt), b = Math.max(start, jetzt);
+    if (!marke){
+      marke = svgEl('rect', { y:O, height:bh,
+        style:'fill:var(--color-accent-text);fill-opacity:.12;pointer-events:none' });
+      svg.append(marke);
+    }
+    marke.setAttribute('x', L + a * spalte);
+    marke.setAttribute('width', (b - a + 1) * spalte);
+  });
+  const ende = (e) => {
+    if (start === null) return;
+    const jetzt = indexAus(e);
+    const a = Math.min(start, jetzt), b = Math.max(start, jetzt);
+    start = null;
+    if (marke){ marke.remove(); marke = null; }
+    if (a === b) schalte(dim, punkte[a].wert);
+    else setzeMenge(dim, punkte.slice(a, b + 1).map(p => p.wert));
+  };
+  svg.addEventListener('pointerup', ende);
+  svg.addEventListener('pointercancel', () => { start = null; if (marke){ marke.remove(); marke = null; } });
+}
+
+function legende(reihen){
+  const l = el('div', { class:'legende' });
+  for (const r of reihen){
+    const s = el('span');
+    const i = el('i');
+    i.style.background = r.farbe;
+    s.append(i, document.createTextNode(r.name));
+    l.append(s);
+  }
+  return l;
+}
+
+/* ============================================================
+   ZEICHNEN
+   ============================================================ */
+function zeichne(){
+  if (!META) return;
+  merkerZeichnen();
+  kachelnZeichnen();
+  rasterZeichnen();
+}
+
+/* ---------- Merker ---------- */
+function merkerZeichnen(){
+  const m = $('#merker');
+  m.replaceChildren();
+  const stuecke = [];
+  const namen = {
+    tag:'Tag', stunde:'Uhrzeit', wochentag:'Wochentag', seite:'Seite',
+    quelle:'Herkunft', geraet:'Gerät', formular:'Formular', thema:'Thema', ziel:'Klick',
+  };
+  for (const [dim, menge] of Object.entries(F)){
+    if (!menge.size) continue;
+    const werte = [...menge];
+    const text = werte.length > 3
+      ? `${werte.length} ausgewählt`
+      : werte.map(w =>
+          dim === 'tag' ? tagKurz(w)
+          : dim === 'stunde' ? String(w).padStart(2,'0') + ' Uhr'
+          : dim === 'wochentag' ? WOCHENTAG[w]
+          : beschriftung(dim, w)).join(', ');
+    stuecke.push({ dim, text: `${namen[dim]}: ${text}` });
+  }
+  if (!stuecke.length) return;
+  for (const s of stuecke){
+    const chip = el('span', { class:'chip' });
+    chip.append(el('b', { text: s.text }));
+    const weg = el('button', { type:'button', class:'weg',
+      'aria-label': s.text + ' aufheben', text:'×' });
+    weg.addEventListener('click', () => { F[s.dim].clear(); zeichne(); });
+    chip.append(weg);
+    m.append(chip);
+  }
+  const alle = el('button', { type:'button', class:'nebenknopf', text:'Alle Filter aufheben' });
+  alle.addEventListener('click', allesFrei);
+  m.append(alle);
+}
+
+/* ---------- Kacheln ---------- */
+function kachel(name, wert, dazu, klasse){
+  const k = el('div', { class:'kachel' });
+  k.append(el('span', { class:'mono', text: name }));
+  k.append(el('span', { class:'wert', text: wert }));
+  k.append(el('span', { class:'dazu ' + (klasse || ''), text: dazu || '' }));
+  return k;
+}
+
+/* »+12 %« gegenueber dem gleich langen Zeitraum davor.
+   Unterhalb einer Handvoll Faelle steht dort die nackte Zahl statt
+   eines Prozentsatzes: aus einer Bewerbung im Vormonat und
+   fuenfzehn in diesem werden sonst »+1.400 %«, und das klingt nach
+   einer Entwicklung, wo in Wahrheit nur eine sehr kleine Zahl im
+   Nenner steht. */
+const KLEINE_BASIS = 5;
+
+function veraenderung(jetzt, vorher){
+  if (vorher >= KLEINE_BASIS){
+    const d = (jetzt - vorher) / vorher * 100;
+    return {
+      text: `${d > 0 ? '+' : ''}${pf(d, 0)} % gegenüber davor (${nf.format(vorher)})`,
+      klasse: Math.abs(d) < 1 ? '' : (d > 0 ? 'hoch' : 'runter'),
+    };
+  }
+  if (!vorher && !jetzt) return { text:'', klasse:'' };
+  return { text: `davor ${nf.format(vorher)}`, klasse:'' };
+}
+
+function kachelnZeichnen(){
+  const kk = $('#kacheln');
+  const vor = { von: VOR_VON, bis: VOR_BIS };
+
+  const aufrufe   = summe('aufruf');
+  const aufrufeV  = summe('aufruf', vor);
+  const anfragen  = summe('senden', { wo: s => s.formular === 'anfrage' });
+  const anfragenV = summe('senden', { ...vor, wo: s => s.formular === 'anfrage' });
+  const bewerb    = summe('senden', { wo: s => s.formular === 'bewerbung' });
+  const bewerbV   = summe('senden', { ...vor, wo: s => s.formular === 'bewerbung' });
+  const begonnen  = summe('start');
+  const gesendet  = anfragen + bewerb;
+
+  const quote  = aufrufe ? (anfragen + bewerb) / aufrufe * 100 : 0;
+  const quoteV = aufrufeV ? (anfragenV + bewerbV) / aufrufeV * 100 : 0;
+
+  const a = veraenderung(aufrufe, aufrufeV);
+  const b = veraenderung(anfragen, anfragenV);
+  const c = veraenderung(bewerb, bewerbV);
+
+  kk.replaceChildren(
+    kachel('Seitenaufrufe', nf.format(aufrufe), a.text, a.klasse),
+    kachel('Kontaktanfragen', nf.format(anfragen), b.text, b.klasse),
+    kachel('Bewerbungen', nf.format(bewerb), c.text, c.klasse),
+    kachel('Anfragen je 100 Aufrufe', aufrufe ? pf(quote) : '—',
+      aufrufeV ? `davor ${pf(quoteV)}` : ''),
+    kachel('Formular abgeschickt', begonnen ? pf(gesendet / begonnen * 100, 0) + ' %' : '—',
+      begonnen ? `${nf.format(gesendet)} von ${nf.format(begonnen)} angefangenen` : 'niemand angefangen'),
+  );
+  /* Der Hinweis steht bewusst unter den Kacheln und nicht als
+     sechste zwischen ihnen: er ist keine Kennzahl, und als Kachel
+     draengt er die uebrigen fuenf in den Umbruch. */
+  const h = $('#hinweis');
+  h.hidden = !seitigGefiltert();
+  h.textContent = seitigGefiltert()
+    ? 'Seite, Herkunft und Gerät sind beim Aufruf bekannt, beim abgeschickten '
+    + 'Formular nicht. Die Zahlen zu Anfragen und Bewerbungen bleiben deshalb ungefiltert.'
+    : '';
+}
+
+/* ---------- Diagrammraster ---------- */
+function rasterZeichnen(){
+  const r = $('#raster');
+  r.replaceChildren();
+
+  const S1 = { farbe:'var(--serie-1)', farbeAus:'var(--serie-1-aus)' };
+  const S2 = { farbe:'var(--serie-2)', farbeAus:'var(--serie-2-aus)' };
+
+  /* --- Verlauf: Aufrufe --- */
+  {
+    const { k, leib } = karte('Seitenaufrufe im Verlauf',
+      'Ein Balken je Tag. Klicken wählt einen Tag, Ziehen einen Zeitraum.', 'ganz');
+    const werte = summe('aufruf', { ausser:'tag', dim:'tag' });
+    const punkte = tageReihe().map(t => ({
+      wert: t, kurz: tagKurz(t), lang: tagLang(t), a: werte.get(t) || 0,
+    }));
+    balkenSaeulen({ leib, dim:'tag', punkte, hoehe: 210,
+      reihen: [{ feld:'a', name:'Aufrufe', ...S1 }],
+      achse: { titel:'Seitenaufrufe je Tag' } });
+    const tab = tabelle(['Tag','Aufrufe'], punkte.map(p => [tagLang(p.wert), nf.format(p.a)]));
+    if (tab) k.append(tab);
+    r.append(k);
+  }
+
+  /* --- Verlauf: Formulare ---
+     Bewusst ein zweites Diagramm und keine zweite Achse im ersten:
+     zwei Groessenordnungen auf einer Flaeche sind keine zwei
+     Reihen, sondern eine optische Taeuschung. */
+  {
+    const { k, leib } = karte('Anfragen und Bewerbungen im Verlauf',
+      'Gezählt wird, was wirklich im Postfach angekommen ist.', 'ganz');
+    const anf = summe('senden', { ausser:'tag', dim:'tag', wo: s => s.formular === 'anfrage' });
+    const bew = summe('senden', { ausser:'tag', dim:'tag', wo: s => s.formular === 'bewerbung' });
+    const punkte = tageReihe().map(t => ({
+      wert: t, kurz: tagKurz(t), lang: tagLang(t),
+      a: anf.get(t) || 0, b: bew.get(t) || 0,
+    }));
+    const reihen = [
+      { feld:'a', name:'Kontaktanfragen', ...S1 },
+      { feld:'b', name:'Bewerbungen', ...S2 },
+    ];
+    leib.append(legende(reihen));
+    balkenSaeulen({ leib, dim:'tag', punkte, hoehe: 170, reihen,
+      achse:{ titel:'Anfragen und Bewerbungen je Tag' } });
+    const tab = tabelle(['Tag','Anfragen','Bewerbungen'],
+      punkte.map(p => [tagLang(p.wert), nf.format(p.a), nf.format(p.b)]));
+    if (tab) k.append(tab);
+    r.append(k);
+  }
+
+  /* --- Seiten --- */
+  {
+    const { k, leib } = karte('Seiten', 'Welche Seite wurde aufgerufen?', 'drittel');
+    const werte = summe('aufruf', { ausser:'seite', dim:'seite' });
+    for (const s of META.seiten) if (!werte.has(s)) werte.set(s, 0);
+    const e = balkenListe({ leib, dim:'seite', werte, gesamtHinweis:'Aufrufe' });
+    const tab = tabelle(['Seite','Aufrufe'], e.map(x => [x.label, nf.format(x.v)]));
+    if (tab) k.append(tab);
+    r.append(k);
+  }
+
+  /* --- Herkunft --- */
+  {
+    const { k, leib } = karte('Herkunft', 'Woher kamen die Besucher?', 'drittel');
+    const werte = summe('aufruf', { ausser:'quelle', dim:'quelle' });
+    const e = balkenListe({ leib, dim:'quelle', werte, gesamtHinweis:'Aufrufe' });
+    const tab = tabelle(['Herkunft','Aufrufe'], e.map(x => [x.label, nf.format(x.v)]));
+    if (tab) k.append(tab);
+    r.append(k);
+  }
+
+  /* --- Geraete --- */
+  {
+    const { k, leib } = karte('Geräte', 'Grob nach Bauart, nicht nach Modell.', 'drittel');
+    const werte = summe('aufruf', { ausser:'geraet', dim:'geraet' });
+    const e = balkenListe({ leib, dim:'geraet', werte, gesamtHinweis:'Aufrufe' });
+    const tab = tabelle(['Gerät','Aufrufe'], e.map(x => [x.label, nf.format(x.v)]));
+    if (tab) k.append(tab);
+    r.append(k);
+  }
+
+  /* --- Tageszeit --- */
+  {
+    const { k, leib } = karte('Tageszeit',
+      'Aufrufe nach Stunde. Ziehen wählt eine Spanne.', 'halb');
+    const werte = summe('aufruf', { ausser:'stunde', dim:'stunde' });
+    const punkte = Array.from({ length:24 }, (_, h) => ({
+      wert: h, kurz: String(h).padStart(2,'0'),
+      lang: `${String(h).padStart(2,'0')}:00 – ${String(h).padStart(2,'0')}:59 Uhr`,
+      a: werte.get(h) || 0,
+    }));
+    balkenSaeulen({ leib, dim:'stunde', punkte, hoehe:170,
+      reihen:[{ feld:'a', name:'Aufrufe', ...S1 }],
+      achse:{ titel:'Aufrufe nach Tageszeit' } });
+    const tab = tabelle(['Stunde','Aufrufe'],
+      punkte.map(p => [p.kurz + ' Uhr', nf.format(p.a)]));
+    if (tab) k.append(tab);
+    r.append(k);
+  }
+
+  /* --- Wochentag --- */
+  {
+    const { k, leib } = karte('Wochentag', 'Aufrufe nach Wochentag.', 'halb');
+    const werte = summe('aufruf', { ausser:'wochentag', dim:'wochentag' });
+    const punkte = WT_KURZ.map((kurz, i) => ({
+      wert: i, kurz, lang: WOCHENTAG[i], a: werte.get(i) || 0,
+    }));
+    balkenSaeulen({ leib, dim:'wochentag', punkte, hoehe:170,
+      reihen:[{ feld:'a', name:'Aufrufe', ...S1 }],
+      achse:{ titel:'Aufrufe nach Wochentag' } });
+    const tab = tabelle(['Wochentag','Aufrufe'],
+      punkte.map(p => [p.lang, nf.format(p.a)]));
+    if (tab) k.append(tab);
+    r.append(k);
+  }
+
+  /* --- Trichter --- */
+  {
+    const { k, leib } = karte('Vom Anfangen zum Abschicken',
+      seitigGefiltert()
+        ? 'Ohne Seiten-, Herkunfts- und Gerätefilter — die sind beim Formular nicht bekannt.'
+        : 'Wie viele, die ein Formular anfassen, schicken es auch ab?', 'halb');
+    const t = el('div', { class:'trichter' });
+    let hat = false;
+    for (const art of ['anfrage','bewerbung']){
+      const an = summe('start',  { wo: s => s.formular === art });
+      const ab = summe('senden', { wo: s => s.formular === art });
+      if (!an && !ab) continue;
+      hat = true;
+      const name = beschriftung('formular', art);
+      const farbe = art === 'anfrage' ? 'var(--serie-1)' : 'var(--serie-2)';
+      const stufe = el('div', { class:'stufe' });
+      stufe.append(el('div', { class:'kopf' }, [
+        el('span', { text: name }),
+        el('span', { class:'quote',
+          text: an ? `${nf.format(ab)} von ${nf.format(an)} · ${pf(ab / an * 100, 0)} %`
+                   : `${nf.format(ab)} abgeschickt` }),
+      ]));
+      for (const [beschr, wert, grund] of [['angefangen', an, an], ['abgeschickt', ab, an || ab]]){
+        const zeile = el('div', { style:'margin-bottom:.35rem' });
+        const spur = el('span', { class:'spur' });
+        const fuell = el('span', { class:'fuell' });
+        fuell.style.width = (grund ? Math.max(2, wert / grund * 100) : 0) + '%';
+        fuell.style.background = beschr === 'angefangen' ? 'var(--serie-1-aus)' : farbe;
+        spur.append(fuell);
+        zeile.append(el('span', { class:'quote',
+          style:'display:block;font-size:var(--step--2)',
+          text: `${beschr}: ${nf.format(wert)}` }), spur);
+        stufe.append(zeile);
+      }
+      t.append(stufe);
+    }
+    leib.append(hat ? t : el('p', { class:'leer',
+      text:'In diesem Zeitraum hat niemand ein Formular angefasst.' }));
+    r.append(k);
+  }
+
+  /* --- Themen --- */
+  {
+    const { k, leib } = karte('Worum ging es?',
+      'Auswahl aus Kontakt- und Bewerbungsformular.', 'halb');
+    const werte = summe('senden', { ausser:'thema', dim:'thema' });
+    const e = balkenListe({ leib, dim:'thema', werte, gesamtHinweis:'Nachrichten' });
+    const tab = tabelle(['Thema','Nachrichten'], e.map(x => [x.label, nf.format(x.v)]));
+    if (tab) k.append(tab);
+    r.append(k);
+  }
+
+  /* --- Klicks --- */
+  {
+    const { k, leib } = karte('Klicks auf Kontaktwege',
+      'Telefonnummer, E-Mail-Adresse, Karte, Instagram.', 'halb');
+    const werte = summe('klick', { ausser:'ziel', dim:'ziel' });
+    const e = balkenListe({ leib, dim:'ziel', werte, gesamtHinweis:'Klicks' });
+    const tab = tabelle(['Ziel','Klicks'], e.map(x => [x.label, nf.format(x.v)]));
+    if (tab) k.append(tab);
+    r.append(k);
+  }
+}
+
+/* Alle Tage des Zeitraums, auch die ohne Daten — sonst ruecken
+   Luecken zusammen und der Verlauf sieht dichter aus, als er war. */
+function tageReihe(){
+  const liste = [];
+  for (let t = VON; t <= BIS; t = tagPlus(t, 1)){
+    liste.push(t);
+    if (liste.length > 400) break;
+  }
+  return liste;
+}
+
+/* ============================================================
+   ZEITRAUM
+   ============================================================ */
+const VORWAHLEN = [
+  { name:'Heute', tage:1 },
+  { name:'7 Tage', tage:7 },
+  { name:'30 Tage', tage:30 },
+  { name:'90 Tage', tage:90 },
+  { name:'365 Tage', tage:365 },
+];
+
+function zeitraumKnoepfe(){
+  const kasten = $('#zeitraeume');
+  kasten.replaceChildren();
+  for (const v of VORWAHLEN){
+    const b = el('button', { type:'button', class:'zeitknopf', text:v.name,
+      'aria-pressed': String(VORWAHL === v.tage) });
+    b.addEventListener('click', () => {
+      VORWAHL = v.tage;
+      BIS = HEUTE || new Date().toISOString().slice(0,10);
+      VON = tagPlus(BIS, -(v.tage - 1));
+      $('#von').value = VON;
+      $('#bis').value = BIS;
+      for (const k of Object.keys(F)) F[k].clear();
+      zeitraumKnoepfe();
+      laden();
+    });
+    kasten.append(b);
+  }
+}
+
+function eigenerZeitraum(){
+  const v = $('#von').value, b = $('#bis').value;
+  if (!v || !b || v > b) return;
+  VON = v; BIS = b; VORWAHL = 0;
+  for (const k of Object.keys(F)) F[k].clear();
+  zeitraumKnoepfe();
+  laden();
+}
+$('#von').addEventListener('change', eigenerZeitraum);
+$('#bis').addEventListener('change', eigenerZeitraum);
+$('#neuLaden').addEventListener('click', laden);
+
+/* ============================================================
+   ANMELDUNG
+   ============================================================ */
+$('#anmeldeForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const feld = $('#passwort'), fehler = $('#anmeldeFehler'), knopf = $('#anmeldeKnopf');
+  const eingabe = feld.value;
+  if (!eingabe){ fehler.textContent = 'Bitte das Passwort eingeben.'; feld.focus(); return; }
+
+  knopf.disabled = true;
+  fehler.textContent = '';
+  PASSWORT = eingabe;
+  const heute = new Date().toISOString().slice(0, 10);
+  try {
+    /* Eine kurze Probeanfrage: sie prueft das Passwort und liefert
+       gleich das Serverdatum mit, nach dem sich alle Zeitraeume
+       richten. Die Uhr im Geraet des Betrachters spielt damit
+       keine Rolle mehr. */
+    const d = await frage(heute, heute);
+    META = d; HEUTE = d.heute;
+    feld.value = '';
+    $('#anmeldung').hidden = true;
+    $('#tafel').hidden = false;
+    BIS = HEUTE; VON = tagPlus(BIS, -(VORWAHL - 1));
+    $('#von').value = VON; $('#bis').value = BIS;
+    $('#von').max = HEUTE; $('#bis').max = HEUTE;
+    zeitraumKnoepfe();
+    laden();
+  } catch (f) {
+    PASSWORT = '';
+    fehler.textContent = f.message;
+    feld.select();
+  } finally {
+    knopf.disabled = false;
+  }
+});
+
+})();
+</script>
+</body>
+</html>

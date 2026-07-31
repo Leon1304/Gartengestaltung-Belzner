@@ -1,4 +1,10 @@
 User-agent: *
 Allow: /
 
+# Die interne Auswertung gehoert nicht in den Index. Dieser Riegel haelt nur
+# brave Besucher fern — verschlossen ist die Seite durch das Passwort, das
+# netlify/functions/statistik.mjs verlangt.
+Disallow: /dashboard.html
+Disallow: /api/
+
 Sitemap: https://gartengestaltung-belzner.de/sitemap.xml

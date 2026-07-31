@@ -43,6 +43,16 @@
   [headers.values]
     Cache-Control = "public, max-age=2592000"
 
+# Die interne Auswertung. noindex als Kopfzeile zusaetzlich zum Meta-Tag und
+# zur robots.txt: das Meta-Tag sieht nur, wer die Seite laedt, und die
+# robots.txt ist eine Bitte. Nicht zwischenspeichern, damit auf einem
+# geteilten Rechner nach dem Zurueckblaettern keine Zahlen mehr stehen.
+[[headers]]
+  for = "/dashboard.html"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow, noarchive"
+    Cache-Control = "no-store"
+
 # Sicherheitsheader fuer alle Auslieferungen. Die CSP ist auf genau das
 # zugeschnitten, was die Seite tut: eigene Dateien, Inline-Skripte und
 # -Styles (statische Seite ohne Nonces), data:-URI fuer den Select-Pfeil,

@@ -49,7 +49,7 @@
   <div class="wrap">
     <p class="mono">Rechtliches</p>
     <h1 class="display">Datenschutz&shy;erklärung</h1>
-    <p class="lede">Diese Website kommt ohne Tracking, ohne Werbenetzwerke und ohne
+    <p class="lede">Diese Website kommt ohne Cookies, ohne Werbenetzwerke und ohne
       Einwilligungsbanner aus. Was trotzdem an Daten anfällt, steht hier.</p>
 
     <div class="todo">
@@ -111,9 +111,66 @@
       EU-US Data Privacy Framework. Mit dem Hoster besteht ein Vertrag zur
       Auftragsverarbeitung nach Art. 28 DSGVO.</p>
 
-    <h2 class="display">3. Keine Cookies, kein Tracking</h2>
-    <p>Diese Website setzt keine Cookies und bindet keine Analyse-, Tracking- oder
-      Werbedienste ein. Ein Einwilligungsbanner ist deshalb nicht erforderlich.</p>
+    <h2 class="display">3. Keine Cookies, keine Wiedererkennung</h2>
+    <p>Diese Website setzt <strong>keine Cookies</strong> und bindet <strong>keine
+      Analyse-, Tracking- oder Werbedienste</strong> Dritter ein — kein Google
+      Analytics, kein Matomo, kein Pixel eines sozialen Netzwerks. Ein
+      Einwilligungsbanner ist deshalb nicht erforderlich.</p>
+
+    <h3>Reichweitenmessung auf eigenem Server</h3>
+    <p>Damit wir wissen, welche Inhalte genutzt werden und ob die Formulare
+      funktionieren, führen wir eine <strong>eigene, anonyme Strichliste</strong>.
+      Sie läuft ausschließlich auf der Infrastruktur, die diese Website ohnehin
+      ausliefert; an Dritte werden dafür keine Daten übermittelt.</p>
+    <p>Gezählt wird ausschließlich:</p>
+    <ul>
+      <li>dass eine der Seiten dieser Website aufgerufen wurde, und welche</li>
+      <li>aus welcher <em>Kategorie</em> der Besuch kam — etwa „Google“, „Instagram“
+        oder „direkt“</li>
+      <li>eine grobe Geräteklasse: Handy, Tablet oder Rechner</li>
+      <li>Datum und volle Stunde des Aufrufs</li>
+      <li>dass ein Formular angefasst und dass eines abgeschickt wurde, samt der
+        im Formular gewählten Rubrik</li>
+      <li>dass die Telefonnummer, die E-Mail-Adresse, die Karte oder der
+        Instagram-Verweis angeklickt wurde</li>
+    </ul>
+    <p>Diese Angaben werden <strong>sofort auf einen Zählerstand addiert</strong>.
+      Gespeichert wird also nur, wie oft etwas vorkam — nicht, wer es war und
+      nicht, welche Schritte zusammengehören.</p>
+    <p><strong>Nicht gespeichert werden</strong> insbesondere: Ihre IP-Adresse, ein
+      Cookie, ein Eintrag im Speicher Ihres Browsers, eine Besucher- oder
+      Sitzungskennung, ein Geräte-Fingerabdruck, Ihre Verweildauer, Ihre
+      Mausbewegungen oder der Inhalt Ihrer Eingaben. Es entsteht
+      <strong>kein Profil</strong>, und Sie werden weder beim nächsten Besuch
+      noch von Seite zu Seite wiedererkannt. Aus demselben Grund kann diese
+      Messung keine „eindeutigen Besucher“ ausweisen: Wer die Seite zweimal
+      öffnet, wird zweimal gezählt.</p>
+    <p>Hat Ihr Browser uns die zuvor besuchte Seite mitgeteilt, wird davon
+      <em>nur der Rechnername</em> ausgewertet, sofort einer der oben genannten
+      Kategorien zugeordnet und dann verworfen. Die vollständige Adresse der
+      vorherigen Seite wird nicht abgelegt.</p>
+    <p>Ihre IP-Adresse wird bei diesen Meldungen kurzzeitig verarbeitet, um zu
+      begrenzen, wie viele Meldungen aus derselben Leitung je Stunde angenommen
+      werden — sonst ließen sich die Zahlen von außen beliebig aufblähen.
+      Dafür wird ausschließlich ein nicht rückrechenbarer Prüfwert gebildet; die
+      Adresse selbst wird nicht gespeichert. Der Prüfwert verliert nach
+      spätestens einer Stunde seine Wirkung und wird anschließend gelöscht.</p>
+    <p>Die Messung läuft über ein kleines JavaScript. Ist JavaScript in Ihrem
+      Browser abgeschaltet oder blockiert eine Erweiterung die Meldung, werden Sie
+      schlicht nicht gezählt; die Website funktioniert davon unabhängig
+      vollständig. Zugriffe erkennbarer Suchmaschinen- und Wartungsprogramme
+      werden verworfen.</p>
+    <p><strong>Rechtsgrundlage</strong> ist Art. 6 Abs. 1 lit. f DSGVO. Unser
+      berechtigtes Interesse liegt darin, die Website an der tatsächlichen Nutzung
+      auszurichten und zu erkennen, ob Kontaktanfragen und Bewerbungen uns
+      erreichen. <strong>§ 25 TDDDG ist nicht einschlägig</strong>, weil dabei
+      weder Informationen in Ihrem Endgerät gespeichert noch aus ihm ausgelesen
+      werden. Die Zählerstände selbst lassen keinen Bezug zu einer Person mehr zu
+      und werden dauerhaft aufbewahrt.</p>
+    <p>Sie können der Verarbeitung nach Art. 21 DSGVO widersprechen — die
+      Anschrift steht unter Abschnitt 1. Wirksam verhindern lässt sich die Zählung
+      auch technisch, indem Sie JavaScript für diese Seite deaktivieren.</p>
+
     <h3>Lokale Speicherung Ihrer Anzeigeeinstellung</h3>
     <p>Wenn Sie oben rechts zwischen hellem und dunklem Farbschema umschalten, wird
       diese Wahl im <em>Local Storage</em> Ihres Browsers unter dem Schlüssel
@@ -261,5 +318,9 @@
 </footer>
 
 <script src="js/recht.js" defer></script>
+
+<!-- Reichweitenmessung ohne Cookies: siehe js/zaehl.js und
+     Abschnitt 3 der Datenschutzerklaerung. -->
+<script src="js/zaehl.js" defer></script>
 </body>
 </html>

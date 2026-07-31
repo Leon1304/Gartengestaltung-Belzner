@@ -35,8 +35,9 @@ function schluessel() {
 const unterschrift = (nutzlast) =>
   crypto.createHmac('sha256', schluessel()).update(nutzlast).digest('base64url');
 
-// Vergleich ohne fruehen Abbruch — die Laufzeit soll nichts verraten.
-function zeitgleich(a, b) {
+/* Vergleich ohne fruehen Abbruch — die Laufzeit soll nichts verraten.
+   Wird auch vom Dashboard fuer das Passwort gebraucht, darum exportiert. */
+export function zeitgleich(a, b) {
   const x = Buffer.from(String(a));
   const y = Buffer.from(String(b));
   return x.length === y.length && crypto.timingSafeEqual(x, y);

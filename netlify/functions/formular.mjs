@@ -13,6 +13,7 @@
    ============================================================ */
 import nodemailer from 'nodemailer';
 import { pruefeMarke, verbrauche } from '../lib/abwehr.mjs';
+import { zaehle, ANLIEGEN, STELLEN } from '../lib/zaehler.mjs';
 
 export const config = { path: '/api/formular' };
 
@@ -258,6 +259,20 @@ export default async (request, context) => {
                       + 'Bitte rufen Sie uns an: 06251 3091'
                       + (process.env.MAIL_DEBUG ? ` [${code}]` : ''));
   }
+
+  /* Fuer die Strichliste des Dashboards, und erst hier: gezaehlt
+     wird, was wirklich im Postfach liegt. Meldete stattdessen die
+     Seite den Versand, stuenden dort auch Anfragen, die unterwegs
+     haengen geblieben sind. Gespeichert wird dabei nur, welches
+     Formular und welches Thema — kein Name, keine Adresse, kein
+     Wort aus der Nachricht.
+
+     Ohne await: der Besucher soll auf seine Bestaetigung nicht
+     warten, weil eine Strichliste hakt. Faellt sie aus, faellt sie
+     eben aus. */
+  const kuerzel = art === 'bewerbung' ? STELLEN[thema] : ANLIEGEN[thema];
+  zaehle('senden', { formular: art, thema: kuerzel })
+    .catch(fehler => console.error('Zaehlung fehlgeschlagen:', fehler.message));
 
   return antwort(200, art === 'bewerbung'
     ? 'Ihre Bewerbung ist angekommen. Wir melden uns in der Regel innerhalb von zwei Wochen.'
