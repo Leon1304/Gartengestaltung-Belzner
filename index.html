@@ -466,9 +466,12 @@ html[data-nav-open],html[data-lb-open]{overflow:hidden}
   .svc-item{grid-template-columns:1fr;gap:var(--space-l)}
   .svc-item:nth-child(even) .svc-media{order:0}
 }
+/* Die Bilder fuellten ihre Spalte bis zum Rand und wurden dadurch sehr hoch.
+   Die Deckelung haelt sie kleiner; zentriert bleibt der Satz ruhig. */
 .svc-media{position:sticky;top:16vh;aspect-ratio:4/5;border-radius:var(--radius-2xl);
+  width:100%;max-width:480px;justify-self:center;
   overflow:hidden;background:var(--color-bg-sunk);box-shadow:var(--shadow-lift)}
-@media (max-width:900px){.svc-media{position:relative;aspect-ratio:4/3}}
+@media (max-width:900px){.svc-media{position:relative;aspect-ratio:4/3;max-width:none}}
 .svc-media img{width:100%;height:118%;object-fit:cover;will-change:transform}
 
 /* Maehstreifen-Reveal: das Bild wird in acht Bahnen freigelegt, abwechselnd
@@ -1221,8 +1224,8 @@ html.is-vt *{transition:none !important}
       </div>
       <div class="svc-media">
         <picture>
-          <source type="image/avif" sizes="(min-width:901px) min(50vw,640px), 100vw" srcset="Bilder/opt/12-640.avif 640w, Bilder/opt/12-1024.avif 1024w">
-          <img data-parallax sizes="(min-width:901px) min(50vw,640px), 100vw"
+          <source type="image/avif" sizes="(min-width:901px) min(50vw,480px), 100vw" srcset="Bilder/opt/12-640.avif 640w, Bilder/opt/12-1024.avif 1024w">
+          <img data-parallax sizes="(min-width:901px) min(50vw,480px), 100vw"
                srcset="Bilder/opt/12-640.jpg 640w, Bilder/opt/12-1024.jpg 1024w"
                src="Bilder/opt/12-1024.jpg"
                width="1125" height="1500" loading="lazy" decoding="async"
@@ -1240,8 +1243,8 @@ html.is-vt *{transition:none !important}
       </div>
       <div class="svc-media">
         <picture>
-          <source type="image/avif" sizes="(min-width:901px) min(50vw,640px), 100vw" srcset="Bilder/opt/2-640.avif 640w, Bilder/opt/2-1024.avif 1024w, Bilder/opt/2-1600.avif 1600w">
-          <img data-parallax sizes="(min-width:901px) min(50vw,640px), 100vw"
+          <source type="image/avif" sizes="(min-width:901px) min(50vw,480px), 100vw" srcset="Bilder/opt/2-640.avif 640w, Bilder/opt/2-1024.avif 1024w, Bilder/opt/2-1600.avif 1600w">
+          <img data-parallax sizes="(min-width:901px) min(50vw,480px), 100vw"
                srcset="Bilder/opt/2-640.jpg 640w, Bilder/opt/2-1024.jpg 1024w, Bilder/opt/2-1600.jpg 1600w"
                src="Bilder/opt/2-1024.jpg"
                width="1800" height="1350" loading="lazy" decoding="async"
@@ -1259,8 +1262,8 @@ html.is-vt *{transition:none !important}
       </div>
       <div class="svc-media">
         <picture>
-          <source type="image/avif" sizes="(min-width:901px) min(50vw,640px), 100vw" srcset="Bilder/opt/3-640.avif 640w, Bilder/opt/3-1024.avif 1024w">
-          <img data-parallax sizes="(min-width:901px) min(50vw,640px), 100vw"
+          <source type="image/avif" sizes="(min-width:901px) min(50vw,480px), 100vw" srcset="Bilder/opt/3-640.avif 640w, Bilder/opt/3-1024.avif 1024w">
+          <img data-parallax sizes="(min-width:901px) min(50vw,480px), 100vw"
                srcset="Bilder/opt/3-640.jpg 640w, Bilder/opt/3-1024.jpg 1024w"
                src="Bilder/opt/3-1024.jpg"
                width="1125" height="1500" loading="lazy" decoding="async"
@@ -1278,8 +1281,8 @@ html.is-vt *{transition:none !important}
       </div>
       <div class="svc-media">
         <picture>
-          <source type="image/avif" sizes="(min-width:901px) min(50vw,640px), 100vw" srcset="Bilder/opt/10-640.avif 640w, Bilder/opt/10-1024.avif 1024w">
-          <img data-parallax sizes="(min-width:901px) min(50vw,640px), 100vw"
+          <source type="image/avif" sizes="(min-width:901px) min(50vw,480px), 100vw" srcset="Bilder/opt/10-640.avif 640w, Bilder/opt/10-1024.avif 1024w">
+          <img data-parallax sizes="(min-width:901px) min(50vw,480px), 100vw"
                srcset="Bilder/opt/10-640.jpg 640w, Bilder/opt/10-1024.jpg 1024w"
                src="Bilder/opt/10-1024.jpg"
                width="1500" height="1125" loading="lazy" decoding="async"
@@ -1297,8 +1300,8 @@ html.is-vt *{transition:none !important}
       </div>
       <div class="svc-media">
         <picture>
-          <source type="image/avif" sizes="(min-width:901px) min(50vw,640px), 100vw" srcset="Bilder/opt/7-640.avif 640w, Bilder/opt/7-1024.avif 1024w">
-          <img data-parallax sizes="(min-width:901px) min(50vw,640px), 100vw"
+          <source type="image/avif" sizes="(min-width:901px) min(50vw,480px), 100vw" srcset="Bilder/opt/7-640.avif 640w, Bilder/opt/7-1024.avif 1024w">
+          <img data-parallax sizes="(min-width:901px) min(50vw,480px), 100vw"
                srcset="Bilder/opt/7-640.jpg 640w, Bilder/opt/7-1024.jpg 1024w"
                src="Bilder/opt/7-1024.jpg"
                width="1125" height="1500" loading="lazy" decoding="async"
