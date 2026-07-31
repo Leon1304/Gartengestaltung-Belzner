@@ -328,9 +328,28 @@ html[data-nav-open],html[data-lb-open]{overflow:hidden}
   font-family:'IBM Plex Mono',monospace;font-size:var(--step--2);letter-spacing:.08em;
   pointer-events:none}
 .project-count svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.8}
-/* Vorher/Nachher-Projekte: das <picture> traegt ein data-stand. Auf der Karte
-   ersetzt die Aufzaehlung dieser Staende die Bildzahl — "Vorher / Nachher"
-   sagt mehr als "3 Bilder". Die Lightbox zeigt den Stand des offenen Bildes. */
+/* Vorher/Nachher-Projekte: das <picture> traegt ein data-stand. Statt des
+   passiven Chips bekommt die Karte echte Schalter — ein Klick auf "Vorher"
+   oder "Nachher" deckt das jeweilige Bild direkt auf der Karte auf.
+   Die Lightbox zeigt weiterhin den Stand des offenen Bildes. */
+.project-stand{position:absolute;left:var(--space-s);bottom:var(--space-s);z-index:1;
+  display:inline-flex;gap:2px;padding:3px;border-radius:var(--radius-full);
+  background:color-mix(in srgb,var(--ink-900) 55%,transparent);
+  backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.project-stand button{border:0;margin:0;cursor:pointer;
+  padding:var(--space-3xs) var(--space-xs);border-radius:var(--radius-full);
+  background:transparent;color:var(--paper-000);
+  font-family:'IBM Plex Mono',monospace;font-size:var(--step--2);letter-spacing:.08em;
+  transition:background-color var(--dur-fast) var(--ease-out)}
+.project-stand button:hover{background:color-mix(in srgb,var(--paper-000) 18%,transparent)}
+/* accent-600 statt --color-accent-text: der Schalter liegt immer auf dunklem
+   Glas, gleiche Begruendung wie beim .lb-stand darunter. */
+.project-stand button[aria-pressed="true"]{background:var(--accent-600)}
+.project-stand button:focus-visible{outline:2px solid var(--paper-000);outline-offset:1px}
+/* Auf Stand-Karten bestimmt .is-stand-on statt der Quellreihenfolge,
+   welches Bild sichtbar ist. */
+.project-img.has-stand picture:not(.is-stand-on) img{display:none}
+.project-img.has-stand picture.is-stand-on img{display:block}
 .lb-stand{display:inline-block;margin-bottom:var(--space-2xs);
   padding:var(--space-3xs) var(--space-xs);border-radius:var(--radius-full);
   /* Fester Wert statt --color-accent-text: die Lightbox ist immer dunkel,
@@ -652,7 +671,7 @@ html.is-vt *{transition:none !important}
         <picture data-stand="Vorher">
           <source type="image/avif" sizes="(min-width:1151px) 420px, (min-width:641px) 46vw, 92vw" srcset="Bilder/opt/26-640.avif 640w, Bilder/opt/26-1024.avif 1024w, Bilder/opt/26-1600.avif 1600w">
           <img sizes="(min-width:1151px) 420px, (min-width:641px) 46vw, 92vw" srcset="Bilder/opt/26-640.jpg 640w, Bilder/opt/26-1024.jpg 1024w, Bilder/opt/26-1600.jpg 1600w" src="Bilder/opt/26-1024.jpg" width="1600" height="1200" loading="lazy" decoding="async" alt="Derselbe Garten vor dem Umbau: offener Boden entlang des Zauns neben dem Gartenhaus"></picture></div>
-        <div class="project-body"><p class="mono">Umgestaltung</p><h3 class="display"><button type="button" class="project-open" data-lb="13">Hausgarten von Grund auf</button></h3><p>Polygonalplatten für Weg und Sitzplatz, Granit-Kleinpflaster als Kante, dahinter Kirschlorbeerhecke, Rasen und ein Wasserbecken. Mit den Pfeilen geht es vom fertigen Garten zurück zum Ausgangszustand.</p></div>
+        <div class="project-body"><p class="mono">Umgestaltung</p><h3 class="display"><button type="button" class="project-open" data-lb="13">Hausgarten von Grund auf</button></h3><p>Polygonalplatten für Weg und Sitzplatz, Granit-Kleinpflaster als Kante, dahinter Kirschlorbeerhecke, Rasen und ein Wasserbecken. Über „Vorher“ und „Nachher“ auf dem Bild wechseln Sie zwischen Ausgangszustand und fertigem Garten.</p></div>
       </article>
 
       <article class="project reveal">
@@ -890,21 +909,47 @@ if (lb && cards.length) {
   });
 
   /* Mehrbild-Karten bekommen eine kleine Anzeige aufs Foto — sonst ahnt
-     niemand, dass die Lightbox noch mehr zu zeigen hat. Bei Vorher/Nachher-
-     Projekten nennt der Chip die Staende statt der Bildzahl; das erklaert,
-     wohin die Pfeile fuehren. */
+     niemand, dass die Lightbox noch mehr zu zeigen hat. Vorher/Nachher-
+     Projekte bekommen stattdessen echte Schalter: ein Klick deckt den
+     jeweiligen Stand direkt auf der Karte auf, ohne die Lightbox. */
   const STAND_FOLGE = ['Vorher', 'Nachher'];
   const standRang = s => { const i = STAND_FOLGE.indexOf(s); return i < 0 ? STAND_FOLGE.length : i; };
   cards.forEach(card => {
-    const pics = [...card.querySelectorAll('.project-img picture')];
+    const imgBox = card.querySelector('.project-img');
+    const pics = [...imgBox.querySelectorAll('picture')];
     if (pics.length < 2) return;
     const stands = [...new Set(pics.map(p => p.dataset.stand).filter(Boolean))]
       .sort((a, b) => standRang(a) - standRang(b));
+
+    if (stands.length > 1) {
+      imgBox.classList.add('has-stand');
+      const wrap = document.createElement('div');
+      wrap.className = 'project-stand';
+      const setStand = stand => {
+        // Tragen mehrere Bilder denselben Stand, zeigt die Karte das erste.
+        const active = pics.find(p => p.dataset.stand === stand);
+        pics.forEach(p => p.classList.toggle('is-stand-on', p === active));
+        wrap.querySelectorAll('button').forEach(b =>
+          b.setAttribute('aria-pressed', String(b.dataset.stand === stand)));
+      };
+      stands.forEach(stand => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.dataset.stand = stand;
+        btn.textContent = stand;
+        btn.addEventListener('click', () => setStand(stand));
+        wrap.appendChild(btn);
+      });
+      imgBox.appendChild(wrap);
+      setStand(pics[0].dataset.stand || stands[0]);
+      return;
+    }
+
     const chip = document.createElement('span');
     chip.className = 'project-count';
     chip.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="7" width="14" height="14" rx="2"/><path d="M8.5 3.5H19a1.5 1.5 0 0 1 1.5 1.5V15.5"/></svg>' +
-      (stands.length ? stands.join(' / ') : pics.length + ' Bilder');
-    card.querySelector('.project-img').appendChild(chip);
+      pics.length + ' Bilder';
+    imgBox.appendChild(chip);
   });
 
   let lbIndex = 0, lbBefore = null;
