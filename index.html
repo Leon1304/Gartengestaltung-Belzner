@@ -340,7 +340,7 @@ main [id]{scroll-margin-top:76px}
 .nav-panel-foot .mail:hover{color:var(--color-accent-text)}
 /* Solange Panel oder Lightbox offen sind, darf die Seite darunter nicht
    mitscrollen. */
-html[data-nav-open],html[data-lb-open]{overflow:hidden}
+html[data-nav-open],html[data-lb-open],html[data-jobpop-open]{overflow:hidden}
 
 /* ============================================================
    4. BUTTONS
@@ -733,6 +733,90 @@ html[data-nav-open],html[data-lb-open]{overflow:hidden}
    Kontrast in beiden Modi geprueft (hell 4,85:1, dunkel 5,63:1). */
 .job h3{font-size:var(--step-2);margin-bottom:var(--space-3xs);color:var(--color-accent-text)}
 .job p{color:var(--color-fg-muted);font-size:var(--step--1);max-width:52ch}
+
+/* --- Stellen-Popup beim Seitenaufruf --- */
+/* Ueber der Leiste (100), unter der Lightbox (120): sonst stuende die Nav
+   unverdunkelt auf dem abgedunkelten Hintergrund. */
+.jobpop{position:fixed;inset:0;z-index:110;display:grid;
+  /* safe center: passt die Karte nicht in den Bildschirm, wuerde zentriertes
+     Ausrichten ihren Kopf oberhalb des Scrollbereichs abschneiden. Die erste
+     Zeile bleibt als Rueckfall fuer aeltere Browser stehen. */
+  place-items:center;place-items:safe center;
+  padding:var(--space-s);overflow-y:auto;overscroll-behavior:contain;
+  background:color-mix(in srgb,var(--ink-900) 62%,transparent);
+  -webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
+  opacity:0;visibility:hidden;
+  transition:opacity var(--dur-base) var(--ease-out),visibility var(--dur-base)}
+.jobpop[data-open="true"]{opacity:1;visibility:visible}
+.jobpop-card{position:relative;width:min(100%,620px);
+  padding:var(--space-l);padding-top:var(--space-m);
+  background:var(--color-bg);color:var(--color-fg);
+  border:1px solid var(--color-line);border-radius:var(--radius-xl);
+  box-shadow:var(--shadow-lift)}
+@media (max-width:560px){.jobpop-card{padding:var(--space-m) var(--space-s);
+  border-radius:var(--radius-lg)}}
+/* Die Karte faehrt kurz auf — ohne Bewegungswunsch bleibt das Einblenden. */
+@media (prefers-reduced-motion:no-preference){
+  .jobpop-card{transform:translateY(16px) scale(.97);
+    transition:transform var(--dur-slow) var(--ease-expo)}
+  .jobpop[data-open="true"] .jobpop-card{transform:none}
+}
+
+/* Marke oben links wie in der Leiste, nur ohne den Wechsel beim Scrollen:
+   die Karte steht immer auf --color-bg, also entscheidet allein das Schema. */
+.jobpop-brand{display:flex;align-items:center;gap:var(--space-2xs);
+  margin-bottom:var(--space-m);padding-right:56px}
+.jobpop-mark{position:relative;display:block;width:52px;height:46px;flex:none}
+.jobpop-mark img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
+.jobpop-mark .is-paper{opacity:0}
+[data-theme="dark"] .jobpop-mark .is-ink{opacity:0}
+[data-theme="dark"] .jobpop-mark .is-paper{opacity:1}
+.jobpop-brandtext{display:flex;flex-direction:column;line-height:1.18;
+  font-family:'IBM Plex Mono',ui-monospace,monospace;text-transform:uppercase}
+.jobpop-brandtop{font-size:var(--step--2);letter-spacing:.14em;opacity:.74}
+.jobpop-brandname{font-size:var(--step--1);font-weight:500;letter-spacing:.22em}
+@media (max-width:400px){.jobpop-brandtop{font-size:.62rem;letter-spacing:.1em}}
+
+.jobpop-close{position:absolute;top:var(--space-s);right:var(--space-s);
+  display:grid;place-items:center;width:44px;height:44px;
+  background:var(--color-bg-alt);color:var(--color-fg);
+  border:1px solid var(--color-line);border-radius:var(--radius-full);cursor:pointer;
+  transition:background-color var(--dur-fast) var(--ease-out),
+             border-color var(--dur-fast) var(--ease-out)}
+.jobpop-close:hover{background:var(--color-bg-sunk);border-color:var(--color-line-strong)}
+.jobpop-close svg{width:19px;height:19px;stroke:currentColor;fill:none;stroke-width:1.8}
+
+.jobpop-eyebrow{color:var(--color-accent-text);margin-bottom:var(--space-3xs)}
+.jobpop h2{font-size:var(--step-3);line-height:1.1}
+.jobpop-lead{margin-top:var(--space-2xs);color:var(--color-fg-muted);font-size:var(--step--1);
+  max-width:46ch}
+
+.jobpop-list{list-style:none;padding:0;display:grid;gap:var(--space-2xs);
+  margin-block:var(--space-m)}
+.jobpop-list li{display:grid;grid-template-columns:auto minmax(0,1fr) auto;
+  align-items:center;gap:var(--space-s);
+  padding:var(--space-xs) var(--space-s);
+  border:1px solid var(--color-line);border-radius:var(--radius-lg);
+  transition:border-color var(--dur-base) var(--ease-out)}
+.jobpop-list li:hover{border-color:var(--color-accent-text)}
+.jobpop-emoji{font-size:1.35rem;line-height:1}
+.jobpop-info{display:grid;gap:2px;min-width:0}
+.jobpop-info .mono{font-size:var(--step--2);color:var(--color-fg-muted)}
+.jobpop-info strong{font-weight:500;font-size:var(--step--1);line-height:1.3}
+/* Knopf schmaler als der Seiten-Standard: drei davon untereinander wuerden
+   die Karte sonst auf dem Telefon ueber die Bildschirmhoehe treiben. */
+.jobpop-apply{min-height:44px;padding-inline:var(--space-m);font-size:var(--step--1);flex:none}
+@media (max-width:560px){
+  .jobpop-list li{grid-template-columns:auto minmax(0,1fr);row-gap:var(--space-xs)}
+  .jobpop-apply{grid-column:1/-1;justify-content:center}
+}
+
+.jobpop-foot{font-size:var(--step--2);color:var(--color-fg-muted);line-height:1.6}
+.jobpop-foot a{color:inherit}
+.jobpop-foot a:hover{color:var(--color-accent-text)}
+.jobpop-link{background:none;border:none;padding:0;cursor:pointer;font:inherit;
+  color:var(--color-accent-text);text-decoration:underline;text-underline-offset:3px}
+.jobpop-link:hover{color:var(--color-accent-hover)}
 
 /* ============================================================
    7. FORMULARE
@@ -1891,6 +1975,73 @@ html.is-vt *{transition:none !important}
     <p class="mono" id="lbKind"></p>
     <h3 class="display" id="lbTitle"></h3>
     <p id="lbText"></p>
+  </div>
+</div>
+
+<!-- Stellenhinweis beim ersten Seitenaufruf. Die Stellen stehen weiter unten
+     in der Karriere-Sektion; hier sind sie nur verkuerzt wiederholt, damit
+     niemand an ihnen vorbeiscrollt. »Bewerben« springt ins Formular und
+     waehlt die Stelle dort schon aus. -->
+<div class="jobpop" id="jobPop" data-open="false" role="dialog" aria-modal="true"
+     aria-labelledby="jobPopTitle" aria-describedby="jobPopText">
+  <div class="jobpop-card">
+    <button type="button" class="jobpop-close" id="jobPopClose" aria-label="Hinweis schließen">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12" stroke-linecap="round"/></svg>
+    </button>
+
+    <div class="jobpop-brand">
+      <span class="jobpop-mark" aria-hidden="true">
+        <img class="is-ink" src="assets/logo-belzner.png" alt=""
+             width="320" height="285" decoding="async">
+        <img class="is-paper" src="assets/logo-belzner-light.png" alt=""
+             width="320" height="285" decoding="async">
+      </span>
+      <span class="jobpop-brandtext" aria-hidden="true">
+        <span class="jobpop-brandtop">Gartengestaltung · Baumschule</span>
+        <span class="jobpop-brandname">Belzner</span>
+      </span>
+    </div>
+
+    <p class="mono jobpop-eyebrow">🌱 Wir suchen</p>
+    <h2 class="display" id="jobPopTitle">Verstärkung für unser Team</h2>
+    <p class="jobpop-lead" id="jobPopText">Drei offene Stellen in Bensheim — draußen,
+      im festen Team und mit eigenen Baustellen statt Akkordarbeit.</p>
+
+    <ul class="jobpop-list">
+      <li>
+        <span class="jobpop-emoji" aria-hidden="true">🎓</span>
+        <span class="jobpop-info">
+          <span class="mono">Ausbildung · ab August</span>
+          <strong>Gärtner (m/w/d) — Garten- und Landschaftsbau</strong>
+        </span>
+        <button type="button" class="btn btn-ghost jobpop-apply"
+                data-stelle="Ausbildung zum Gärtner (m/w/d)">Bewerben</button>
+      </li>
+      <li>
+        <span class="jobpop-emoji" aria-hidden="true">🌳</span>
+        <span class="jobpop-info">
+          <span class="mono">Vollzeit · unbefristet</span>
+          <strong>Garten- und Landschaftsbaugärtner (m/w/d)</strong>
+        </span>
+        <button type="button" class="btn btn-ghost jobpop-apply"
+                data-stelle="Garten- und Landschaftsbaugärtner (m/w/d)">Bewerben</button>
+      </li>
+      <li>
+        <span class="jobpop-emoji" aria-hidden="true">✂️</span>
+        <span class="jobpop-info">
+          <span class="mono">Voll- oder Teilzeit · unbefristet</span>
+          <strong>Gartenpfleger (m/w/d)</strong>
+        </span>
+        <button type="button" class="btn btn-ghost jobpop-apply"
+                data-stelle="Gartenpfleger (m/w/d)">Bewerben</button>
+      </li>
+    </ul>
+
+    <p class="jobpop-foot">
+      Nichts Passendes dabei? <button type="button" class="jobpop-link"
+        data-stelle="Initiativbewerbung">Initiativ bewerben</button> —
+      oder anrufen: <a href="tel:+4962513091">06251 3091</a>
+    </p>
   </div>
 </div>
 
@@ -3322,6 +3473,89 @@ if (footStage && !reduced && typeof ResizeObserver !== 'undefined') {
     if (hasGSAP) ScrollTrigger.refresh();   // Seitenhoehe hat sich geaendert
   }).observe(foot);
 }
+
+/* ============================================================
+   STELLEN-POPUP
+   ============================================================ */
+/* Die offenen Stellen stehen erst im sechsten Abschnitt — wer nur die
+   Leistungen liest, sieht sie nie. Das Popup zeigt sie bei jedem Aufruf
+   der Startseite, auch beim Neuladen: die Stellen sollen niemandem
+   entgehen, nur weil er die Seite schon einmal offen hatte. */
+(function(){
+  const pop = document.getElementById('jobPop');
+  if (!pop) return;
+
+  const closeBtn = document.getElementById('jobPopClose');
+  let popOpen = false, focusBeforePop = null;
+
+  function setPop(open){
+    if (open === popOpen) return;
+    popOpen = open;
+    pop.dataset.open = String(open);
+    root.toggleAttribute('data-jobpop-open', open);
+
+    if (open) {
+      focusBeforePop = document.activeElement;
+      if (lenis) lenis.stop();
+      // Erst nach dem Sichtbarwerden fokussierbar — visibility:hidden
+      // schluckt den Fokus sonst wie beim Mobilmenue.
+      requestAnimationFrame(() => closeBtn.focus());
+    } else {
+      if (lenis) lenis.start();
+      if (focusBeforePop && focusBeforePop.isConnected) focusBeforePop.focus({ preventScroll: true });
+      focusBeforePop = null;
+    }
+  }
+
+  /* Schliessen und weiter zum Formular: die Stelle steht dort schon im
+     Auswahlfeld, der Bewerber faengt direkt bei seinem Namen an. */
+  function zumFormular(stelle){
+    setPop(false);
+    const feld = document.getElementById('b-stelle');
+    if (feld && stelle) {
+      const treffer = [...feld.options].some(o => o.value === stelle || o.text === stelle);
+      if (treffer) { feld.value = stelle; feld.dispatchEvent(new Event('change', { bubbles: true })); }
+    }
+    const ziel = document.getElementById('bewerbung');
+    if (!ziel) return;
+    // Ein Frame Abstand: solange das Popup noch offen ist, steht die Seite
+    // auf overflow:hidden und Lenis ist gestoppt.
+    requestAnimationFrame(() => {
+      if (lenis) lenis.scrollTo(ziel, { offset: -70 });
+      else ziel.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth' });
+      const erstes = document.getElementById('b-vorname');
+      if (erstes) erstes.focus({ preventScroll: true });
+    });
+  }
+
+  closeBtn.addEventListener('click', () => setPop(false));
+  // Klick auf den Hintergrund schliesst — die Karte faengt ihre Klicks selbst ab.
+  pop.addEventListener('click', e => { if (e.target === pop) setPop(false); });
+  pop.querySelectorAll('[data-stelle]').forEach(b => {
+    b.addEventListener('click', () => zumFormular(b.dataset.stelle));
+  });
+
+  // Escape schliesst, Tab bleibt in der Karte.
+  addEventListener('keydown', e => {
+    if (!popOpen) return;
+    if (e.key === 'Escape') { e.preventDefault(); setPop(false); return; }
+    if (e.key !== 'Tab') return;
+    const items = [...pop.querySelectorAll('button,a[href]')];
+    const first = items[0], last = items[items.length - 1];
+    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+  });
+
+  /* Nicht aufgehen, wenn jemand ueber einen Anker kommt (etwa aus dem
+     Impressum zurueck zum Kontakt) — dann ist er auf dem Weg woanders hin. */
+  if (!location.hash) {
+    setTimeout(() => {
+      // In der Zwischenzeit koennte das Menue oder ein Bild offen sein.
+      if (navOpen || root.hasAttribute('data-lb-open')) return;
+      setPop(true);
+    }, 1400);
+  }
+})();
 
 /* ---------- Nach Font-Load neu vermessen ---------- */
 if (hasGSAP && document.fonts) document.fonts.ready.then(() => ScrollTrigger.refresh());
