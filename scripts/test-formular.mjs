@@ -80,7 +80,7 @@ function basis(extra = [], alterMs) {
   const a = aufgabe(alterMs);
   return [
     ['vorname', 'Maria'], ['nachname', 'Kern'], ['email', 'maria.kern@example.de'],
-    ['telefon', '06251 12345'], ['anliegen', 'Wassersysteme & Bewässerung'],
+    ['telefon', '06251 12345'], ['anliegen', 'Bewässerungssysteme'],
     ['nachricht', 'Wir hätten gern eine automatische Bewässerung für rund 300 m² Rasen.'],
     ['datenschutz', 'on'], ['marke', a.marke], ['captcha', a.loesung],
     ...extra,
@@ -225,7 +225,7 @@ console.log('\n--- Zaehlung fuers Dashboard ---');
   if (gesamt['bewerbung_gartenpfleger'] >= 1) console.log('  ok   Stelle als Kuerzel abgelegt');
   else { fehler++; console.log(` FEHL  Stelle fehlt oder heisst anders  → ${zeig}`); }
 
-  // Die Anfragen oben tragen alle »Wassersysteme & Bewässerung«.
+  // Die Anfragen oben tragen alle »Bewässerungssysteme«.
   if (gesamt['anfrage_wasser'] >= 1) console.log('  ok   Anliegen als Kuerzel abgelegt');
   else { fehler++; console.log(` FEHL  Anliegen fehlt oder heisst anders  → ${zeig}`); }
 }
