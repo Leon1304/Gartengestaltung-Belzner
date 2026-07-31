@@ -115,10 +115,23 @@ export default async (request, context) => {
   let von = istTag(anfrage.von) ? anfrage.von : tagesliste(heute, heute)[0];
   if (bis > heute) bis = heute;
   if (von > bis) von = bis;
-  // Zu grosse Zeitraeume abschneiden statt abweisen: das Dashboard
-  // bekommt dann eben weniger, aber es bekommt etwas.
-  const liste = tagesliste(von, bis);
-  if (liste.length > MAX_TAGE) von = liste[liste.length - MAX_TAGE];
+  /* Zu grosse Zeitraeume abschneiden statt abweisen: das Dashboard
+     bekommt dann eben weniger, aber es bekommt etwas.
+
+     Abgeschnitten wird vorne, nicht hinten — gefragt war nach den
+     juengsten Tagen. Der Anfang muss dafuer hier wandern, vor jedem
+     Blick in tagesliste(): die hoert selbst nach MAX_TAGE Eintraegen
+     auf zu zaehlen, ihre Laenge kann MAX_TAGE also nie ueberschreiten.
+     Wer die Grenze an ihrem Ergebnis pruefte, pruefte eine Bedingung,
+     die nie eintritt — und bekam auf die Frage nach zwei Jahren das
+     erste Jahr zurueck statt des letzten. Im Dashboard war das die
+     365-Tage-Ansicht: sie fragt zusammen mit dem Vorzeitraum ueber
+     700 Tage an und zeigte darum lauter leere Balken. */
+  const spanne = Math.round(
+    (new Date(`${bis}T12:00:00Z`) - new Date(`${von}T12:00:00Z`)) / 86400000) + 1;
+  const spaetester = new Date(`${bis}T12:00:00Z`);
+  spaetester.setUTCDate(spaetester.getUTCDate() - (MAX_TAGE - 1));
+  if (spanne > MAX_TAGE) von = spaetester.toISOString().slice(0, 10);
 
   /* Die abgelaufenen Fenster der Ratengrenzen wegraeumen. Losgeschickt
      wird das hier, abgewartet erst unten — so laeuft es neben dem
