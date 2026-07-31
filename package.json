@@ -5,6 +5,7 @@
   "description": "Website Gartengestaltung & Baumschule Belzner, Bensheim",
   "license": "UNLICENSED",
   "dependencies": {
+    "@netlify/blobs": "^8.1.1",
     "nodemailer": "^9.0.3"
   }
 }

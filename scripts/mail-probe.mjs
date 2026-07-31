@@ -20,16 +20,43 @@
      node --env-file=.env scripts/mail-probe.mjs --senden  Testmail schicken
    ============================================================ */
 import nodemailer from 'nodemailer';
+import readline from 'node:readline';
 
-const { SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, MAIL_AN } = process.env;
+const { SMTP_HOST, SMTP_PORT, SMTP_USER, MAIL_AN } = process.env;
 const VON = process.env.MAIL_VON || SMTP_USER;
 const port = Number(SMTP_PORT || 465);
 
-const fehlt = ['SMTP_HOST', 'SMTP_USER', 'SMTP_PASS'].filter(n => !process.env[n]);
+const fehlt = ['SMTP_HOST', 'SMTP_USER'].filter(n => !process.env[n]);
 if (fehlt.length) {
   console.error(`\nEs fehlen: ${fehlt.join(', ')}\n`
               + `Lege eine .env an (siehe Kopf dieser Datei) und rufe auf mit:\n`
               + `  node --env-file=.env scripts/mail-probe.mjs\n`);
+  process.exit(2);
+}
+
+/* Steht das Passwort nicht in der .env, hier danach fragen. Die Eingabe
+   bleibt unsichtbar und landet weder in einer Datei noch in der
+   Shell-Historie — fuer einen einmaligen Test der bessere Weg. */
+async function passwortFragen() {
+  if (!process.stdin.isTTY) {
+    console.error('\nSMTP_PASS fehlt und es haengt kein Terminal zum Nachfragen dran.\n'
+                + 'Trag das Passwort in die .env ein (Zeile SMTP_PASS=).\n');
+    process.exit(2);
+  }
+  const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
+  rl.stumm = false;
+  rl._writeToOutput = s => { if (!rl.stumm) rl.output.write(s); };
+  const wert = await new Promise(fertig => {
+    rl.question('Passwort des Postfachs (bleibt unsichtbar): ', a => { rl.close(); fertig(a); });
+    rl.stumm = true;
+  });
+  process.stdout.write('\n');
+  return wert.trim();
+}
+
+const SMTP_PASS = process.env.SMTP_PASS || await passwortFragen();
+if (!SMTP_PASS) {
+  console.error('\nKein Passwort eingegeben.\n');
   process.exit(2);
 }
 

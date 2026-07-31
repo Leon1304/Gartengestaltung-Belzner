@@ -787,6 +787,15 @@ html[data-nav-open],html[data-lb-open]{overflow:hidden}
    Accessibility-Baum, display:none wuerde ihre Ansage verschlucken. */
 .error{font-size:var(--step--1);color:var(--color-danger);line-height:1.4}
 .error:empty{display:none}
+
+/* Zeichenzaehler unter dem Textfeld. Rechtsbuendig und in Mono: die
+   Zahl steht damit an derselben Stelle, egal wie lang sie wird, und
+   springt beim Tippen nicht hin und her. */
+.zaehler{justify-self:end;font-size:var(--step--2);color:var(--color-fg-muted);
+  font-family:'IBM Plex Mono',ui-monospace,monospace;font-variant-numeric:tabular-nums;
+  transition:color var(--dur-fast) var(--ease-out)}
+.zaehler[data-state="nah"]{color:var(--color-fg)}
+.zaehler[data-state="voll"]{color:var(--color-danger)}
 .error[role="status"]:empty{display:block}
 .field :is(input,select,textarea)[aria-invalid="true"]{border-color:var(--color-danger);
   box-shadow:0 0 0 3px color-mix(in srgb,var(--color-danger) 18%,transparent)}
@@ -1626,7 +1635,10 @@ html.is-vt *{transition:none !important}
           </div>
           <div class="field">
             <label for="b-nachricht">Ihre Nachricht</label>
-            <textarea id="b-nachricht" name="nachricht" placeholder="Kurz zu Ihnen: was Sie bisher gemacht haben und ab wann Sie können."></textarea>
+            <textarea id="b-nachricht" name="nachricht" maxlength="5000"
+                      aria-describedby="zaehler-b-nachricht"
+                      placeholder="Kurz zu Ihnen: was Sie bisher gemacht haben und ab wann Sie können."></textarea>
+            <p class="zaehler" id="zaehler-b-nachricht"></p>
           </div>
         </div>
 
@@ -1637,7 +1649,7 @@ html.is-vt *{transition:none !important}
             <div class="dropzone" id="dropzone" data-drag="false">
               <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4M7 9l5-5 5 5" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 15v3a3 3 0 0 0 3 3h12a3 3 0 0 0 3-3v-3" stroke-linecap="round"/></svg>
               <p><strong>PDF hierher ziehen</strong> oder klicken</p>
-              <p class="hint">bis zu 3 PDF · zusammen höchstens 4 MB</p>
+              <p class="hint">bis zu 3 PDF · zusammen höchstens 3 MB</p>
               <input type="file" id="b-files" name="unterlagen" accept="application/pdf,.pdf" multiple
                      aria-labelledby="lbl-files" aria-describedby="err-b-files">
             </div>
@@ -1747,7 +1759,9 @@ html.is-vt *{transition:none !important}
           </select>
           <span class="error" id="err-anliegen" data-for="anliegen"></span></div>
         <div class="field"><label for="nachricht">Nachricht *</label>
-          <textarea id="nachricht" name="nachricht" required aria-describedby="err-nachricht"></textarea>
+          <textarea id="nachricht" name="nachricht" required maxlength="5000"
+                    aria-describedby="err-nachricht zaehler-nachricht"></textarea>
+          <p class="zaehler" id="zaehler-nachricht"></p>
           <span class="error" id="err-nachricht" data-for="nachricht"></span></div>
        </div>
 
@@ -2880,6 +2894,7 @@ const MSG = {
   anliegen:'Bitte ein Anliegen auswählen.', stelle:'Bitte eine Stelle auswählen.',
   nachricht:'Bitte beschreiben Sie kurz Ihr Anliegen.',
   captcha:'Bitte die Rechenaufgabe lösen.',
+  keineAufgabe:'Die Sicherheitsabfrage lädt gerade nicht. Bitte die Seite neu laden.',
   datenschutz:'Ohne Ihre Einwilligung dürfen wir die Angaben nicht verarbeiten.'
 };
 function setError(form, name, msg, field){
@@ -2898,7 +2913,9 @@ function validateField(form, f){
   let msg = '';
   if (val === '')                                                   msg = MSG[f.name] || 'Pflichtfeld.';
   else if (f.type === 'email' && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(val)) msg = MSG.email;
-  else if ('captcha' in f.dataset && !captchaSolved(form, val))      msg = 'Das Ergebnis stimmt nicht. Bitte noch einmal rechnen.';
+  // Ob die Antwort stimmt, weiss nur der Server — hier zaehlt allein,
+  // dass ueberhaupt eine Aufgabe vorliegt, auf die sie sich beziehen kann.
+  else if ('captcha' in f.dataset && !marken.has(form))              msg = MSG.keineAufgabe;
   setError(form, f.name, msg, f);
   return !msg;
 }
@@ -2907,56 +2924,103 @@ function wire(form){
     f.addEventListener('blur', () => validateField(form, f));
     f.addEventListener('input', () => { if (f.getAttribute('aria-invalid') === 'true') validateField(form, f); });
   });
+  form.querySelectorAll('textarea[maxlength]').forEach(zaehlerAn);
   setupCaptcha(form);
+}
+
+/* ---------- Zeichenzaehler am Textfeld ----------
+   maxlength allein bremst den Tippenden nur wortlos aus. Die Zeile
+   darunter sagt vorher, woran man ist. Sie haengt per aria-describedby
+   am Feld und wird beim Hineinspringen einmal vorgelesen — keine
+   Live-Region, sonst spricht der Screenreader bei jedem Anschlag. */
+function zaehlerAn(feld){
+  const zeile = document.getElementById('zaehler-' + feld.id);
+  if (!zeile) return;
+  const grenze = Number(feld.getAttribute('maxlength'));
+  const zeige = () => {
+    const n = feld.value.length;
+    zeile.textContent = n.toLocaleString('de-DE') + ' / ' + grenze.toLocaleString('de-DE') + ' Zeichen';
+    zeile.dataset.state = n >= grenze ? 'voll' : (n >= grenze * 0.9 ? 'nah' : '');
+  };
+  feld.addEventListener('input', zeige);
+  // reset() loest kein input aus — der Stand muss trotzdem zurueck auf null
+  if (feld.form) feld.form.addEventListener('reset', () => setTimeout(zeige, 0));
+  zeige();
 }
 
 /* ============================================================
    SICHERHEITSABFRAGE (Rechen-Captcha + Honigtopf)
    Bewusst ohne Drittanbieter: kein Datenabfluss, keine Einwilligung
    noetig, funktioniert auch mit Screenreader und Tastatur.
+
+   Die Aufgabe wuerfelte frueher diese Datei und pruefte sie auch selbst.
+   Das half nur gegen Bots, die die Seite oeffnen — wer direkt auf
+   /api/formular postete, umging die Abfrage vollstaendig. Jetzt stellt
+   der Server die Aufgabe (/api/aufgabe) und prueft die Antwort; hierher
+   kommt nur der sichtbare Text und eine unterschriebene Marke, die beim
+   Absenden mitgeht. Die Loesung steht nicht mehr im Quelltext.
    ============================================================ */
-const ZAHLWORT = ['null','eins','zwei','drei','vier','fünf','sechs','sieben','acht','neun',
-                  'zehn','elf','zwölf','dreizehn','vierzehn','fünfzehn','sechzehn','siebzehn','achtzehn'];
-const answers = new WeakMap();   // Formular -> aktuelles Ergebnis
+const AUFGABE  = '/api/aufgabe';
+const marken   = new WeakMap();   // Formular -> Marke des Servers
+const laeuft   = new WeakMap();   // Formular -> laufende Abfrage
 
 function newTask(form){
   const task  = form.querySelector('[data-captcha-task]');
   const input = form.querySelector('[data-captcha]');
-  if (!task || !input) return;
-  const rnd = n => Math.floor(Math.random() * n);
-  const plus = Math.random() < 0.5;
-  // Beim Minus bleibt das Ergebnis immer >= 2: nie negativ und nie null,
-  // denn eine leere Eingabe darf keine gueltige Antwort sein.
-  const a = plus ? 1 + rnd(9) : 3 + rnd(7);
-  const b = plus ? 1 + rnd(9) : 1 + rnd(a - 2);
-  answers.set(form, plus ? a + b : a - b);
-  task.textContent = a + (plus ? ' + ' : ' − ') + b + ' =';
+  if (!task || !input) return Promise.resolve();
+  if (laeuft.has(form)) return laeuft.get(form);
+
+  marken.delete(form);
   input.value = '';
   setError(form, input.name, '', input);
-}
+  task.textContent = '…';
 
-// Ziffer oder ausgeschriebenes Zahlwort werden akzeptiert
-function captchaSolved(form, value){
-  const v = value.trim().toLowerCase().replace(/[.,!?]/g, '');
-  const wort = ZAHLWORT.indexOf(v);
-  const num  = wort > -1 ? wort : (/^\d{1,2}$/.test(v) ? Number(v) : NaN);
-  return num === answers.get(form);
+  const holen = (async () => {
+    try {
+      const r = await fetch(AUFGABE, { headers: { 'Accept': 'application/json' } });
+      const d = await r.json();
+      if (!r.ok || !d.marke) throw new Error('keine Aufgabe');
+      marken.set(form, d.marke);
+      task.textContent = d.aufgabe;
+      /* Erst jetzt zur Live-Region machen: die erste Aufgabe steht schon
+         da, wenn der Fokus das Feld erreicht, und wird ueber
+         aria-describedby vorgelesen. Angesagt werden soll nur, was sich
+         danach noch aendert — nach dem Versand oder auf Knopfdruck. */
+      task.setAttribute('aria-live', 'polite');
+    } catch {
+      task.textContent = '— —';
+      setError(form, input.name, MSG.keineAufgabe, input);
+    }
+  })().finally(() => laeuft.delete(form));
+
+  laeuft.set(form, holen);
+  return holen;
 }
 
 function setupCaptcha(form){
   if (!form.querySelector('[data-captcha]')) return;
-  newTask(form);
-  // Erst ab der zweiten Aufgabe vorlesen — die erste steht schon beim Fokus da
-  form.querySelector('[data-captcha-task]').setAttribute('aria-live', 'polite');
+  const task = form.querySelector('[data-captcha-task]');
+  task.textContent = '…';
+  /* Die Marke gilt nur eine halbe Stunde. Sie erst zu holen, wenn jemand
+     das Formular anfasst, spart nicht nur zwei Anfragen beim Seitenaufruf —
+     sie ist dann auch noch frisch, wenn die Seite lange offen lag. */
+  form.addEventListener('focusin', () => { if (!marken.has(form)) newTask(form); });
   const btn = form.querySelector('[data-captcha-new]');
-  if (btn) btn.addEventListener('click', () => {
-    newTask(form);
+  if (btn) btn.addEventListener('click', async () => {
+    await newTask(form);
     form.querySelector('[data-captcha]').focus();
   });
 }
 
-// Honigtopf ausgefuellt -> Bot. Nicht verraten, einfach nichts tun.
-const isBot = form => [...form.querySelectorAll('[data-hp]')].some(f => f.value.trim() !== '');
+/* Honigtopf: ein Feld, das kein Mensch zu sehen bekommt. Fuellt es
+   ausnahmsweise doch ein Passwortverwalter aus, wird es hier geleert
+   statt den Versand abzubrechen — sonst stuende der Besucher vor einem
+   Formular, das auf nichts mehr reagiert und auch nichts dazu sagt.
+   Gegen Skripte wirkt der Topf ohnehin erst auf dem Server: die posten
+   direkt und fuehren diese Zeilen nie aus. */
+function honigtopfLeeren(form){
+  form.querySelectorAll('[data-hp]').forEach(f => { f.value = ''; });
+}
 
 /* ============================================================
    VERSAND ueber die eigene Netlify-Funktion
@@ -2968,36 +3032,46 @@ const isBot = form => [...form.querySelectorAll('[data-hp]')].some(f => f.value.
    ============================================================ */
 const ENDPUNKT = '/api/formular';
 
-/* Zeitpunkt des Seitenaufrufs. Die Funktion weist alles ab, was in
-   unter drei Sekunden zurueckkommt oder den Wert gar nicht mitbringt —
-   ein Bot, der stumpf auf die Adresse postet, faellt damit raus. */
-const GELADEN = Date.now();
-
 async function sende(form, art, statusEl, knopf){
+  // Hat noch niemand das Formular angefasst, fehlt die Marke — dann erst
+  // holen. Kommt in der Praxis kaum vor, kostet aber nur einen Aufruf.
+  if (!marken.has(form)) await newTask(form);
+
   const daten = new FormData(form);   // enthaelt die PDFs: fileInput.files
   daten.set('art', art);              // wird in render() ueber DataTransfer gepflegt
-  daten.set('geladen', GELADEN);
+  daten.set('marke', marken.get(form) || '');
 
   // Nur sperren, nicht beschriften: im Knopf steckt der Pfeil als SVG,
   // ein Schreiben auf textContent wuerde ihn entfernen.
   knopf.disabled = true;
   statusEl.textContent = 'Wird gesendet …';
 
+  let ergebnis;
   try {
     const ruecklauf = await fetch(ENDPUNKT, { method: 'POST', body: daten });
     // Bei einem Serverfehler kann statt JSON auch eine HTML-Seite kommen.
-    const ergebnis = await ruecklauf.json()
+    ergebnis = await ruecklauf.json()
       .catch(() => ({ ok: false, text: 'Unerwartete Antwort vom Server. Bitte rufen Sie uns an: 06251 3091' }));
-    statusEl.textContent = ergebnis.text;
-    return ergebnis.ok === true;
   } catch {
-    statusEl.textContent = 'Keine Verbindung zum Server. Bitte später erneut '
-                         + 'versuchen oder anrufen: 06251 3091';
-    return false;
-  } finally {
-    knopf.disabled = false;
-    newTask(form);                    // fuer den naechsten Versuch eine frische Aufgabe
+    ergebnis = { ok: false, text: 'Keine Verbindung zum Server. Bitte später erneut '
+                                + 'versuchen oder anrufen: 06251 3091' };
   }
+
+  knopf.disabled = false;
+  /* Erst die frische Aufgabe holen, dann die Meldung setzen: newTask
+     raeumt die Fehlerzeile am Rechenfeld ab, und eine Absage, die genau
+     dort hingehoert, soll das ueberleben. */
+  await newTask(form);
+  statusEl.textContent = ergebnis.text;
+
+  /* Der Server sagt, an welchem Feld es lag — dort steht die Meldung
+     dann auch, nicht nur unten am Knopf. */
+  if (!ergebnis.ok && ergebnis.feld) {
+    const feld = form.querySelector('[name="' + ergebnis.feld + '"]');
+    setError(form, ergebnis.feld, ergebnis.text, feld);
+    if (feld) feld.focus({ preventScroll: true });
+  }
+  return ergebnis.ok === true;
 }
 
 const contactForm = document.getElementById('contactForm');
@@ -3005,7 +3079,7 @@ wire(contactForm);
 contactForm.addEventListener('submit', async e => {
   e.preventDefault();
   const status = document.getElementById('formStatus');
-  if (isBot(contactForm)) return;
+  honigtopfLeeren(contactForm);
   const fields = [...contactForm.querySelectorAll('[required]')];
   const valid = fields.map(f => validateField(contactForm, f)).every(Boolean);
   if (!valid) {
@@ -3029,11 +3103,11 @@ const jobStatus= document.getElementById('jobStatus');
 
 /* Die Grenzen kommen von der Funktion, die den Versand uebernimmt:
    Netlify puffert eine Anfrage bei 6 MB, binaer bleiben nach der
-   Base64-Kodierung gut 4,5 MB. Drei PDF mit zusammen 4 MB decken
+   Base64-Kodierung gut 4,4 MB. Drei PDF mit zusammen 3 MB decken
    Lebenslauf und Zeugnisse ab und liegen sicher darunter.
    Wird hier gelockert, muss netlify/functions/formular.mjs mit. */
-const MAX_FILE  = 4 * 1024 * 1024;    // 4 MB pro Datei
-const MAX_TOTAL = 4 * 1024 * 1024;    // 4 MB gesamt
+const MAX_FILE  = 3 * 1024 * 1024;    // 3 MB pro Datei
+const MAX_TOTAL = 3 * 1024 * 1024;    // 3 MB gesamt
 const MAX_COUNT = 3;
 let picked = [];
 
@@ -3178,7 +3252,7 @@ btnPrev.addEventListener('click', () => {
 
 jobForm.addEventListener('submit', async e => {
   e.preventDefault();
-  if (isBot(jobForm)) return;
+  honigtopfLeeren(jobForm);
   // Enter im Textfeld loest sonst schon aus Schritt 1 den Versand aus
   if (step < LAST) {
     jobStatus.textContent = '';
