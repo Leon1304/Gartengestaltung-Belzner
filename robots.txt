@@ -1,10 +1,20 @@
+# VORUEBERGEHEND — die Seite liegt zur Vorschau unter leonwebdesign.com und
+# noch nicht unter ihrer eigenen Adresse. Bis zum Umzug bleibt sie ganz aus
+# dem Index: sonst steht die Kundenseite spaeter zweimal darin, einmal unter
+# jeder Domain, und keine von beiden gewinnt.
+#
+# Beim Umzug auf gartengestaltung-belzner.de wird daraus wieder:
+#
+#   User-agent: *
+#   Allow: /
+#   Disallow: /dashboard.html
+#   Disallow: /api/
+#
+#   Sitemap: https://gartengestaltung-belzner.de/sitemap.xml
+#
+# Die beiden Disallow-Zeilen halten die interne Auswertung heraus. Sie
+# halten nur brave Besucher fern — verschlossen ist die Seite durch das
+# Passwort, das netlify/functions/statistik.mjs verlangt.
+
 User-agent: *
-Allow: /
-
-# Die interne Auswertung gehoert nicht in den Index. Dieser Riegel haelt nur
-# brave Besucher fern — verschlossen ist die Seite durch das Passwort, das
-# netlify/functions/statistik.mjs verlangt.
-Disallow: /dashboard.html
-Disallow: /api/
-
-Sitemap: https://gartengestaltung-belzner.de/sitemap.xml
+Disallow: /

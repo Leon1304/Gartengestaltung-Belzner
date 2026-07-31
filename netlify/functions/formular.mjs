@@ -244,7 +244,7 @@ export default async (request, context) => {
       text: `${text}\n\n`
           + `Eingegangen: ${eingang}\n`
           + `Einwilligung in die Datenschutzerklärung: erteilt\n\n`
-          + `— gesendet über das Formular auf gartengestaltung-belzner.de`,
+          + `— gesendet über das Formular auf leonwebdesign.com`,
       attachments: anhaenge,
     });
   } catch (fehler) {
