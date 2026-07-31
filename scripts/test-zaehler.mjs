@@ -167,7 +167,22 @@ pruefe('andere Adresse kommt weiterhin durch',
 pruefe('in der naechsten Stunde geht es weiter',
   (await zaehler.imRahmen('203.0.113.9', {}, T + 60 * 60 * 1000)) === true);
 pruefe('eigener Topf zaehlt getrennt',
-  (await zaehler.imRahmen('203.0.113.9', { grenze:3, topf:'anmeldung' }, T)) === true);
+  (await zaehler.imRahmen('203.0.113.9', { grenze:3, topf:'anders' }, T)) === true);
+
+/* Getrenntes Zaehlen fuer die Anmeldung: abfragen erhoeht nichts,
+   erhoehen zaehlt, loeschen setzt zurueck. */
+pruefe('Abfragen erhoeht den Stand nicht',
+  (await zaehler.standAbfragen('fehlversuch', '203.0.113.40', T)) === 0
+  && (await zaehler.standAbfragen('fehlversuch', '203.0.113.40', T)) === 0);
+await zaehler.standErhoehen('fehlversuch', '203.0.113.40', T);
+await zaehler.standErhoehen('fehlversuch', '203.0.113.40', T);
+pruefe('Erhoehen zaehlt hoch',
+  (await zaehler.standAbfragen('fehlversuch', '203.0.113.40', T)) === 2);
+await zaehler.standLoeschen('fehlversuch', '203.0.113.40', T);
+pruefe('Loeschen setzt zurueck',
+  (await zaehler.standAbfragen('fehlversuch', '203.0.113.40', T)) === 0);
+pruefe('naechste Stunde zaehlt eigenstaendig',
+  (await zaehler.standAbfragen('fehlversuch', '203.0.113.40', T + 60 * 60 * 1000)) === 0);
 
 /* ============================================================ */
 console.log('\n--- /api/zaehl ---');
@@ -273,10 +288,35 @@ r = await holen({ passwort:'ein-ausreichend-langes-passwort', von:'2099-01-01', 
 const zukunft = await r.json();
 pruefe('Zukunft wird auf heute begrenzt', zukunft.bis === zukunft.heute, zukunft.bis);
 
-// Durchprobieren laeuft nach zehn Versuchen ins Leere.
+/* Das Dashboard fragt bei jedem Zeitraumwechsel neu an. Gelungene
+   Anmeldungen duerfen deshalb kein Kontingent verbrauchen — sonst
+   sperrt sich der Betrieb nach ein paar Klicks selbst aus. Genau das
+   tat die erste Fassung. */
+let ok = true;
+for (let n = 0; n < 25; n++) {
+  const a = await holen({ passwort:'ein-ausreichend-langes-passwort' }, '203.0.113.33');
+  if (a.status !== 200) { ok = false; break; }
+}
+pruefe('25 richtige Anmeldungen hintereinander gehen durch', ok);
+
+// Durchprobieren laeuft nach zehn Fehlgriffen ins Leere.
 let letzte;
 for (let n = 0; n < 12; n++) letzte = await holen({ passwort:'raten' + n }, '203.0.113.31');
 pruefe('Durchprobieren wird abgeriegelt', letzte.status === 429, String(letzte.status));
+
+// Auch mit dem richtigen Passwort bleibt zu, wer sich verrannt hat.
+letzte = await holen({ passwort:'ein-ausreichend-langes-passwort' }, '203.0.113.31');
+pruefe('gesperrte Adresse bleibt eine Stunde draussen', letzte.status === 429);
+
+/* Ein Fehlgriff darf nicht nachwirken: neun daneben, dann richtig —
+   und danach steht der Zaehler wieder bei null. */
+for (let n = 0; n < 9; n++) await holen({ passwort:'daneben' + n }, '203.0.113.34');
+r = await holen({ passwort:'ein-ausreichend-langes-passwort' }, '203.0.113.34');
+pruefe('nach neun Fehlgriffen kommt das richtige Passwort durch', r.status === 200,
+  String(r.status));
+pruefe('der Zaehler ist danach zurueckgesetzt',
+  (await zaehler.standAbfragen('fehlversuch', '203.0.113.34')) === 0);
+
 r = await holen({ passwort:'ein-ausreichend-langes-passwort' }, '203.0.113.32');
 pruefe('andere Adresse kommt weiterhin durch', r.status === 200);
 

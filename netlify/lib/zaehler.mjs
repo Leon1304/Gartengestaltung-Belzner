@@ -312,18 +312,53 @@ function geheim() {
   return zwischenSchluessel;
 }
 
-export async function imRahmen(adresse, { grenze = PRO_IP, topf = 'grenze' } = {},
-                               jetzt = Date.now()) {
-  if (!adresse) return true;
+/* Der Ablageort einer Zaehlung. Die Adresse steht nie darin, nur ein
+   Pruefwert mit dem Serverschluessel; die Stunde steckt im Namen und
+   laesst das Fenster von selbst ablaufen. */
+function grenzSchluessel(topf, adresse, jetzt) {
   const fenster = Math.floor(jetzt / FENSTER);
   const wer = crypto.createHmac('sha256', geheim())
     .update(String(adresse)).digest('base64url').slice(0, 24);
-  const schl = `${topf}/${fenster}_${wer}`;
+  return `${topf}/${fenster}_${wer}`;
+}
 
+/* Lesen und Erhoehen in einem — fuer den Zaehlpunkt, wo jede Meldung
+   zaehlt und es kein »richtig« oder »falsch« gibt. */
+export async function imRahmen(adresse, { grenze = PRO_IP, topf = 'grenze' } = {},
+                               jetzt = Date.now()) {
+  if (!adresse) return true;
+  const schl = grenzSchluessel(topf, adresse, jetzt);
   const stand = (await lies(schl)) || 0;
   if (stand >= grenze) return false;
   await schreib(schl, stand + 1);
   return true;
+}
+
+/* ------------------------------------------------------------
+   Getrennt zaehlbar — fuer die Anmeldung am Dashboard.
+
+   Dort waere Lesen-und-Erhoehen in einem falsch: das Dashboard
+   fragt bei jedem Zeitraumwechsel neu an, und mit einer gemeinsamen
+   Zaehlung haette sich der Betrieb nach ein paar Klicks aus seiner
+   eigenen Auswertung ausgesperrt. Gezaehlt gehoeren nur die
+   Fehlversuche — und ein richtiges Passwort raeumt sie weg.
+   ------------------------------------------------------------ */
+export async function standAbfragen(topf, adresse, jetzt = Date.now()) {
+  if (!adresse) return 0;
+  return (await lies(grenzSchluessel(topf, adresse, jetzt))) || 0;
+}
+
+export async function standErhoehen(topf, adresse, jetzt = Date.now()) {
+  if (!adresse) return 0;
+  const schl = grenzSchluessel(topf, adresse, jetzt);
+  const stand = ((await lies(schl)) || 0) + 1;
+  await schreib(schl, stand);
+  return stand;
+}
+
+export async function standLoeschen(topf, adresse, jetzt = Date.now()) {
+  if (!adresse) return;
+  await loesch(grenzSchluessel(topf, adresse, jetzt));
 }
 
 /* ============================================================
@@ -397,7 +432,10 @@ export async function lese(vonTag, bisTag, jetzt = Date.now()) {
 export async function raeumeAuf(jetzt = Date.now()) {
   const aktuell = Math.floor(jetzt / FENSTER);
   let weg = 0;
-  for (const topf of ['grenze/', 'anmeldung/']) {
+  /* »anmeldung/« ist der alte Topf aus der Zeit, als jede Anfrage ans
+     Dashboard zaehlte. Er wird nicht mehr geschrieben, aber noch
+     weggeraeumt — sonst blieben die Staende bis in alle Ewigkeit liegen. */
+  for (const topf of ['grenze/', 'fehlversuch/', 'anmeldung/']) {
     const alt = (await schluessel(topf))
       .filter(k => Number(k.slice(topf.length).split('_')[0]) < aktuell);
     for (const k of alt) await loesch(k);

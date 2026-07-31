@@ -23,7 +23,8 @@
 import { zeitgleich } from '../lib/abwehr.mjs';
 import {
   ARTEN, BESCHRIFTUNG, SEITEN,
-  lese, berliner, imRahmen, raeumeAuf, tagesliste,
+  lese, berliner, raeumeAuf, tagesliste,
+  standAbfragen, standErhoehen, standLoeschen,
 } from '../lib/zaehler.mjs';
 
 export const config = { path: '/api/statistik' };
@@ -32,9 +33,15 @@ const KOPF = { 'Cache-Control': 'no-store' };
 const MIN_LAENGE = 10;
 const MAX_TAGE   = 400;
 
-/* Zehn Versuche in der Stunde. Das reicht fuer vertippte Finger und
-   fuehrt beim Durchprobieren nirgendwohin. */
+/* Zehn Fehlversuche in der Stunde. Das reicht fuer vertippte Finger
+   und fuehrt beim Durchprobieren nirgendwohin. Gelungene Anmeldungen
+   zaehlen nicht mit — siehe unten.
+
+   Eigener Topf: der alte hiess »anmeldung« und zaehlte etwas anderes.
+   Mit dem neuen Namen faellt kein alter Stand mehr ins Gewicht, und
+   wer sich damals ausgesperrt hat, kommt sofort wieder hinein. */
 const VERSUCHE = 10;
+const TOPF = 'fehlversuch';
 
 const antwort = (status, rumpf) => Response.json(rumpf, { status, headers: KOPF });
 
@@ -67,23 +74,40 @@ export default async (request, context) => {
     return antwort(400, { text: 'Die Anfrage kam unvollständig an.' });
   }
 
-  /* Erst die Grenze, dann der Vergleich: sonst liesse sich das
-     Passwort in aller Ruhe durchprobieren. */
+  /* Gezaehlt werden nur Fehlversuche, und der Stand wird gelesen,
+     bevor das Passwort ueberhaupt geprueft wird.
+
+     Anfangs zaehlte hier jede Anfrage — das war ein Fehler: das
+     Dashboard fragt bei jedem Zeitraumwechsel neu an, und nach ein
+     paar Klicks stand der Betrieb vor seiner eigenen Auswertung und
+     las »Zu viele Versuche«. Ein richtiges Passwort raeumt den Stand
+     jetzt sogar weg. Gegen Durchprobieren wirkt das unveraendert:
+     wer das Passwort nicht hat, kommt ueber zehn Fehlgriffe in der
+     Stunde nicht hinaus. */
   const adresse = context?.ip
     || request.headers.get('x-nf-client-connection-ip')
     || (request.headers.get('x-forwarded-for') || '').split(',')[0].trim();
+
+  let stand = 0;
   try {
-    if (!(await imRahmen(adresse, { grenze: VERSUCHE, topf: 'anmeldung' }))) {
-      return antwort(429, { text: 'Zu viele Versuche. Bitte in einer Stunde noch einmal.' });
-    }
+    stand = await standAbfragen(TOPF, adresse);
   } catch (fehler) {
     // Faellt die Zaehlung aus, soll das Dashboard trotzdem aufgehen.
     console.error('Anmeldegrenze nicht pruefbar:', fehler.message);
   }
+  if (stand >= VERSUCHE) {
+    return antwort(429, { text: 'Zu viele Fehlversuche. Bitte in einer Stunde noch einmal.' });
+  }
 
   if (!zeitgleich(String(anfrage?.passwort ?? ''), passwort)) {
-    return antwort(401, { text: 'Passwort stimmt nicht.' });
+    const uebrig = Math.max(0, VERSUCHE - 1 - stand);
+    try { await standErhoehen(TOPF, adresse); } catch { /* nicht der Rede wert */ }
+    return antwort(401, { text: 'Passwort stimmt nicht.'
+      + (uebrig <= 3 ? ` Noch ${uebrig} Versuch${uebrig === 1 ? '' : 'e'}.` : '') });
   }
+
+  // Richtig — der Zaehler kann weg, sonst wirkt ein alter Fehlgriff nach.
+  try { await standLoeschen(TOPF, adresse); } catch { /* nicht der Rede wert */ }
 
   /* ---------- Zeitraum ---------- */
   const heute = berliner().tag;
