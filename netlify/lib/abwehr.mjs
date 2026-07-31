@@ -114,7 +114,7 @@ function zahl(eingabe) {
    wandert nur ein mit dem Serverschluessel gebildeter Pruefwert.
    ============================================================ */
 const FENSTER  = 60 * 60 * 1000;
-const PRO_IP   = 5;    // Anfragen je Absender und Stunde
+const PRO_IP   = 3;    // Anfragen je Absender und Stunde
 const GESAMT   = 60;   // Anfragen ueber alle Absender und Stunde
 
 /* Netlify Blobs teilt den Zaehlstand ueber alle Instanzen. Steht die

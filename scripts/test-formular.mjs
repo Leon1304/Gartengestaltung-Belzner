@@ -181,14 +181,14 @@ await pruefe('Kopfzeilen-Einschleusung im Namen',
     .filter(([k, v]) => !(k === 'vorname' && v === 'Tim'))), 200,
   (j, m) => !/^Bcc:/mi.test(m));
 
-/* Zum Schluss, weil die Grenze pro Absenderadresse zaehlt: die sechste
+/* Zum Schluss, weil die Grenze pro Absenderadresse zaehlt: die vierte
    Nachricht aus derselben Leitung geht nicht mehr durch. */
 console.log('\n--- Ratengrenze ---');
 const dieselbe = '203.0.113.7';
-for (let n = 1; n <= 5; n++) {
+for (let n = 1; n <= 3; n++) {
   await pruefe(`Nachricht ${n} von derselben Adresse`, bauen(basis(), dieselbe), 200, (j) => j.ok);
 }
-await pruefe('sechste Nachricht wird abgewiesen', bauen(basis(), dieselbe), 429,
+await pruefe('vierte Nachricht wird abgewiesen', bauen(basis(), dieselbe), 429,
   (j, m) => m === '' && !j.ok);
 await pruefe('andere Adresse kommt weiterhin durch', bauen(basis(), '203.0.113.8'), 200,
   (j) => j.ok);

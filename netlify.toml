@@ -55,10 +55,3 @@
     Referrer-Policy = "strict-origin-when-cross-origin"
     Permissions-Policy = "camera=(), microphone=(), geolocation=(), payment=()"
     Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; frame-src https://www.google.com https://maps.google.com https://consent.google.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'"
-
-# Solange die Seite nicht oeffentlich sein soll, laeuft jede Anfrage — auch die
-# nach Bildern und Schriften — zuerst durch die Passwortabfrage. Zum Freischalten
-# genuegt es, diesen Block zu entfernen; die Datei kann liegen bleiben.
-[[edge_functions]]
-  path = "/*"
-  function = "passwortschutz"
