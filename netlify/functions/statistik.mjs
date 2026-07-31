@@ -120,6 +120,18 @@ export default async (request, context) => {
   const liste = tagesliste(von, bis);
   if (liste.length > MAX_TAGE) von = liste[liste.length - MAX_TAGE];
 
+  /* Die abgelaufenen Fenster der Ratengrenzen wegraeumen. Losgeschickt
+     wird das hier, abgewartet erst unten — so laeuft es neben dem
+     Lesen der Zahlen her und kostet keine zusaetzliche Zeit.
+
+     Abgewartet werden muss es aber: eine Funktion friert ein, sobald
+     sie ihre Antwort abgibt, und was dann noch aussteht, wird nicht
+     mehr fertig. Vorher stand hier ein raeumeAuf().catch(() => {})
+     hinter dem Lesen — das raeumte nie etwas weg. Faellt es aus, ist
+     es trotzdem nicht der Rede wert. */
+  const aufraeumen = raeumeAuf()
+    .catch(fehler => console.error('Aufraeumen fehlgeschlagen:', fehler.message));
+
   let tage;
   try {
     tage = await lese(von, bis);
@@ -127,11 +139,7 @@ export default async (request, context) => {
     console.error('Statistik nicht lesbar:', fehler.message);
     return antwort(502, { text: 'Die Zahlen ließen sich gerade nicht laden.' });
   }
-
-  /* Beim Lesen faellt ohnehin schon Arbeit an — die abgelaufenen
-     Fenster der Ratengrenzen gleich mit wegraeumen. Faellt es aus,
-     ist es nicht der Rede wert. */
-  raeumeAuf().catch(() => {});
+  await aufraeumen;
 
   return antwort(200, {
     ok: true,

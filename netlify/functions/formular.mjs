@@ -267,12 +267,23 @@ export default async (request, context) => {
      Formular und welches Thema — kein Name, keine Adresse, kein
      Wort aus der Nachricht.
 
-     Ohne await: der Besucher soll auf seine Bestaetigung nicht
-     warten, weil eine Strichliste hakt. Faellt sie aus, faellt sie
-     eben aus. */
+     Und mit await, auch wenn es verlockend war, es ohne zu tun: hier
+     stand einmal ein blosses zaehle(...).catch(...), damit der
+     Besucher auf seine Bestaetigung nicht wartet. Das ging nicht
+     gut. Eine Funktion friert ein, sobald sie ihre Antwort abgibt —
+     ein Schreibvorgang, der dann noch aussteht, wird nicht mehr zu
+     Ende gefuehrt. Die Mail ging raus, die Anfrage fehlte in der
+     Auswertung. Ein Blob-Schreibvorgang kostet Millisekunden, der
+     SMTP-Versand davor Sekunden; es faellt nicht auf.
+
+     Scheitert die Zaehlung, bleibt es trotzdem bei der Bestaetigung:
+     die Nachricht liegt im Postfach, und das ist, was zaehlt. */
   const kuerzel = art === 'bewerbung' ? STELLEN[thema] : ANLIEGEN[thema];
-  zaehle('senden', { formular: art, thema: kuerzel })
-    .catch(fehler => console.error('Zaehlung fehlgeschlagen:', fehler.message));
+  try {
+    await zaehle('senden', { formular: art, thema: kuerzel });
+  } catch (fehler) {
+    console.error('Zaehlung fehlgeschlagen:', fehler.message);
+  }
 
   return antwort(200, art === 'bewerbung'
     ? 'Ihre Bewerbung ist angekommen. Wir melden uns in der Regel innerhalb von zwei Wochen.'

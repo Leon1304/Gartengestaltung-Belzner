@@ -320,5 +320,54 @@ pruefe('der Zaehler ist danach zurueckgesetzt',
 r = await holen({ passwort:'ein-ausreichend-langes-passwort' }, '203.0.113.32');
 pruefe('andere Adresse kommt weiterhin durch', r.status === 200);
 
+/* ============================================================
+   KEINE UNBEAUFSICHTIGTEN VERSPRECHEN
+   Eine Funktion friert ein, sobald sie ihre Antwort abgibt. Was
+   dann noch aussteht, wird nicht mehr fertig — in einem
+   Node-Prozess faellt das nicht auf, weil der weiterlaeuft, im
+   Betrieb aber sehr wohl: eine Kontaktanfrage ging so ins Postfach,
+   ohne je in der Auswertung aufzutauchen.
+
+   Darum hier eine Durchsicht statt eines Ablaufs. Gesucht wird nach
+   Anweisungen mit .catch(), die weder abgewartet noch einer
+   Variablen zugewiesen werden — genau die Form, die den Fehler
+   verursacht hat.
+   ============================================================ */
+console.log('\n--- Unbeaufsichtigte Versprechen ---');
+{
+  const fs = await import('node:fs/promises');
+  const pfade = [];
+  for (const ordner of ['../netlify/functions', '../netlify/lib']) {
+    const ort = new URL(ordner + '/', import.meta.url);
+    for (const name of await fs.readdir(ort)) {
+      if (name.endsWith('.mjs')) pfade.push(new URL(name, ort));
+    }
+  }
+
+  const gefunden = [];
+  for (const pfad of pfade) {
+    const roh = await fs.readFile(pfad, 'utf8');
+    // Kommentare raus, sonst schlaegt jede Erwaehnung im Fliesstext an.
+    const code = roh.replace(/\/\*[\s\S]*?\*\//g, '').replace(/\/\/[^\n]*/g, '');
+    for (const anweisung of code.split(';')) {
+      if (!anweisung.includes('.catch(')) continue;
+      const kopf = anweisung.trim();
+      const beaufsichtigt = /\bawait\b/.test(kopf)
+        || /^(return|const|let|var)\b/.test(kopf)
+        || /^[\w.$]+\s*=/.test(kopf);
+      if (!beaufsichtigt) {
+        gefunden.push(`${pfad.pathname.split('/').pop()}: ${kopf.split('\n')[0].slice(0, 70)}`);
+      }
+    }
+  }
+
+  if (!gefunden.length) {
+    console.log(`  ok   ${pfade.length} Dateien durchgesehen, alles abgewartet`);
+  } else {
+    fehler++;
+    console.log(' FEHL  nicht abgewartet:\n         ' + gefunden.join('\n         '));
+  }
+}
+
 console.log(fehler ? `\n${fehler} Test(s) fehlgeschlagen\n` : '\nAlle Tests bestanden\n');
 process.exit(fehler ? 1 : 0);
