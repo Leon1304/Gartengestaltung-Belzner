@@ -448,22 +448,105 @@ html[data-nav-open],html[data-lb-open],html[data-jobpop-open]{overflow:hidden}
 .section-head h2{font-size:var(--step-5);margin-block:var(--space-s) var(--space-s)}
 .section-head p{color:var(--color-fg-muted);max-width:54ch;font-size:var(--step-1)}
 
-/* --- Leistungen: grosse Bilder, sticky, Parallax --- */
-.svc-item{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);
-  gap:var(--space-2xl);align-items:center;padding-block:var(--space-2xl)}
-.svc-item + .svc-item{border-top:1px solid var(--color-line)}
-.svc-item:nth-child(even) .svc-media{order:-1}
-@media (max-width:900px){
-  .svc-item{grid-template-columns:1fr;gap:var(--space-l)}
-  .svc-item:nth-child(even) .svc-media{order:0}
+/* --- Leistungen: drei Bereiche als Reiter, ein Bild links --- */
+/* Statt fuenf langer Bildstrecken untereinander: die Reiter waehlen den
+   Bereich, die Liste den Posten — und das Bild links folgt dem Klick.
+   Ohne JS stehen alle drei Bereiche offen untereinander, jeder Posten
+   aufgeklappt; nur der Bildwechsel entfaellt. */
+.svc-tabs{display:flex;flex-wrap:wrap;gap:var(--space-3xs);
+  margin-bottom:var(--space-2xl);border-bottom:1px solid var(--color-line)}
+.svc-tab{appearance:none;background:none;border:0;cursor:pointer;font:inherit;
+  display:inline-flex;align-items:center;gap:var(--space-2xs);
+  padding:var(--space-s) var(--space-m);margin-bottom:-1px;
+  color:var(--color-fg-muted);font-size:var(--step-0);white-space:nowrap;
+  border-bottom:2px solid transparent;
+  transition:color var(--dur-base) var(--ease-out),border-color var(--dur-base) var(--ease-out)}
+.svc-tab:hover{color:var(--color-fg)}
+.svc-tab[aria-selected="true"]{color:var(--color-accent-text);border-bottom-color:var(--color-accent-text)}
+.svc-tab .emoji{font-size:1.05em;line-height:1}
+/* Schmale Bildschirme: die Sinnbilder weichen, sonst passt der dritte
+   Reiter nicht mehr ins Bild — und ein Reiter, den man nicht sieht, wird
+   auch nicht gedrueckt. */
+@media (max-width:640px){
+  .svc-tabs{flex-wrap:nowrap;justify-content:space-between;
+    overflow-x:auto;scrollbar-width:none}
+  .svc-tabs::-webkit-scrollbar{display:none}
+  .svc-tab{padding:var(--space-s) var(--space-2xs);font-size:var(--step--1)}
+  .svc-tab .emoji{display:none}
 }
-/* Die Bilder fuellten ihre Spalte bis zum Rand und wurden dadurch sehr hoch.
-   Die Deckelung haelt sie kleiner; zentriert bleibt der Satz ruhig. */
+
+.svc-stage{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+  gap:var(--space-2xl);align-items:start}
+@media (max-width:900px){.svc-stage{grid-template-columns:1fr;gap:var(--space-l)}}
+
+/* Das Bild bleibt beim Scrollen stehen und wechselt beim Klick. Alle
+   Aufnahmen liegen uebereinander; sichtbar ist die mit .is-active — so
+   blendet der Wechsel ueber, statt neu zu laden. */
 .svc-media{position:sticky;top:16vh;aspect-ratio:4/5;border-radius:var(--radius-2xl);
-  width:100%;max-width:480px;justify-self:center;
+  width:100%;max-width:520px;justify-self:center;
   overflow:hidden;background:var(--color-bg-sunk);box-shadow:var(--shadow-lift)}
-@media (max-width:900px){.svc-media{position:relative;aspect-ratio:4/3;max-width:none}}
+/* top:auto muss mit: bei position:relative waere der Klebeversatz von oben
+   kein Haltepunkt mehr, sondern eine Verschiebung — das Bild ruckte um
+   16vh nach unten und legte sich ueber den Text darunter. */
+@media (max-width:900px){
+  .svc-media{position:relative;top:auto;aspect-ratio:4/3;max-width:none;order:-1}
+}
+.svc-shot{position:absolute;inset:0;display:block;opacity:0;visibility:hidden;
+  transition:opacity var(--dur-slow) var(--ease-out),visibility var(--dur-slow)}
+.svc-shot.is-active{opacity:1;visibility:visible}
 .svc-media img{width:100%;height:118%;object-fit:cover;will-change:transform}
+
+/* Bereichstafel. Der Startzustand steht schon im HTML — nur ein Bereich
+   sichtbar —, damit beim ersten Bild nichts mehr springt: jede
+   Hoehenaenderung nach dem Aufbau verschoebe saemtliche Scroll-Aufhaenger
+   weiter unten auf der Seite. Ohne JavaScript macht der <noscript>-Block
+   hinter dem Stilblock alle drei Bereiche auf. */
+.svc-head{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;
+  gap:var(--space-s);margin-bottom:var(--space-l)}
+.svc-intro{color:var(--color-fg-muted);font-size:var(--step-0);max-width:46ch}
+/* Auf dem Telefon steht das Bild ueber der Liste — ohne diesen Hinweis
+   waere nicht zu ahnen, dass ein Antippen es austauscht. */
+.svc-hint{display:inline-flex;align-items:center;gap:var(--space-3xs);flex:none;
+  font-family:'IBM Plex Mono',monospace;font-size:var(--step--2);letter-spacing:.08em;
+  text-transform:uppercase;color:var(--color-fg-muted)}
+.svc-hint svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.6}
+
+/* Jeder Posten steht offen da. Der Klick tut genau eine Sache: er stellt
+   das Bild links um. Darum keine Klappe, kein Winkel, kein Zustand ausser
+   »dieser wird gerade gezeigt«. */
+.svc-list{list-style:none;padding:0;margin:0;border-top:1px solid var(--color-line)}
+.svc-entry{position:relative;display:grid;grid-template-columns:auto minmax(0,1fr);
+  gap:var(--space-2xs) var(--space-s);align-items:baseline;
+  border-bottom:1px solid var(--color-line);
+  border-left:2px solid transparent;
+  padding:var(--space-m) var(--space-s) var(--space-m) var(--space-m);
+  transition:border-color var(--dur-base) var(--ease-out),
+             background-color var(--dur-base) var(--ease-out)}
+.svc-entry:hover{background:var(--color-bg-alt)}
+.svc-entry.is-current{border-left-color:var(--color-accent-text)}
+.svc-num{grid-row:1;font-family:'IBM Plex Mono',monospace;font-size:var(--step--1);
+  color:var(--color-fg-muted);letter-spacing:.14em;
+  transition:color var(--dur-base) var(--ease-out)}
+.svc-entry.is-current .svc-num{color:var(--color-accent-text)}
+.svc-name{grid-column:2;margin:0;font-family:'Fraunces',Georgia,serif;
+  font-variation-settings:'SOFT' 40,'WONK' 1,'opsz' 100;font-weight:500;
+  letter-spacing:-.025em;font-size:var(--step-3);line-height:1.15}
+.svc-lead{grid-column:2;color:var(--color-fg-muted);font-size:var(--step-0);max-width:46ch}
+.svc-tags{grid-column:2;margin-top:var(--space-2xs)}
+
+/* Der Knopf traegt nur den Titel als Namen, spannt seine Klickflaeche aber
+   ueber die ganze Zeile — dasselbe Muster wie bei den Projektkarten. */
+.svc-trigger{appearance:none;background:none;border:0;padding:0;margin:0;
+  font:inherit;color:inherit;text-align:left;cursor:pointer;
+  transition:color var(--dur-base) var(--ease-out)}
+.svc-trigger::after{content:'';position:absolute;inset:0}
+.svc-entry.is-current .svc-trigger{color:var(--color-accent-text)}
+.svc-trigger:focus-visible{outline:none}
+.svc-entry:has(.svc-trigger:focus-visible){outline:3px solid var(--color-accent-text);
+  outline-offset:2px}
+@media (prefers-reduced-motion:reduce){
+  .svc-entry,.svc-num,.svc-trigger{transition:none}
+}
 
 /* Maehstreifen-Reveal: das Bild wird in acht Bahnen freigelegt, abwechselnd
    nach unten und oben — wie frisch gemaeht. Das Overlay kommt per JS nur in
@@ -499,9 +582,7 @@ html[data-nav-open],html[data-lb-open],html[data-jobpop-open]{overflow:hidden}
 .svc-media.is-pending .hint{font-size:var(--step--1);color:var(--color-fg-muted);max-width:26ch}
 
 .svc-num{font-family:'IBM Plex Mono',monospace;font-size:var(--step--1);
-  color:var(--color-accent-text);letter-spacing:.14em;display:block;margin-bottom:var(--space-s)}
-.svc-body h3{font-size:var(--step-4);margin-bottom:var(--space-m)}
-.svc-body p{color:var(--color-fg-muted);max-width:46ch;margin-bottom:var(--space-m);font-size:var(--step-0)}
+  color:var(--color-accent-text);letter-spacing:.14em}
 .svc-tags{display:flex;flex-wrap:wrap;gap:var(--space-2xs);list-style:none;padding:0}
 .svc-tags li{font-family:'IBM Plex Mono',monospace;font-size:var(--step--2);letter-spacing:.06em;
   color:var(--color-fg-muted);padding:var(--space-3xs) var(--space-xs);
@@ -710,6 +791,93 @@ html[data-nav-open],html[data-lb-open],html[data-jobpop-open]{overflow:hidden}
 .about p{color:var(--color-fg-muted);margin-bottom:var(--space-s);max-width:50ch}
 .about-media{position:relative;aspect-ratio:1;border-radius:var(--radius-2xl);overflow:hidden;box-shadow:var(--shadow-lift)}
 .about-media img{width:100%;height:100%;object-fit:cover}
+
+/* --- Betrieb: Bilderbahn zum Wischen --- */
+/* Eine Bahn mit Einrastpunkten: am Finger gewischt, am Knopf geblaettert.
+   Der angeschnittene Nachbar rechts sagt ohne Worte, dass mehr kommt. */
+.gal{margin-top:var(--space-2xl)}
+.gal-viewport{overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;
+  scroll-behavior:smooth;scrollbar-width:none;-webkit-overflow-scrolling:touch;
+  border-radius:var(--radius-2xl)}
+.gal-viewport::-webkit-scrollbar{display:none}
+@media (prefers-reduced-motion:reduce){.gal-viewport{scroll-behavior:auto}}
+.gal-track{display:flex;gap:var(--space-m);list-style:none;padding:0;margin:0}
+.gal-slide{flex:0 0 min(86%,760px);scroll-snap-align:start}
+@media (max-width:640px){.gal-slide{flex-basis:88%}}
+.gal-slide figure{margin:0}
+.gal-shot{position:relative;aspect-ratio:16/10;border-radius:var(--radius-2xl);
+  overflow:hidden;background:var(--color-bg-sunk);box-shadow:var(--shadow-lift)}
+.gal-shot img{width:100%;height:100%;object-fit:cover}
+.gal-slide figcaption{margin-top:var(--space-s);color:var(--color-fg-muted);
+  font-size:var(--step--1);max-width:56ch}
+.gal-slide figcaption strong{display:block;color:var(--color-fg);
+  font-family:'Fraunces',Georgia,serif;font-variation-settings:'SOFT' 40,'WONK' 1,'opsz' 100;
+  font-weight:500;letter-spacing:-.02em;font-size:var(--step-1);margin-bottom:var(--space-3xs)}
+
+.gal-bar{display:flex;align-items:center;gap:var(--space-m);margin-top:var(--space-l)}
+.gal-dots{display:flex;gap:var(--space-2xs);flex:1;flex-wrap:wrap}
+.gal-dot{appearance:none;border:0;padding:0;cursor:pointer;
+  width:28px;height:4px;border-radius:2px;background:var(--color-line-strong);
+  transition:background-color var(--dur-base) var(--ease-out),width var(--dur-base) var(--ease-out)}
+.gal-dot[aria-current="true"]{background:var(--color-accent-surface);width:44px}
+.gal-nav{display:flex;gap:var(--space-2xs)}
+.gal-btn{display:grid;place-items:center;width:46px;height:46px;flex:none;
+  background:none;border:1px solid var(--color-line-strong);border-radius:var(--radius-full);
+  color:var(--color-fg);cursor:pointer;
+  transition:border-color var(--dur-base) var(--ease-out),background-color var(--dur-base) var(--ease-out),
+             opacity var(--dur-base) var(--ease-out)}
+.gal-btn:hover:not(:disabled){border-color:var(--color-accent-text);color:var(--color-accent-text)}
+.gal-btn:disabled{opacity:.35;cursor:default}
+.gal-btn svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.9;
+  stroke-linecap:round;stroke-linejoin:round}
+
+/* --- Betrieb: Zeitstrahl, laeuft beim Scrollen nach links --- */
+/* Die Bahn zieht nach links, waehrend der Abschnitt ganz normal durchs
+   Bild wandert. Bewusst ohne Festhalten am oberen Rand: das Band ist nur
+   gut zweihundert Pixel hoch: haelt man es fest, steht darunter einen
+   halben Bildschirm lang nichts, und die Seite waechst um die volle
+   Laufweite der Bahn. So kostet der Zeitstrahl keinen einzigen Pixel
+   zusaetzliche Scrollstrecke. */
+.timeline{margin-top:var(--space-3xl)}
+.timeline-head{margin-bottom:var(--space-xl)}
+.tl-runway{position:relative}
+.tl-stage{overflow:hidden}
+/* max-content statt der geerbten Fensterbreite: als Flex-Container waere
+   die Bahn nur so breit wie ihr Ausschnitt, ihr Inhalt liefe darueber
+   hinaus. Achse und gefaerbter Fortschritt spannen aber ueber die Bahn —
+   sie endeten sonst mitten im Zeitstrahl nach einer Bildschirmbreite. */
+.tl-rail{position:relative;display:flex;width:max-content;gap:var(--space-xl);
+  padding-left:max(var(--space-l),calc((100vw - 1320px)/2));
+  padding-right:var(--space-2xl);will-change:transform}
+/* Ohne JS und auf dem Telefon wischt man die Bahn selbst. */
+.tl-viewport{overflow-x:auto;scrollbar-width:none;scroll-snap-type:x proximity}
+.tl-viewport::-webkit-scrollbar{display:none}
+html.js .tl-runway.is-driven .tl-viewport{overflow:visible;scroll-snap-type:none}
+/* Die Achse liegt hinter den Stationen und faedelt sie auf. */
+.tl-rail::before{content:'';position:absolute;left:0;right:0;top:11px;height:1px;
+  background:var(--color-line)}
+.tl-fill{position:absolute;left:0;top:11px;height:1px;width:100%;
+  background:var(--color-accent-surface);transform:scaleX(0);transform-origin:left;
+  will-change:transform}
+.tl-stop{position:relative;flex:0 0 min(74vw,280px);scroll-snap-align:center;
+  padding-top:calc(11px + var(--space-l))}
+.tl-stop::before{content:'';position:absolute;left:0;top:5px;width:13px;height:13px;
+  border-radius:50%;background:var(--color-bg);
+  border:2px solid var(--color-line-strong);z-index:1;
+  transition:border-color var(--dur-base) var(--ease-out),background-color var(--dur-base) var(--ease-out)}
+.tl-stop.is-on::before{border-color:var(--color-accent-text);
+  background:var(--color-accent-surface)}
+.tl-year{display:block;font-family:'Fraunces',Georgia,serif;
+  font-variation-settings:'SOFT' 40,'WONK' 1,'opsz' 100;font-weight:500;
+  letter-spacing:-.025em;font-size:var(--step-4);line-height:1;
+  color:var(--color-fg-muted);margin-bottom:var(--space-2xs);
+  transition:color var(--dur-base) var(--ease-out)}
+.tl-stop.is-on .tl-year{color:var(--color-accent-text)}
+.tl-stop h3{font-size:var(--step-1);margin-bottom:var(--space-2xs)}
+.tl-stop p{color:var(--color-fg-muted);font-size:var(--step--1)}
+@media (prefers-reduced-motion:reduce){
+  .tl-stop::before,.tl-year{transition:none}
+}
 
 /* --- Karriere --- */
 .jobs{display:grid;gap:var(--space-s);margin-bottom:var(--space-2xl)}
@@ -1164,6 +1332,16 @@ html.js .project-img img{width:112%;max-width:none;margin-left:-6%}
    aus Abschnitt 2 um — das liest sich als doppelter Wechsel. */
 html.is-vt *{transition:none !important}
 </style>
+
+<!-- Die Leistungen kommen auf einen Bereich beschraenkt aus dem Server —
+     das erspart der Seite jeden Hoehensprung nach dem ersten Bild. Wer
+     ohne JavaScript liest, bekommt alle drei Bereiche untereinander, denn
+     die Reiter bedient niemand fuer ihn. -->
+<noscript><style>
+  .svc-panel[hidden]{display:block}
+  .svc-panel + .svc-panel{margin-top:var(--space-2xl)}
+  .svc-hint{display:none}
+</style></noscript>
 </head>
 <body>
 
@@ -1259,7 +1437,9 @@ html.is-vt *{transition:none !important}
    </div>
 
    <div class="hero-inner">
-     <p class="mono hero-eyebrow">Garten- &amp; Landschaftsbau · Bensheim</p>
+     <!-- Das Jahr fuer den Garten- und Landschaftsbau fehlt noch: sobald es
+          feststeht, hier »Garten- &amp; Landschaftsbau seit JAHR« daraus machen. -->
+     <p class="mono hero-eyebrow">Baumschule seit 1906 · Garten- &amp; Landschaftsbau · Bensheim</p>
      <h1 class="display hero-title">
        <span class="line"><span>Ihr Garten.</span></span>
        <span class="line"><span>Unsere <em>Handschrift</em>.</span></span>
@@ -1285,108 +1465,242 @@ html.is-vt *{transition:none !important}
 </section>
 
 <!-- ========== LEISTUNGEN ========== -->
+<!-- Drei Bereiche als Reiter: sichtbar ist immer nur der gewaehlte. Innerhalb
+     eines Bereichs klappt ein Posten auf und schaltet zugleich das Bild links
+     um — Bild und Text bleiben so ein Paar, ohne dass die Seite in die Laenge
+     waechst. Die Zuordnung laeuft ueber data-shot: der Knopf nennt den Namen,
+     das <picture> in .svc-media traegt denselben. -->
 <section class="section" id="leistungen">
   <div class="wrap">
     <header class="section-head reveal">
       <p class="mono">01 — Leistungen</p>
       <h2 class="display">Was wir für Ihren Außenbereich tun</h2>
-      <p>Fünf Bereiche, die ineinandergreifen. Meist beginnt ein Projekt mit einer Ortsbegehung — daraus entsteht der Plan, dann die Umsetzung.</p>
+      <p>Drei Bereiche unter einem Dach: Wir gestalten neu, pflegen im Bestand und ziehen die Pflanzen dafür in der eigenen Baumschule.</p>
     </header>
 
-    <article class="svc-item" id="leistung-fertigrasen">
-      <div class="svc-body reveal">
-        <span class="svc-num">Pos. 01</span>
-        <h3 class="display">Fertigrasen <span aria-hidden="true">🌱</span></h3>
-        <p>Sie möchten Ihren Garten möglichst schnell genießen? Wir liefern und verlegen den „grünen Teppich" in höchster Qualität — auf Wunsch mit eingearbeitetem Netz, das den Rasen vor Maulwurf und Wühlmaus schützt.</p>
-        <ul class="svc-tags"><li>Lieferung</li><li>Verlegung</li><li>Wühlmausschutz</li></ul>
-      </div>
-      <div class="svc-media">
-        <picture>
-          <source type="image/avif" sizes="(min-width:901px) min(50vw,480px), 100vw" srcset="Bilder/opt/12-640.avif 640w, Bilder/opt/12-1024.avif 1024w">
-          <img data-parallax sizes="(min-width:901px) min(50vw,480px), 100vw"
+    <div class="svc-tabs reveal" role="tablist" aria-label="Leistungsbereiche">
+      <button type="button" class="svc-tab" role="tab" id="svctab-gestaltung"
+              aria-controls="svcpanel-gestaltung" aria-selected="true">
+        <span class="emoji" aria-hidden="true">🌿</span>Gartengestaltung
+      </button>
+      <button type="button" class="svc-tab" role="tab" id="svctab-pflege"
+              aria-controls="svcpanel-pflege" aria-selected="false">
+        <span class="emoji" aria-hidden="true">✂️</span>Gartenpflege
+      </button>
+      <button type="button" class="svc-tab" role="tab" id="svctab-baumschule"
+              aria-controls="svcpanel-baumschule" aria-selected="false">
+        <span class="emoji" aria-hidden="true">🌳</span>Baumschule
+      </button>
+    </div>
+
+    <div class="svc-stage">
+      <!-- Alle Aufnahmen liegen uebereinander, sichtbar ist die mit .is-active.
+           Ein neues Bild braucht nur denselben data-shot wie sein Knopf. -->
+      <div class="svc-media" id="svcMedia">
+        <picture class="svc-shot is-active" data-shot="steinarbeiten">
+          <source type="image/avif" sizes="(min-width:901px) min(50vw,520px), 100vw" srcset="Bilder/opt/2-640.avif 640w, Bilder/opt/2-1024.avif 1024w">
+          <img data-parallax sizes="(min-width:901px) min(50vw,520px), 100vw"
+               srcset="Bilder/opt/2-640.jpg 640w, Bilder/opt/2-1024.jpg 1024w"
+               src="Bilder/opt/2-1024.jpg"
+               width="1800" height="1350" decoding="async"
+               alt="Terrassierter Hanggarten mit geschwungenen Trockenmauern aus Naturstein, Blockstufentreppe und Sitzplatz">
+        </picture>
+        <picture class="svc-shot" data-shot="bewaesserung">
+          <source type="image/avif" sizes="(min-width:901px) min(50vw,520px), 100vw" srcset="Bilder/opt/25-640.avif 640w, Bilder/opt/25-1024.avif 1024w">
+          <img data-parallax sizes="(min-width:901px) min(50vw,520px), 100vw"
+               srcset="Bilder/opt/25-640.jpg 640w, Bilder/opt/25-1024.jpg 1024w"
+               src="Bilder/opt/25-1024.jpg"
+               width="1600" height="1200" loading="lazy" decoding="async"
+               alt="Rasenfläche mit Wasserbecken, ringsum Mulchbeete und ein Plattenweg zur überdachten Terrasse">
+        </picture>
+        <picture class="svc-shot" data-shot="fertigrasen">
+          <source type="image/avif" sizes="(min-width:901px) min(50vw,520px), 100vw" srcset="Bilder/opt/12-640.avif 640w, Bilder/opt/12-1024.avif 1024w">
+          <img data-parallax sizes="(min-width:901px) min(50vw,520px), 100vw"
                srcset="Bilder/opt/12-640.jpg 640w, Bilder/opt/12-1024.jpg 1024w"
                src="Bilder/opt/12-1024.jpg"
                width="1125" height="1500" loading="lazy" decoding="async"
                alt="Frisch verlegter Fertigrasen zwischen Natursteinpflaster und Mulchbeet mit Gräsern">
         </picture>
-      </div>
-    </article>
-
-    <article class="svc-item" id="leistung-steinarbeiten">
-      <div class="svc-body reveal">
-        <span class="svc-num">Pos. 02</span>
-        <h3 class="display">Steinarbeiten &amp; Zäune <span aria-hidden="true">🧱</span></h3>
-        <p>Steinarbeiten aus Naturstein oder Beton — Trockenmauern, Gabionen, Terrassen, Treppen und Teichanlagen. Dazu Zäune aus Holz oder Gitterstabmatten, gerne auch mit Toren.</p>
-        <ul class="svc-tags"><li>Trockenmauer</li><li>Gabionen</li><li>Terrassen</li><li>Treppen</li><li>Teichanlagen</li></ul>
-      </div>
-      <div class="svc-media">
-        <picture>
-          <source type="image/avif" sizes="(min-width:901px) min(50vw,480px), 100vw" srcset="Bilder/opt/2-640.avif 640w, Bilder/opt/2-1024.avif 1024w, Bilder/opt/2-1600.avif 1600w">
-          <img data-parallax sizes="(min-width:901px) min(50vw,480px), 100vw"
-               srcset="Bilder/opt/2-640.jpg 640w, Bilder/opt/2-1024.jpg 1024w, Bilder/opt/2-1600.jpg 1600w"
-               src="Bilder/opt/2-1024.jpg"
-               width="1800" height="1350" loading="lazy" decoding="async"
-               alt="Terrassierter Hanggarten mit geschwungenen Trockenmauern aus Naturstein, Blockstufentreppe und Sitzplatz">
+        <picture class="svc-shot" data-shot="maehroboter">
+          <source type="image/avif" sizes="(min-width:901px) min(50vw,520px), 100vw" srcset="Bilder/opt/7-640.avif 640w, Bilder/opt/7-1024.avif 1024w">
+          <img data-parallax sizes="(min-width:901px) min(50vw,520px), 100vw"
+               srcset="Bilder/opt/7-640.jpg 640w, Bilder/opt/7-1024.jpg 1024w"
+               src="Bilder/opt/7-1024.jpg"
+               width="1125" height="1500" loading="lazy" decoding="async"
+               alt="Mähroboter auf frisch gemähtem Rasen, daneben ein von Randsteinen eingefasstes Mulchbeet">
         </picture>
-      </div>
-    </article>
+        <picture class="svc-shot" data-shot="pflanzarbeiten">
+          <source type="image/avif" sizes="(min-width:901px) min(50vw,520px), 100vw" srcset="Bilder/opt/22-640.avif 640w, Bilder/opt/22-1024.avif 1024w">
+          <img data-parallax sizes="(min-width:901px) min(50vw,520px), 100vw"
+               srcset="Bilder/opt/22-640.jpg 640w, Bilder/opt/22-1024.jpg 1024w"
+               src="Bilder/opt/22-1024.jpg"
+               width="1600" height="1200" loading="lazy" decoding="async"
+               alt="Beet unter der Bestandskiefer mit Hortensien und zwei Leuchtkugeln vor der weißen Hofmauer">
+        </picture>
 
-    <article class="svc-item" id="leistung-pflanzen">
-      <div class="svc-body reveal">
-        <span class="svc-num">Pos. 03</span>
-        <h3 class="display">Pflanzenarbeiten &amp; Baumschule <span aria-hidden="true">🌳</span></h3>
-        <p>Wir setzen die Pflanzen fachgerecht und geben ihnen so den bestmöglichen Start. Unser Fuhrpark bietet für praktisch jede Aufgabe eine Lösung — auch wenn Ihr Wunschbaum schon eine stattliche Größe haben soll. Zum Wässern beraten wir individuell, angepasst an Bodenbeschaffenheit und Pflanzenauswahl.</p>
-        <ul class="svc-tags"><li>Großbäume</li><li>Beetanlagen</li><li>Bewässerung</li><li>Beratung</li></ul>
-      </div>
-      <div class="svc-media">
-        <picture>
-          <source type="image/avif" sizes="(min-width:901px) min(50vw,480px), 100vw" srcset="Bilder/opt/3-640.avif 640w, Bilder/opt/3-1024.avif 1024w">
-          <img data-parallax sizes="(min-width:901px) min(50vw,480px), 100vw"
+        <picture class="svc-shot" data-shot="unterhaltung">
+          <source type="image/avif" sizes="(min-width:901px) min(50vw,520px), 100vw" srcset="Bilder/opt/24-640.avif 640w, Bilder/opt/24-1024.avif 1024w">
+          <img data-parallax sizes="(min-width:901px) min(50vw,520px), 100vw"
+               srcset="Bilder/opt/24-640.jpg 640w, Bilder/opt/24-1024.jpg 1024w"
+               src="Bilder/opt/24-1024.jpg"
+               width="1600" height="1200" loading="lazy" decoding="async"
+               alt="Geschwungener Weg aus Polygonalplatten mit Granit-Kleinpflaster als Kante, dahinter Kirschlorbeerhecke, Gartenhaus und Bank">
+        </picture>
+        <picture class="svc-shot" data-shot="baumpflege">
+          <source type="image/avif" sizes="(min-width:901px) min(50vw,520px), 100vw" srcset="Bilder/opt/9-640.avif 640w, Bilder/opt/9-1024.avif 1024w">
+          <img data-parallax sizes="(min-width:901px) min(50vw,520px), 100vw"
+               srcset="Bilder/opt/9-640.jpg 640w, Bilder/opt/9-1024.jpg 1024w"
+               src="Bilder/opt/9-1024.jpg"
+               width="1500" height="1125" loading="lazy" decoding="async"
+               alt="Runde Baumbank auf einer Kiesfläche mit Gräserpflanzung vor einer hohen Thujahecke">
+        </picture>
+
+        <picture class="svc-shot" data-shot="quartiere">
+          <source type="image/avif" sizes="(min-width:901px) min(50vw,520px), 100vw" srcset="Bilder/opt/IMG_0070-3-640.avif 640w, Bilder/opt/IMG_0070-3-1024.avif 1024w">
+          <img data-parallax sizes="(min-width:901px) min(50vw,520px), 100vw"
+               srcset="Bilder/opt/IMG_0070-3-640.jpg 640w, Bilder/opt/IMG_0070-3-1024.jpg 1024w"
+               src="Bilder/opt/IMG_0070-3-1024.jpg"
+               width="1800" height="1200" loading="lazy" decoding="async"
+               alt="Weg durch die Quartiere der Baumschule Belzner, gesäumt von Ahorn, Hortensien und Formgehölzen">
+        </picture>
+        <picture class="svc-shot" data-shot="auswahl">
+          <source type="image/avif" sizes="(min-width:901px) min(50vw,520px), 100vw" srcset="Bilder/opt/IMG_0070-2-640.avif 640w, Bilder/opt/IMG_0070-2-1024.avif 1024w">
+          <img data-parallax sizes="(min-width:901px) min(50vw,520px), 100vw"
+               srcset="Bilder/opt/IMG_0070-2-640.jpg 640w, Bilder/opt/IMG_0070-2-1024.jpg 1024w"
+               src="Bilder/opt/IMG_0070-2-1024.jpg"
+               width="2400" height="1600" loading="lazy" decoding="async"
+               alt="Schmaler Plattenweg zwischen dicht gewachsenen Gehölzen und Buchskugeln in der Baumschule">
+        </picture>
+        <picture class="svc-shot" data-shot="lieferung">
+          <source type="image/avif" sizes="(min-width:901px) min(50vw,520px), 100vw" srcset="Bilder/opt/3-640.avif 640w, Bilder/opt/3-1024.avif 1024w">
+          <img data-parallax sizes="(min-width:901px) min(50vw,520px), 100vw"
                srcset="Bilder/opt/3-640.jpg 640w, Bilder/opt/3-1024.jpg 1024w"
                src="Bilder/opt/3-1024.jpg"
                width="1125" height="1500" loading="lazy" decoding="async"
                alt="Quartier der eigenen Baumschule mit Fächerahorn, Hortensien und Koniferen, im Hintergrund ein Mammutbaum">
         </picture>
       </div>
-    </article>
 
-    <article class="svc-item" id="leistung-wasser">
-      <div class="svc-body reveal">
-        <span class="svc-num">Pos. 04</span>
-        <h3 class="display">Bewässerungssysteme <span aria-hidden="true">💧</span></h3>
-        <p>Wasser entscheidet, ob ein Garten trägt oder Arbeit macht. Wir bauen automatische Bewässerung mit Versenkregnern und Tropfschläuchen, binden Zisterne und Regenwasser ein und legen Drainagen so an, dass nach dem Gewitter nichts stehen bleibt. Gesteuert wird über Zeitplan oder Bodenfeuchte — im Alltag merken Sie davon nur, dass es grün bleibt.</p>
-        <ul class="svc-tags"><li>Versenkregner</li><li>Tropfbewässerung</li><li>Zisterne</li><li>Drainage</li><li>Steuerung</li></ul>
-      </div>
-      <div class="svc-media">
-        <picture>
-          <source type="image/avif" sizes="(min-width:901px) min(50vw,480px), 100vw" srcset="Bilder/opt/10-640.avif 640w, Bilder/opt/10-1024.avif 1024w">
-          <img data-parallax sizes="(min-width:901px) min(50vw,480px), 100vw"
-               srcset="Bilder/opt/10-640.jpg 640w, Bilder/opt/10-1024.jpg 1024w"
-               src="Bilder/opt/10-1024.jpg"
-               width="1500" height="1125" loading="lazy" decoding="async"
-               alt="Angelegter Gartenteich mit Kiesufer und Findlingen, eingefasst von Rasenfläche und Kirschlorbeerhecke">
-        </picture>
-      </div>
-    </article>
+      <div class="svc-lists">
 
-    <article class="svc-item" id="leistung-maehroboter">
-      <div class="svc-body reveal">
-        <span class="svc-num">Pos. 05</span>
-        <h3 class="display">Mähroboter <span aria-hidden="true">🤖</span></h3>
-        <p>Mähen ist Routine — das kann eine Maschine übernehmen. Wir messen die Fläche ein, verlegen das Begrenzungskabel oder richten ein kabelloses GPS-Modell ein, setzen Ladestation und Garage und stellen die Mähzeiten auf Ihren Rasen ein.</p>
-        <ul class="svc-tags"><li>Flächenaufmaß</li><li>Kabelverlegung</li><li>GPS-Modelle</li><li>Ladestation</li><li>Winterwartung</li></ul>
+        <!-- ---------- Gartengestaltung ---------- -->
+        <div class="svc-panel" role="tabpanel" id="svcpanel-gestaltung"
+             aria-labelledby="svctab-gestaltung" tabindex="0">
+          <div class="svc-head">
+            <p class="svc-intro">Neuanlage von Grund auf. Meist beginnt ein Projekt mit einer Ortsbegehung — daraus entsteht der Plan, dann die Umsetzung.</p>
+            <span class="svc-hint"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 16 5-5 4 4 3-3 6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>Auswahl wechselt das Bild</span>
+          </div>
+          <ul class="svc-list">
+
+            <li class="svc-entry is-current" id="leistung-steinarbeiten">
+              <span class="svc-num">01</span>
+              <h3 class="svc-name"><button type="button" class="svc-trigger"
+                      data-shot="steinarbeiten" aria-current="true">Steinarbeiten</button></h3>
+              <p class="svc-lead">Terrassen, Wege und Treppen aus Naturstein oder Beton — dazu Trockenmauern, Gabionen und Zäune, wo der Garten eine Kante braucht.</p>
+              <ul class="svc-tags"><li>Terrassen</li><li>Wegebau</li><li>Trockenmauern</li><li>Gabionen</li><li>Treppen</li><li>Zäune &amp; Tore</li></ul>
+            </li>
+
+            <li class="svc-entry" id="leistung-wasser">
+              <span class="svc-num">02</span>
+              <h3 class="svc-name"><button type="button" class="svc-trigger"
+                      data-shot="bewaesserung">Bewässerungssysteme</button></h3>
+              <p class="svc-lead">Automatisch bewässert mit Versenkregnern und Tropfschläuchen — Technik von Hunter, die sich später erweitern lässt.</p>
+              <ul class="svc-tags"><li>Versenkregner</li><li>Tropfbewässerung</li><li>Technik von Hunter</li></ul>
+            </li>
+
+            <li class="svc-entry" id="leistung-fertigrasen">
+              <span class="svc-num">03</span>
+              <h3 class="svc-name"><button type="button" class="svc-trigger"
+                      data-shot="fertigrasen">Fertigrasen</button></h3>
+              <p class="svc-lead">Geliefert und verlegt, auf Wunsch mit eingearbeitetem Netz gegen Maulwurf und Wühlmaus.</p>
+              <ul class="svc-tags"><li>Lieferung</li><li>Verlegung</li><li>Wühlmausschutz</li></ul>
+            </li>
+
+            <li class="svc-entry" id="leistung-maehroboter">
+              <span class="svc-num">04</span>
+              <h3 class="svc-name"><button type="button" class="svc-trigger"
+                      data-shot="maehroboter">Mähroboter</button></h3>
+              <p class="svc-lead">Fläche eingemessen, Kabel verlegt, Mähzeiten eingestellt. Im Frühjahr nehmen wir ihn in Betrieb, im Winter kommt er zur Wartung.</p>
+              <ul class="svc-tags"><li>Flächenaufmaß</li><li>Kabelverlegung</li><li>GPS-Modelle</li><li>Ladestation</li><li>Inbetriebnahme im Frühjahr</li><li>Winterwartung</li></ul>
+            </li>
+
+            <li class="svc-entry" id="leistung-pflanzen">
+              <span class="svc-num">05</span>
+              <h3 class="svc-name"><button type="button" class="svc-trigger"
+                      data-shot="pflanzarbeiten">Pflanzarbeiten</button></h3>
+              <p class="svc-lead">Fachgerecht gesetzt und mit eigenem Gerät bewegt — auch wenn Ihr Wunschbaum schon eine stattliche Größe haben soll.</p>
+              <ul class="svc-tags"><li>Großbäume</li><li>Beetanlagen</li><li>Hecken</li><li>Stauden</li></ul>
+            </li>
+
+          </ul>
+        </div>
+
+        <!-- ---------- Gartenpflege ---------- -->
+        <div class="svc-panel" role="tabpanel" id="svcpanel-pflege"
+             aria-labelledby="svctab-pflege" tabindex="0" hidden>
+          <div class="svc-head">
+            <p class="svc-intro">Pflege von bestehenden und neuen Gärten — in fester Unterhaltung über die Saison oder als einzelner Einsatz.</p>
+            <span class="svc-hint"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 16 5-5 4 4 3-3 6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>Auswahl wechselt das Bild</span>
+          </div>
+          <ul class="svc-list">
+
+            <li class="svc-entry is-current" id="leistung-gartenpflege">
+              <span class="svc-num">01</span>
+              <h3 class="svc-name"><button type="button" class="svc-trigger"
+                      data-shot="unterhaltung" aria-current="true">Gartenunterhaltung</button></h3>
+              <p class="svc-lead">Rasen, Beete, Hecken und Stauden durchs Jahr — bestehende Gärten genauso wie neu angelegte, nach festem Turnus oder auf Zuruf.</p>
+              <ul class="svc-tags"><li>Rasenpflege</li><li>Beetpflege</li><li>Heckenschnitt</li><li>Formschnitt</li><li>Laub &amp; Herbst</li><li>Fester Turnus</li></ul>
+            </li>
+
+            <li class="svc-entry" id="leistung-baumpflege">
+              <span class="svc-num">02</span>
+              <h3 class="svc-name"><button type="button" class="svc-trigger"
+                      data-shot="baumpflege">Baumpflege</button></h3>
+              <p class="svc-lead">Kronenpflege, Auslichten, Totholz heraus. Wo ein Baum nicht bleiben kann, fällen wir ihn kontrolliert und räumen das Holz mit ab.</p>
+              <ul class="svc-tags"><li>Kronenpflege</li><li>Auslichten</li><li>Totholz</li><li>Fällarbeiten</li><li>Stückweiser Rückbau</li><li>Abfuhr</li></ul>
+            </li>
+
+          </ul>
+        </div>
+
+        <!-- ---------- Baumschule ---------- -->
+        <div class="svc-panel" role="tabpanel" id="svcpanel-baumschule"
+             aria-labelledby="svctab-baumschule" tabindex="0" hidden>
+          <div class="svc-head">
+            <p class="svc-intro">Was später in Ihrem Garten steht, wächst bei uns an der Dammstraße heran. Sie suchen Ihre Pflanze im gewachsenen Zustand aus — nicht im Katalog.</p>
+            <span class="svc-hint"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 16 5-5 4 4 3-3 6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>Auswahl wechselt das Bild</span>
+          </div>
+          <ul class="svc-list">
+
+            <li class="svc-entry is-current" id="leistung-baumschule">
+              <span class="svc-num">01</span>
+              <h3 class="svc-name"><button type="button" class="svc-trigger"
+                      data-shot="quartiere" aria-current="true">Eigene Quartiere</button></h3>
+              <p class="svc-lead">Bäume, Sträucher, Hecken, Formgehölze und Stauden auf eigener Fläche — Sie sehen jede Pflanze im gewachsenen Zustand, nicht im Katalog.</p>
+              <ul class="svc-tags"><li>Bäume &amp; Solitäre</li><li>Hecken</li><li>Formgehölze</li><li>Sträucher</li><li>Stauden</li></ul>
+            </li>
+
+            <li class="svc-entry" id="leistung-beratung">
+              <span class="svc-num">02</span>
+              <h3 class="svc-name"><button type="button" class="svc-trigger"
+                      data-shot="auswahl">Beratung &amp; Auswahl</button></h3>
+              <p class="svc-lead">Wir gehen die Quartiere mit Ihnen ab und stellen zusammen, was zu Boden, Licht und Platz passt — auch in zehn Jahren noch.</p>
+              <ul class="svc-tags"><li>Standortberatung</li><li>Sortenauswahl</li><li>Pflanzzeiten</li></ul>
+            </li>
+
+            <li class="svc-entry" id="leistung-lieferung">
+              <span class="svc-num">03</span>
+              <h3 class="svc-name"><button type="button" class="svc-trigger"
+                      data-shot="lieferung">Lieferung &amp; Pflanzung</button></h3>
+              <p class="svc-lead">Wir liefern an, setzen mit eigenem Gerät — vom Ballen bis zum Großbaum — und verankern, wo es nötig ist.</p>
+              <ul class="svc-tags"><li>Anlieferung</li><li>Pflanzung</li><li>Großbäume</li><li>Verankerung</li></ul>
+            </li>
+
+          </ul>
+        </div>
+
       </div>
-      <div class="svc-media">
-        <picture>
-          <source type="image/avif" sizes="(min-width:901px) min(50vw,480px), 100vw" srcset="Bilder/opt/7-640.avif 640w, Bilder/opt/7-1024.avif 1024w">
-          <img data-parallax sizes="(min-width:901px) min(50vw,480px), 100vw"
-               srcset="Bilder/opt/7-640.jpg 640w, Bilder/opt/7-1024.jpg 1024w"
-               src="Bilder/opt/7-1024.jpg"
-               width="1125" height="1500" loading="lazy" decoding="async"
-               alt="Mähroboter auf frisch gemähtem Rasen, daneben ein von Randsteinen eingefasstes Mulchbeet">
-        </picture>
-      </div>
-    </article>
+    </div>
   </div>
 </section>
 
@@ -1573,22 +1887,177 @@ html.is-vt *{transition:none !important}
 
 <!-- ========== ÜBER UNS ========== -->
 <section class="section" id="ueber-uns">
-  <div class="wrap about">
-    <div class="reveal">
-      <p class="mono">05 — Der Betrieb</p>
-      <h2 class="display">Handwerk aus Bensheim</h2>
-      <p>Wir sind Gartengestaltung und Baumschule Belzner — ein Familienbetrieb an der Dammstraße in Bensheim. Was wir planen, bauen wir auch selbst. Kein Subunternehmer, der Ihren Garten zum ersten Mal sieht, wenn der Bagger schon läuft.</p>
-      <p>Mit eigenem Fuhrpark und eigener Baumschule decken wir von der ersten Skizze bis zur Pflege alles ab. Das dauert manchmal länger als bei anderen. Dafür steht es hinterher auch noch in zehn Jahren.</p>
+  <div class="wrap">
+    <div class="about">
+      <div class="reveal">
+        <p class="mono">05 — Der Betrieb</p>
+        <h2 class="display">Handwerk aus Bensheim</h2>
+        <p>Wir sind Gartengestaltung und Baumschule Belzner — ein Familienbetrieb an der Dammstraße in Bensheim. Was wir planen, bauen wir auch selbst. Kein Subunternehmer, der Ihren Garten zum ersten Mal sieht, wenn der Bagger schon läuft.</p>
+        <p>Mit eigenem Fuhrpark und eigener Baumschule decken wir von der ersten Skizze bis zur Pflege alles ab. Das dauert manchmal länger als bei anderen. Dafür steht es hinterher auch noch in zehn Jahren.</p>
+      </div>
+      <div class="about-media reveal">
+        <picture>
+          <source type="image/avif" sizes="(min-width:901px) min(50vw,640px), 100vw" srcset="Bilder/opt/4-640.avif 640w, Bilder/opt/4-1024.avif 1024w">
+          <img sizes="(min-width:901px) min(50vw,640px), 100vw"
+               srcset="Bilder/opt/4-640.jpg 640w, Bilder/opt/4-1024.jpg 1024w"
+               src="Bilder/opt/4-1024.jpg"
+               width="1024" height="576" loading="lazy" decoding="async"
+               alt="Luftbild des Betriebsgeländes der Baumschule Belzner an der Dammstraße in Bensheim im Herbst">
+        </picture>
+      </div>
     </div>
-    <div class="about-media reveal">
-      <picture>
-        <source type="image/avif" sizes="(min-width:901px) min(50vw,640px), 100vw" srcset="Bilder/opt/4-640.avif 640w, Bilder/opt/4-1024.avif 1024w">
-        <img sizes="(min-width:901px) min(50vw,640px), 100vw"
-             srcset="Bilder/opt/4-640.jpg 640w, Bilder/opt/4-1024.jpg 1024w"
-             src="Bilder/opt/4-1024.jpg"
-             width="1024" height="576" loading="lazy" decoding="async"
-             alt="Luftbild des Betriebsgeländes der Baumschule Belzner an der Dammstraße in Bensheim im Herbst">
-      </picture>
+
+    <!-- ===== Bilderbahn: wischen am Finger, blaettern am Knopf =====
+         Eine weitere Aufnahme ist ein weiteres <li class="gal-slide">; Punkte
+         und Knoepfe richten sich per JS danach. -->
+    <div class="gal reveal" role="group" aria-roledescription="Bilderbahn" aria-label="Bilder vom Betrieb">
+      <div class="gal-viewport" id="galViewport" tabindex="0" role="group" aria-label="Bilder, seitlich wischbar">
+        <ul class="gal-track" id="galTrack">
+          <li class="gal-slide">
+            <figure>
+              <div class="gal-shot">
+                <picture>
+                  <source type="image/avif" sizes="(min-width:901px) 760px, 88vw" srcset="Bilder/opt/4-640.avif 640w, Bilder/opt/4-1024.avif 1024w">
+                  <img sizes="(min-width:901px) 760px, 88vw"
+                       srcset="Bilder/opt/4-640.jpg 640w, Bilder/opt/4-1024.jpg 1024w"
+                       src="Bilder/opt/4-1024.jpg"
+                       width="1024" height="576" loading="lazy" decoding="async"
+                       alt="Luftbild des Betriebsgeländes der Baumschule Belzner an der Dammstraße in Bensheim im Herbst">
+                </picture>
+              </div>
+              <figcaption>
+                <strong>Das Gelände an der Dammstraße</strong>
+                Betrieb, Hof und Quartiere liegen an einem Ort — kurze Wege zwischen Pflanze, Maschine und Baustelle.
+              </figcaption>
+            </figure>
+          </li>
+          <li class="gal-slide">
+            <figure>
+              <div class="gal-shot">
+                <picture>
+                  <source type="image/avif" sizes="(min-width:901px) 760px, 88vw" srcset="Bilder/opt/IMG_0070-3-640.avif 640w, Bilder/opt/IMG_0070-3-1024.avif 1024w, Bilder/opt/IMG_0070-3-1600.avif 1600w">
+                  <img sizes="(min-width:901px) 760px, 88vw"
+                       srcset="Bilder/opt/IMG_0070-3-640.jpg 640w, Bilder/opt/IMG_0070-3-1024.jpg 1024w, Bilder/opt/IMG_0070-3-1600.jpg 1600w"
+                       src="Bilder/opt/IMG_0070-3-1024.jpg"
+                       width="1800" height="1200" loading="lazy" decoding="async"
+                       alt="Weg durch die Quartiere der Baumschule Belzner, gesäumt von Ahorn, Hortensien und Formgehölzen">
+                </picture>
+              </div>
+              <figcaption>
+                <strong>Die Quartiere</strong>
+                Hier wächst heran, was später gepflanzt wird. Kunden gehen die Reihen ab und suchen ihren Baum selbst aus.
+              </figcaption>
+            </figure>
+          </li>
+          <li class="gal-slide">
+            <figure>
+              <div class="gal-shot">
+                <picture>
+                  <source type="image/avif" sizes="(min-width:901px) 760px, 88vw" srcset="Bilder/opt/IMG_0070-2-640.avif 640w, Bilder/opt/IMG_0070-2-1024.avif 1024w, Bilder/opt/IMG_0070-2-1600.avif 1600w">
+                  <img sizes="(min-width:901px) 760px, 88vw"
+                       srcset="Bilder/opt/IMG_0070-2-640.jpg 640w, Bilder/opt/IMG_0070-2-1024.jpg 1024w, Bilder/opt/IMG_0070-2-1600.jpg 1600w"
+                       src="Bilder/opt/IMG_0070-2-1024.jpg"
+                       width="2400" height="1600" loading="lazy" decoding="async"
+                       alt="Schmaler Plattenweg zwischen dicht gewachsenen Gehölzen und Buchskugeln in der Baumschule">
+                </picture>
+              </div>
+              <figcaption>
+                <strong>Formgehölze und Solitäre</strong>
+                Buchskugeln, Formschnitt und einzeln gezogene Gehölze — Pflanzen, die Jahre brauchen, bis sie so dastehen.
+              </figcaption>
+            </figure>
+          </li>
+          <li class="gal-slide">
+            <figure>
+              <div class="gal-shot">
+                <picture>
+                  <source type="image/avif" sizes="(min-width:901px) 760px, 88vw" srcset="Bilder/opt/3-640.avif 640w, Bilder/opt/3-1024.avif 1024w">
+                  <img sizes="(min-width:901px) 760px, 88vw"
+                       srcset="Bilder/opt/3-640.jpg 640w, Bilder/opt/3-1024.jpg 1024w"
+                       src="Bilder/opt/3-1024.jpg"
+                       width="1125" height="1500" loading="lazy" decoding="async"
+                       alt="Quartier der eigenen Baumschule mit Fächerahorn, Hortensien und Koniferen, im Hintergrund ein Mammutbaum">
+                </picture>
+              </div>
+              <figcaption>
+                <strong>Der alte Bestand</strong>
+                Zwischen Fächerahorn und Hortensien steht ein Mammutbaum, der schon lange vor uns hier war.
+              </figcaption>
+            </figure>
+          </li>
+        </ul>
+      </div>
+
+      <div class="gal-bar">
+        <div class="gal-dots" id="galDots"></div>
+        <div class="gal-nav">
+          <button type="button" class="gal-btn" id="galPrev" aria-label="Vorheriges Bild">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
+          </button>
+          <button type="button" class="gal-btn" id="galNext" aria-label="Nächstes Bild">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Zeitstrahl =====
+       PLATZHALTER: Die Jahreszahlen und Texte unten sind erfunden und müssen
+       noch durch die echte Betriebsgeschichte ersetzt werden. Gesichert ist
+       nur die Gründung der Baumschule 1906. Eine Station ist ein
+       <article class="tl-stop"> — Reihenfolge im HTML ist die Reihenfolge
+       auf der Achse. -->
+  <div class="timeline reveal" id="timeline">
+    <div class="wrap timeline-head">
+      <p class="mono">Seit 1906</p>
+      <h2 class="display">Was bis hierher passiert ist</h2>
+    </div>
+
+    <div class="tl-runway" id="tlRunway">
+     <div class="tl-stage" id="tlStage">
+      <div class="tl-viewport" id="tlViewport" tabindex="0" role="group" aria-label="Zeitstrahl, seitlich wischbar">
+       <div class="tl-rail" id="tlRail">
+        <span class="tl-fill" id="tlFill" aria-hidden="true"></span>
+
+        <article class="tl-stop">
+          <span class="tl-year">1906</span>
+          <h3 class="display">Die Baumschule entsteht</h3>
+          <p>Gründung des Betriebs in Bensheim. Aus den ersten Quartieren wird über die Jahrzehnte die Fläche an der Dammstraße.</p>
+        </article>
+
+        <article class="tl-stop">
+          <span class="tl-year">19&#8202;·&#8202;·</span>
+          <h3 class="display">Zweite Generation</h3>
+          <p>PLATZHALTER — Jahr und Text bitte ersetzen: Übergabe innerhalb der Familie.</p>
+        </article>
+
+        <article class="tl-stop">
+          <span class="tl-year">19&#8202;·&#8202;·</span>
+          <h3 class="display">Garten- und Landschaftsbau kommt dazu</h3>
+          <p>PLATZHALTER — Jahr bitte ersetzen: Aus der Baumschule wird ein Betrieb, der Gärten auch plant und baut.</p>
+        </article>
+
+        <article class="tl-stop">
+          <span class="tl-year">20&#8202;·&#8202;·</span>
+          <h3 class="display">Eigener Fuhrpark</h3>
+          <p>PLATZHALTER — Jahr und Text bitte ersetzen: Maschinen für Erdbau, Pflanzung und Transport im eigenen Haus.</p>
+        </article>
+
+        <article class="tl-stop">
+          <span class="tl-year">20&#8202;·&#8202;·</span>
+          <h3 class="display">Bewässerung und Mähroboter</h3>
+          <p>PLATZHALTER — Jahr und Text bitte ersetzen: Technik im Garten wird zum festen Teil des Angebots.</p>
+        </article>
+
+        <article class="tl-stop">
+          <span class="tl-year">Heute</span>
+          <h3 class="display">Baumschule und GaLaBau an einem Ort</h3>
+          <p>Planung, Bau, Pflege und die eigenen Pflanzen — alles aus einer Hand, alles aus Bensheim.</p>
+        </article>
+       </div>
+      </div>
+     </div>
     </div>
   </div>
 </section>
@@ -1614,15 +2083,15 @@ html.is-vt *{transition:none !important}
       <article class="job reveal">
         <div>
           <p class="mono">Vollzeit · unbefristet</p>
-          <h3 class="display">Garten- und Landschaftsbaugärtner (m/w/d)</h3>
+          <h3 class="display">Garten- und Landschaftsbaugärtner (m/w/d) — Neuanlage</h3>
           <p>Sie übernehmen eigenverantwortlich die Umsetzung von Gartenanlagen — Steinarbeiten, Pflanzung, Wegebau. Führerschein Klasse BE von Vorteil.</p>
         </div>
         <a href="#bewerbung" class="btn btn-ghost">Bewerben</a>
       </article>
       <article class="job reveal">
         <div>
-          <p class="mono">Vollzeit oder Teilzeit · unbefristet</p>
-          <h3 class="display">Gartenpfleger (m/w/d)</h3>
+          <p class="mono">Vollzeit · unbefristet</p>
+          <h3 class="display">Garten- und Landschaftsbaugärtner (m/w/d) — Grünpflege</h3>
           <p>Sie betreuen unsere Pflegegärten durch die Saison — Hecken- und Formschnitt, Rasen- und Beetpflege, Stauden und Gehölze. Erfahrung in der Gartenpflege ist willkommen, Sorgfalt zählt mehr als Zeugnisse. Führerschein Klasse B von Vorteil.</p>
         </div>
         <a href="#bewerbung" class="btn btn-ghost">Bewerben</a>
@@ -1642,7 +2111,7 @@ html.is-vt *{transition:none !important}
           </li>
           <li>
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m20 6-11 11-5-5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            <span>Wir melden uns in der Regel innerhalb von zwei Wochen zurück.</span>
+            <span>Wir sehen uns jede Bewerbung persönlich an und melden uns bei Ihnen zurück.</span>
           </li>
           <li>
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m20 6-11 11-5-5" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -1696,8 +2165,8 @@ html.is-vt *{transition:none !important}
             <select id="b-stelle" name="stelle" required aria-describedby="err-b-stelle">
               <option value="">Bitte wählen</option>
               <option>Ausbildung zum Gärtner (m/w/d)</option>
-              <option>Garten- und Landschaftsbaugärtner (m/w/d)</option>
-              <option>Gartenpfleger (m/w/d)</option>
+              <option>Garten- und Landschaftsbaugärtner (m/w/d) — Neuanlage</option>
+              <option>Garten- und Landschaftsbaugärtner (m/w/d) — Grünpflege</option>
               <option>Initiativbewerbung</option>
             </select>
             <span class="error" id="err-b-stelle" data-for="stelle"></span>
@@ -1782,7 +2251,7 @@ html.is-vt *{transition:none !important}
     <header class="section-head reveal">
       <p class="mono">07 — Kontakt</p>
       <h2 class="display">Beratungsgespräch anfragen</h2>
-      <p>Kostenlos und unverbindlich. Wir melden uns in der Regel innerhalb von zwei Werktagen.</p>
+      <p>Kostenlos und unverbindlich. Schreiben Sie uns, was Ihnen vorschwebt — wir melden uns zurück.</p>
     </header>
 
     <div class="contact-grid">
@@ -1820,11 +2289,22 @@ html.is-vt *{transition:none !important}
         <div class="field"><label for="anliegen">Anliegen *</label>
           <select id="anliegen" name="anliegen" required aria-describedby="err-anliegen">
             <option value="">Bitte wählen</option>
-            <option>Fertigrasen</option><option>Steinarbeiten &amp; Zäune</option>
-            <option>Pflanzenarbeiten &amp; Baumschule</option>
-            <option>Bewässerungssysteme</option><option>Mähroboter</option>
-            <option>Komplette Gartenanlage</option>
-            <option>Gartenpflege</option><option>Sonstiges</option>
+            <optgroup label="Gartengestaltung">
+              <option>Komplette Gartenanlage</option>
+              <option>Steinarbeiten &amp; Zäune</option>
+              <option>Bewässerungssysteme</option>
+              <option>Fertigrasen</option>
+              <option>Mähroboter</option>
+              <option>Pflanzarbeiten</option>
+            </optgroup>
+            <optgroup label="Gartenpflege">
+              <option>Gartenunterhaltung</option>
+              <option>Baumpflege</option>
+            </optgroup>
+            <optgroup label="Baumschule">
+              <option>Pflanzen kaufen &amp; Beratung</option>
+            </optgroup>
+            <option>Sonstiges</option>
           </select>
           <span class="error" id="err-anliegen" data-for="anliegen"></span></div>
         <div class="field"><label for="nachricht">Nachricht *</label>
@@ -1909,17 +2389,19 @@ html.is-vt *{transition:none !important}
       <div><h4>Belzner</h4>
         <p style="color:var(--color-fg-muted);font-size:var(--step--1)">Gartengestaltung &amp; Baumschule<br>Sascha Belzner<br>Dammstraße 100–108<br>64625 Bensheim</p></div>
       <div><h4>Leistungen</h4><ul>
-        <li><a href="#leistung-fertigrasen">Fertigrasen</a></li>
-        <li><a href="#leistung-steinarbeiten">Steinarbeiten &amp; Zäune</a></li>
-        <li><a href="#leistung-pflanzen">Pflanzenarbeiten &amp; Baumschule</a></li>
+        <li><a href="#leistung-steinarbeiten">Steinarbeiten</a></li>
         <li><a href="#leistung-wasser">Bewässerungssysteme</a></li>
+        <li><a href="#leistung-fertigrasen">Fertigrasen</a></li>
         <li><a href="#leistung-maehroboter">Mähroboter</a></li>
+        <li><a href="#leistung-pflanzen">Pflanzarbeiten</a></li>
+        <li><a href="#leistung-gartenpflege">Gartenpflege</a></li>
+        <li><a href="#leistung-baumschule">Baumschule</a></li>
         <li><a href="#ablauf">Ablauf</a></li></ul></div>
       <div><h4>Kontakt</h4><ul>
         <li><a href="tel:+4962513091">06251 3091</a></li>
         <li><a href="mailto:info@gartengestaltung-belzner.de">info@gartengestaltung-belzner.de</a></li>
         <li style="color:var(--color-fg-muted);font-size:var(--step--1)">Termin nach Absprache</li></ul></div>
-      <div><h4>Rechtliches</h4><ul><li><a href="impressum.html">Impressum</a></li><li><a href="datenschutz.html">Datenschutz</a></li></ul></div>
+      <div><h4>Rechtliches</h4><ul><li><a href="impressum.html">Impressum</a></li><li><a href="datenschutz.html">Datenschutz</a></li><li><a href="nutzungsbedingungen.html">Nutzungsbedingungen</a></li></ul></div>
       <div><h4>Social</h4><ul>
         <li><a href="https://www.instagram.com/gartengestaltung_belzner/" target="_blank" rel="noopener noreferrer">Instagram</a></li></ul></div>
     </div>
@@ -2005,19 +2487,19 @@ html.is-vt *{transition:none !important}
         <span class="jobpop-emoji" aria-hidden="true">🌳</span>
         <span class="jobpop-info">
           <span class="mono">Vollzeit · unbefristet</span>
-          <strong>Garten- und Landschaftsbaugärtner (m/w/d)</strong>
+          <strong>Garten- und Landschaftsbaugärtner (m/w/d) — Neuanlage</strong>
         </span>
         <button type="button" class="btn btn-ghost jobpop-apply"
-                data-stelle="Garten- und Landschaftsbaugärtner (m/w/d)">Bewerben</button>
+                data-stelle="Garten- und Landschaftsbaugärtner (m/w/d) — Neuanlage">Bewerben</button>
       </li>
       <li>
         <span class="jobpop-emoji" aria-hidden="true">✂️</span>
         <span class="jobpop-info">
-          <span class="mono">Voll- oder Teilzeit · unbefristet</span>
-          <strong>Gartenpfleger (m/w/d)</strong>
+          <span class="mono">Vollzeit · unbefristet</span>
+          <strong>Garten- und Landschaftsbaugärtner (m/w/d) — Grünpflege</strong>
         </span>
         <button type="button" class="btn btn-ghost jobpop-apply"
-                data-stelle="Gartenpfleger (m/w/d)">Bewerben</button>
+                data-stelle="Garten- und Landschaftsbaugärtner (m/w/d) — Grünpflege">Bewerben</button>
       </li>
     </ul>
 
@@ -2475,10 +2957,11 @@ if (!reduced && hasGSAP) {
     gsap.to(el, { opacity: 1, y: 0, duration: 0.85, ease: 'power2.out',
       scrollTrigger: { trigger: el, start: 'top 86%', once: true } });
   });
-  gsap.utils.toArray('.svc-tags').forEach(list => {
-    gsap.from(list.children, { opacity: 0, y: 12, duration: 0.5, ease: 'power2.out', stagger: 0.06,
-      scrollTrigger: { trigger: list, start: 'top 92%', once: true } });
-  });
+  /* Die Schlagwortlisten der Leistungen bekommen hier bewusst keinen
+     Auftritt mehr: sie stecken in zugeklappten Faechern und ausgeblendeten
+     Bereichen, deren Aufhaenger beim Laden auf Hoehe null steht — der
+     Auftritt liefe ab, bevor sie jemand sehen kann, und danach staenden
+     sie unsichtbar da. */
 } else {
   document.querySelectorAll('.reveal').forEach(el => { el.style.opacity = 1; el.style.transform = 'none'; });
 }
@@ -2710,6 +3193,303 @@ if (ablaufFlow && !reduced && hasGSAP) {
       onEnter: () => gsap.delayedCall(ablaufRow.matches ? i * .5 : 0,
         () => stepEl.classList.add('is-on')) });
   });
+}
+
+/* ============================================================
+   LEISTUNGEN: drei Reiter, ein Bild
+   ============================================================ */
+/* Sichtbar ist immer nur ein Bereich und darin ein aufgeklappter Posten.
+   Dessen data-shot bestimmt, welche Aufnahme links steht — Bild und Text
+   bleiben so ein Paar. Ohne JS stehen alle Bereiche offen untereinander;
+   dann faellt nur der Bildwechsel weg. */
+const svcTabs = [...document.querySelectorAll('.svc-tab')];
+const svcMedia = document.getElementById('svcMedia');
+
+if (svcTabs.length && svcMedia) {
+  const svcShots  = [...svcMedia.querySelectorAll('.svc-shot')];
+  const svcPanels = svcTabs.map(t => document.getElementById(t.getAttribute('aria-controls')));
+
+  function showShot(name){
+    svcShots.forEach(s => s.classList.toggle('is-active', s.dataset.shot === name));
+  }
+
+  /* Jeder Posten steht offen da — der Klick waehlt nur aus, welcher gerade
+     im Bild steht. Kein Auf- und Zuklappen, kein zweiter Zustand. */
+  function openEntry(entry){
+    const panel = entry.closest('.svc-panel');
+    if (!panel) return;
+    panel.querySelectorAll('.svc-entry').forEach(other => {
+      const on = other === entry;
+      other.classList.toggle('is-current', on);
+      const btn = other.querySelector('.svc-trigger');
+      if (btn) {
+        if (on) btn.setAttribute('aria-current', 'true');
+        else btn.removeAttribute('aria-current');
+      }
+    });
+    const trigger = entry.querySelector('.svc-trigger');
+    if (trigger) showShot(trigger.dataset.shot);
+  }
+
+  function selectTab(tab, moveFocus){
+    const idx = svcTabs.indexOf(tab);
+    if (idx < 0) return;
+    svcTabs.forEach((t, i) => {
+      const on = i === idx;
+      t.setAttribute('aria-selected', String(on));
+      t.tabIndex = on ? 0 : -1;
+      if (svcPanels[i]) svcPanels[i].hidden = !on;
+    });
+    if (moveFocus) tab.focus();
+    // Der Bereich bringt seinen zuletzt offenen Posten mit — und damit sein Bild.
+    const panel = svcPanels[idx];
+    if (panel) {
+      const open = panel.querySelector('.svc-entry.is-current') || panel.querySelector('.svc-entry');
+      if (open) openEntry(open);
+    }
+    if (hasGSAP) ScrollTrigger.refresh();
+  }
+
+  svcTabs.forEach(tab => {
+    tab.addEventListener('click', () => selectTab(tab));
+    // Pfeiltasten wandern durch die Reiter, wie es fuer role="tablist" erwartet wird.
+    tab.addEventListener('keydown', e => {
+      const i = svcTabs.indexOf(tab);
+      let next = null;
+      if (e.key === 'ArrowRight')     next = svcTabs[(i + 1) % svcTabs.length];
+      else if (e.key === 'ArrowLeft') next = svcTabs[(i - 1 + svcTabs.length) % svcTabs.length];
+      else if (e.key === 'Home')      next = svcTabs[0];
+      else if (e.key === 'End')       next = svcTabs[svcTabs.length - 1];
+      if (!next) return;
+      e.preventDefault();
+      selectTab(next, true);
+    });
+  });
+
+  document.querySelectorAll('.svc-trigger').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const entry = btn.closest('.svc-entry');
+      if (entry) openEntry(entry);
+    });
+  });
+
+  // Startzustand: erster Reiter, dessen offener Posten, dessen Bild.
+  selectTab(svcTabs[0]);
+
+  /* Die Fusszeile und alte Lesezeichen zeigen auf einzelne Posten. Deren
+     Bereich muss vor dem Sprung sichtbar sein, sonst misst der allgemeine
+     Anker-Handler die Hoehe eines ausgeblendeten Elements. Darum in der
+     Einfangphase: das laeuft vor dem Klick-Handler am Link selbst. */
+  function revealEntry(id){
+    const entry = id && document.getElementById(id);
+    if (!entry || !entry.classList.contains('svc-entry')) return null;
+    const panel = entry.closest('.svc-panel');
+    const tab = svcTabs[svcPanels.indexOf(panel)];
+    if (tab) selectTab(tab);
+    openEntry(entry);
+    return entry;
+  }
+
+  addEventListener('click', e => {
+    const link = e.target.closest && e.target.closest('a[href*="#leistung-"]');
+    if (!link) return;
+    revealEntry(link.hash.slice(1));
+  }, true);
+
+  addEventListener('hashchange', () => {
+    const entry = revealEntry(location.hash.slice(1));
+    if (entry) entry.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'center' });
+  });
+
+  // Aufruf mit Sprungmarke: erst den Bereich oeffnen, dann hinscrollen.
+  if (location.hash.startsWith('#leistung-')) {
+    const entry = revealEntry(location.hash.slice(1));
+    if (entry) requestAnimationFrame(() => {
+      if (lenis) lenis.scrollTo(entry, { offset: -110, immediate: true });
+      else entry.scrollIntoView({ block: 'center' });
+    });
+  }
+}
+
+/* ============================================================
+   BETRIEB: Bilderbahn
+   ============================================================ */
+/* Die Bahn scrollt nativ mit Einrastpunkten — am Finger gewischt, am Knopf
+   geblaettert. Die Punkte sagen, wie viele Bilder es sind und wo man steht. */
+const galViewport = document.getElementById('galViewport');
+const galTrack = document.getElementById('galTrack');
+
+if (galViewport && galTrack) {
+  const slides  = [...galTrack.querySelectorAll('.gal-slide')];
+  const dotsBox = document.getElementById('galDots');
+  const prevBtn = document.getElementById('galPrev');
+  const nextBtn = document.getElementById('galNext');
+  let current = 0;
+
+  const dots = slides.map((_, i) => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'gal-dot';
+    b.setAttribute('aria-label', `Bild ${i + 1} von ${slides.length}`);
+    b.addEventListener('click', () => galGoTo(i));
+    if (dotsBox) dotsBox.append(b);
+    return b;
+  });
+
+  // Linke Kante der Folie im Bezugsrahmen der Bahn, unabhaengig von
+  // offsetParent und Innenabstaenden.
+  const leftOf = slide =>
+    galViewport.scrollLeft
+    + slide.getBoundingClientRect().left
+    - galViewport.getBoundingClientRect().left;
+
+  function galGoTo(i){
+    const target = slides[Math.min(Math.max(i, 0), slides.length - 1)];
+    if (!target) return;
+    galViewport.scrollTo({ left: leftOf(target), behavior: reduced ? 'auto' : 'smooth' });
+  }
+
+  function galPaint(){
+    // Die naechstgelegene Folie gewinnt — auch mitten in einer Wischbewegung.
+    let best = 0, bestGap = Infinity;
+    slides.forEach((s, i) => {
+      const gap = Math.abs(leftOf(s) - galViewport.scrollLeft);
+      if (gap < bestGap) { bestGap = gap; best = i; }
+    });
+    /* Am Ende der Bahn bleibt die letzte Folie stehen, bevor ihre linke
+       Kante den Rand erreicht — sie ist dann ganz zu sehen, ohne die
+       naechstgelegene zu sein. Die Scrollposition entscheidet, nicht der
+       Abstand. */
+    const atEnd = galViewport.scrollLeft >= galViewport.scrollWidth - galViewport.clientWidth - 2;
+    current = atEnd ? slides.length - 1 : best;
+    dots.forEach((d, i) => d.setAttribute('aria-current', String(i === current)));
+    if (prevBtn) prevBtn.disabled = current === 0;
+    if (nextBtn) nextBtn.disabled = atEnd;
+  }
+
+  if (prevBtn) prevBtn.addEventListener('click', () => galGoTo(current - 1));
+  if (nextBtn) nextBtn.addEventListener('click', () => galGoTo(current + 1));
+
+  let galTick = false;
+  galViewport.addEventListener('scroll', () => {
+    if (galTick) return;
+    galTick = true;
+    requestAnimationFrame(() => { galTick = false; galPaint(); });
+  }, { passive: true });
+  addEventListener('resize', galPaint, { passive: true });
+  galPaint();
+}
+
+/* ============================================================
+   BETRIEB: Zeitstrahl
+   ============================================================ */
+/* Am Rechner laeuft die Bahn beim Scrollen nach links, waehrend die Buehne
+   oben klebt; die Achse faerbt sich mit und jede erreichte Station wacht
+   auf. Auf dem Telefon und bei reduzierter Bewegung wischt man dieselbe
+   Bahn selbst — dieselbe Faerbung, nur am Finger.
+
+   Der Fortschritt wird in jedem Bild neu an der Laufstrecke gemessen statt
+   einmal gemerkt: oberhalb liegen aufklappbare Leistungen und nachladende
+   Bilder, und jede Hoehenaenderung dort wuerde gemerkte Werte verfaelschen. */
+const tlRunway = document.getElementById('tlRunway');
+const tlStage = document.getElementById('tlStage');
+const tlViewport = document.getElementById('tlViewport');
+const tlRail = document.getElementById('tlRail');
+const tlFill = document.getElementById('tlFill');
+
+if (tlRunway && tlStage && tlViewport && tlRail) {
+  const stops = [...tlRail.querySelectorAll('.tl-stop')];
+
+  /* Alles links der Marke gilt als erreicht. Die Marke liegt weit rechts,
+     und das aus einem handfesten Grund: die letzte Station muss sie am
+     Ende passiert haben, sonst bliebe sie grau. Je weiter links die Marke
+     saesse, desto weiter muesste die Bahn ueber ihr Ende hinauslaufen —
+     und genau dieser Nachlauf waere leeres Scrollen hinter der letzten
+     Station. Bei 66 % bleibt davon fast nichts uebrig. */
+  const MARKE = 0.66;
+  const tlMark = () => tlViewport.getBoundingClientRect().left + tlViewport.clientWidth * MARKE;
+
+  function paint(){
+    const mark = tlMark();
+    stops.forEach(s => s.classList.toggle('is-on', s.getBoundingClientRect().left <= mark));
+    // Die gefaerbte Achse endet an derselben Marke wie die wachen Punkte —
+    // sonst laegen gruene Punkte auf grauer Linie.
+    if (tlFill) {
+      const rail = tlRail.getBoundingClientRect();
+      const p = rail.width ? (mark - rail.left) / rail.width : 0;
+      tlFill.style.transform = 'scaleX(' + Math.min(Math.max(p, 0), 1) + ')';
+    }
+  }
+
+  const driven = !reduced && matchMedia('(min-width: 901px)').matches;
+
+  if (driven) {
+    tlRunway.classList.add('is-driven');
+    tlViewport.removeAttribute('tabindex');
+    tlViewport.removeAttribute('role');
+    tlViewport.removeAttribute('aria-label');
+
+    let travel = 0;
+
+    function measure(){
+      tlRail.style.transform = 'none';
+      tlRail.style.paddingRight = '';
+      const breite = tlViewport.clientWidth;
+      const bahn = tlRail.getBoundingClientRect().left;
+      const letzte = stops[stops.length - 1];
+
+      /* Zwei Bedingungen an die Laufweite. Erstens: die Bahn muss bis zu
+         ihrem rechten Ende durchlaufen. Zweitens — und das ist die
+         schaerfere — auch die letzte Station muss die Marke passieren,
+         sonst bliebe sie grau, obwohl der Zeitstrahl durchgelaufen ist.
+         Sie soll die Marke aber nur knapp ueberschreiten, nicht weit:
+         jeder Pixel darueber hinaus ist Scrollen hinter der letzten
+         Station, also hinter dem Ende der Geschichte. Was fehlt, kommt
+         als Nachlauf hinten an die Bahn, damit die Achse bis zum Rand
+         weiterlaeuft statt im Nichts abzubrechen. */
+      const bisAnsEnde = Math.max(tlRail.scrollWidth - breite, 0);
+      const bisZurMarke = letzte
+        ? (letzte.getBoundingClientRect().left - bahn) - breite * MARKE + 24
+        : 0;
+      travel = Math.max(bisAnsEnde, bisZurMarke, 0);
+      if (travel > bisAnsEnde) tlRail.style.paddingRight = (travel - bisAnsEnde) + 'px';
+
+      draw();
+    }
+
+    /* Der Fortschritt kommt aus dem Weg, den das Band ohnehin durchs Bild
+       nimmt: los geht es, wenn seine Oberkante 88 % der Hoehe erreicht,
+       fertig ist es bei 12 %. Beide Marken beziehen sich auf die
+       Oberkante, nicht auf die Unterkante — sonst waere die Bahn erst
+       durchgelaufen, wenn das Band oben schon aus dem Bild wandert, und
+       die letzte Station saehe niemand ankommen. */
+    function draw(){
+      const r = tlStage.getBoundingClientRect();
+      const von = innerHeight * .88;
+      const strecke = innerHeight * .76;
+      const p = travel > 0 && strecke > 0
+        ? Math.min(Math.max((von - r.top) / strecke, 0), 1) : 1;
+      tlRail.style.transform = 'translate3d(' + (-p * travel) + 'px,0,0)';
+      paint();
+    }
+
+    let tlTick = false;
+    const onScroll = () => {
+      if (tlTick) return;
+      tlTick = true;
+      requestAnimationFrame(() => { tlTick = false; draw(); });
+    };
+    addEventListener('scroll', onScroll, { passive: true });
+    if (lenis) lenis.on('scroll', onScroll);
+    addEventListener('resize', measure, { passive: true });
+    // Erst wenn Schriften stehen, stimmt die Breite der Stationen.
+    (document.fonts ? document.fonts.ready.catch(() => {}) : Promise.resolve()).then(measure);
+    measure();
+  } else {
+    tlViewport.addEventListener('scroll', paint, { passive: true });
+    addEventListener('resize', paint, { passive: true });
+    paint();
+  }
 }
 
 /* ---------- Scrolltempo als Material ---------- */
